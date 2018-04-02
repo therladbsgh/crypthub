@@ -11,7 +11,7 @@ app.use(function(req, res, next) {
 app.get('/getData', function(req, res) {
     console.log('hit getData endpoint');
 	res.send({ data: 'this is data' });
-})
+});
 
 app.listen(5000, function(err) {
 	if (err) {

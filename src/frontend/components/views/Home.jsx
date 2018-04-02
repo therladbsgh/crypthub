@@ -28,7 +28,7 @@ export default class Home extends Component {
   	render() {
 		return (
 	  		<div id={styles.homeid}>
-				This is the home pagffe. {this.state.data}
+				This is the home pasdfdfagffe. {this.state.data}
 	  		</div>
 		);
   	}
