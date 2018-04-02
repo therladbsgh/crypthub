@@ -10,7 +10,7 @@ Run backend and frontend for development (i.e. with full hot reloading):
 
     `npm run dev`
 
-You can also run the backend and frontend for development separately (in order to differetiate output streams):
+You can also run the backend and frontend for development separately (in order to differentiate output streams):
 
     `npm run backend`
     `npm run frontend`
