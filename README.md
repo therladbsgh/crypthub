@@ -1,6 +1,6 @@
 Setup:
 
-    `npm install`
+    npm install
 
 Cleanup (remove node modules and /dist):
 
