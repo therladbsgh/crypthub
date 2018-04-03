@@ -1,2 +1,3 @@
-export { default as TestStyle } from './test';
-export { default as Test2Style } from './test2';
+export { default as NavbarStyle } from './navbar';
+export { default as HomeStyle } from './home';
+export { default as SignupStyle } from './signup';
