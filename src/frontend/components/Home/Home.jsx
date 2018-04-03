@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
+import { Header, Button } from 'semantic-ui-react';
 import { Navbar } from 'components'; 
 import { HomeStyle as styles } from 'styles';
 
@@ -31,9 +31,7 @@ export default class Home extends Component {
 		return (
 			<div>
 				<Navbar loggedIn={false} />
-				<div id={styles.homeid}>
-					This is the home page. {this.state.data}
-				</div>
+				<Header as='h1'>CryptHub</Header>
 				<Button as={Link} to='/signup'>
 					Create Game
 				</Button>
