@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Header, Form, Button, Checkbox, Message } from 'semantic-ui-react';
 import { Navbar } from 'components';
 import { SignupStyle as styles } from 'styles';
@@ -13,7 +14,7 @@ export default class Signup extends Component {
 			passwordConfirm: '',
 			agree: false,
 			submitted: false,
-			err: '',
+			err: ''
 		};
 	
 		this.handleChange = this.handleChange.bind(this);
@@ -32,7 +33,7 @@ export default class Signup extends Component {
 		event.preventDefault();
 		this.setState({
 			submitted: true,
-			err: '',
+			err: ''
 		})
 
 		// TODO: Logic
@@ -66,8 +67,8 @@ export default class Signup extends Component {
 					</Form.Field>
 					<Message
 						success
-						header='Form Completed'
-						content="Success! Check your email for a verification link."
+						header='Signup Successful!'
+						content="Check your email for a verification link."
 					/>
 					<Message
 						error
@@ -76,6 +77,7 @@ export default class Signup extends Component {
 					/>
 					<Button type='submit'>Submit</Button>
 				</Form>
+				<Link to='/login'>Already have an account?</Link>
 			</div>
 		);
   	}

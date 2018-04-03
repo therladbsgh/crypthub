@@ -21,7 +21,7 @@ export default class Navbar extends Component {
                     :
                     <Menu.Item>
                         <Button.Group>
-                            <Button primary as={Link} to='/signup'>Login</Button>
+                            <Button primary as={Link} to='/login'>Login</Button>
                             <Button.Or />
                             <Button positive as={Link} to='/signup'>Signup</Button>
                         </Button.Group>
