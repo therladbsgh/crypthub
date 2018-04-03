@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-
-import styles from '../../stylesheets/test.scss';
+import { TestStyle as styles } from 'styles';
 
 export default class Contact extends Component {
 	render() {

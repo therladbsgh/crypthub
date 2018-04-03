@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
 
 const htmlPlugin = new HtmlWebpackPlugin({
 	template: "./src/frontend/index.html",
@@ -22,7 +23,11 @@ module.exports = {
 		]
 	},
 	resolve: {
-		extensions: ['.js', '.jsx'],
+		extensions: ['.js', '.jsx', '.scss'],
+		alias: {
+			"components": path.join(__dirname, '../src/frontend/components'),
+			"styles": path.join(__dirname, '../src/frontend/stylesheets')
+		}
 	},
   	plugins: [
 		htmlPlugin

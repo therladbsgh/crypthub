@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-
-import styles from '../../stylesheets/test2.scss';
+import { Test2Style as styles } from 'styles';
 
 export default class Home extends Component {
 	constructor(props) {

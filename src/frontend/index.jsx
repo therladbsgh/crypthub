@@ -1,11 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
-import Home from './components/views/Home';
-import Contact from './components/views/Contact';
-import PageNotFound from './components/views/PageNotFound';
+import { Home, Contact, PageNotFound } from 'components';
 
 ReactDOM.render(
 	<Router>
