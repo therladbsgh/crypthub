@@ -8,8 +8,8 @@ export default class UserPage extends Component {
   	render() {
         const paneProps = { foo: 'foo' };
         const panes = [
-          { menuItem: 'Your Games', pane: YourGames(paneProps) },
-          { menuItem: 'Find Games', pane: FindGames(paneProps) },
+            { menuItem: 'Your Games', pane: YourGames(paneProps) },
+            { menuItem: 'Find Games', pane: FindGames(paneProps) }
         ];
 		return (
 			<div>
