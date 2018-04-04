@@ -2,18 +2,6 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { Search, Label } from 'semantic-ui-react';
 
-// TODO: Get games
-const source = [
-	{
-		name: 'game1',
-		key: 'key1'
-	},
-	{
-		name: 'game2',
-		key: 'key2'
-	}
-];
-
 export default class SearchExampleStandard extends Component {
 	constructor(props) {
 		super(props);
@@ -37,17 +25,18 @@ export default class SearchExampleStandard extends Component {
 	}
 
   	handleResultSelect(e, { result }) {
-		this.setState({ value: result.name });
+		this.setState({ value: result[this.props.field] });
 	}
 
   	handleSearchChange(e, { value }) {
+		const { field, source } = this.props;
 		this.setState({ isLoading: true, value });
 
 		setTimeout(() => {
 			if (this.state.value.length < 1) return this.resetComponent();
 
 			const re = new RegExp(_.escapeRegExp(this.state.value), 'i');
-			const isMatch = result => re.test(result.name);
+			const isMatch = result => re.test(result[field]);
 
 			this.setState({
 				isLoading: false,
@@ -66,7 +55,6 @@ export default class SearchExampleStandard extends Component {
 				onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
 				results={results}
 				value={value}
-				resultRenderer={({ name }) => name}
 				fluid
 				{...this.props}
 			/>

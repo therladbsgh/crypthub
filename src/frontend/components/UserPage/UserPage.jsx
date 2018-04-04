@@ -5,11 +5,26 @@ import { Navbar } from 'components';
 import { YourGames, FindGames } from './panes';
 
 export default class UserPage extends Component {
+    constructor(props) {
+		super(props);
+		this.state = {
+			sortValue: 'Recently Created'
+		};
+	
+		this.handleChange = this.handleChange.bind(this);
+    }
+
+    // TODO: Logic
+    handleChange(event, { value }) {
+        this.setState({ sortValue: value });
+    }
+    
   	render() {
-        const paneProps = { foo: 'foo' };
+        const yourGamesProps = { foo: 'foo' };
+        const findGamesProps = { handleChange: this.handleChange };
         const panes = [
-            { menuItem: 'Your Games', pane: YourGames(paneProps) },
-            { menuItem: 'Find Games', pane: FindGames(paneProps) }
+            { menuItem: 'Your Games', pane: YourGames(yourGamesProps) },
+            { menuItem: 'Find Games', pane: FindGames(findGamesProps) }
         ];
 		return (
 			<div>
