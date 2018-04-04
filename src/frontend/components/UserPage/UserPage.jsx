@@ -8,20 +8,31 @@ export default class UserPage extends Component {
     constructor(props) {
 		super(props);
 		this.state = {
-			sortValue: 'Recently Created'
+            sortValue: 'Recently Created',
+            onlyPublic: false
 		};
 	
-		this.handleChange = this.handleChange.bind(this);
+		this.handleSortChange = this.handleSortChange.bind(this);
+		this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     }
 
     // TODO: Logic
-    handleChange(event, { value }) {
+    handleSortChange(event, { value }) {
         this.setState({ sortValue: value });
+        
+    }
+
+    // TODO: Logic
+    handleCheckboxChange(event, { checked }) {
+        this.setState({ onlyPublic: checked });
     }
     
   	render() {
         const yourGamesProps = { foo: 'foo' };
-        const findGamesProps = { handleChange: this.handleChange };
+        const findGamesProps = { 
+            handleSortChange: this.handleSortChange,
+            handleCheckboxChange: this.handleCheckboxChange
+        };
         const panes = [
             { menuItem: 'Your Games', pane: YourGames(yourGamesProps) },
             { menuItem: 'Find Games', pane: FindGames(findGamesProps) }
