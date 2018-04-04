@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
 import { Tab, Header, Dropdown } from 'semantic-ui-react';
 import { Searchbar, Game } from 'components';
 
@@ -65,17 +65,19 @@ const pastGames = [
 	}
 ];
 
-const YourGames = (props) => (
-	<Tab.Pane key='tab1'>
-		<Header as='h2'>Your Current Games</Header>
-		{_.map(games, (game, index) =>
-			<Game key={index} game={game} />
-        )}
-        <Header as='h2'>Your Past Games</Header>
-		{_.map(pastGames, (game, index) =>
-			<Game key={index} game={game} />
-		)}
-	</Tab.Pane>
-)
-  
-export default YourGames
+export default class YourGames extends Component {
+    render() {
+        return (
+			<div>
+				<Header as='h2'>Your Current Games</Header>
+				{_.map(games, (game, index) =>
+					<Game key={index} game={game} />
+				)}
+				<Header as='h2'>Your Past Games</Header>
+				{_.map(pastGames, (game, index) =>
+					<Game key={index} game={game} />
+				)}
+			</div>
+        );
+    }
+}

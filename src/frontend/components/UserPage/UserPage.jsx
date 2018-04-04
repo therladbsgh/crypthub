@@ -2,41 +2,32 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Tab } from 'semantic-ui-react';
 import { Navbar } from 'components';
-import { YourGames, FindGames } from './panes';
+import { YourGames, FindGames, CreateGame } from 'components';
 
-export default class UserPage extends Component {
-    constructor(props) {
-		super(props);
-		this.state = {
-            sortValue: 'Recently Created',
-            onlyPublic: false
-		};
-	
-		this.handleSortChange = this.handleSortChange.bind(this);
-		this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
-    }
-
-    // TODO: Logic
-    handleSortChange(event, { value }) {
-        this.setState({ sortValue: value });
-        
-    }
-
-    // TODO: Logic
-    handleCheckboxChange(event, { checked }) {
-        this.setState({ onlyPublic: checked });
-    }
-    
+export default class UserPage extends Component {    
   	render() {
-        const yourGamesProps = { foo: 'foo' };
-        const findGamesProps = { 
-            handleSortChange: this.handleSortChange,
-            handleCheckboxChange: this.handleCheckboxChange
-        };
+        const YourGamesPane = (
+            <Tab.Pane key='tab1'>
+                <YourGames />
+            </Tab.Pane>
+        );
+        const FindGamesPane = (
+            <Tab.Pane key='tab2'>
+                <FindGames />
+            </Tab.Pane>
+        );
+        const CreateGamePane = (
+            <Tab.Pane key='tab3'>
+                <CreateGame />
+            </Tab.Pane>
+        );
+
         const panes = [
-            { menuItem: 'Your Games', pane: YourGames(yourGamesProps) },
-            { menuItem: 'Find Games', pane: FindGames(findGamesProps) }
+            { menuItem: 'Your Games', pane: YourGamesPane },
+            { menuItem: 'Find Games', pane: FindGamesPane },
+            { menuItem: 'Create Game', pane: CreateGamePane }
         ];
+
 		return (
 			<div>
 				<Navbar loggedIn={true} />

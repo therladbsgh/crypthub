@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { Tab, Header, Dropdown, Checkbox } from 'semantic-ui-react';
 import { Searchbar, Game } from 'components';
 import { FindGamesStyle as styles } from 'styles';
@@ -69,17 +69,41 @@ const sortOptions = [
 	}
 ];
 
-const FindGames = (props) => (
-	<Tab.Pane key='tab2'>
-		<Header as='h2'>Search for a Game</Header>
-		<Searchbar placeholder='Game name' source={source} field='name' resultRenderer={({ name }) => name}/>
-		<Header as='h2'>Current Games</Header>
-		<Dropdown placeholder='Sort By' selection options={sortOptions} onChange={props.handleSortChange} />
-		<Checkbox className={styles.onlyPublic} label='Only show public games' onChange={props.handleCheckboxChange} />
-		{_.map(games, (game, index) =>
-			<Game key={index} game={game} />
-		)}
-	</Tab.Pane>
-)
-  
-export default FindGames
+export default class FindGames extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+            sortValue: 'Recently Created',
+            onlyPublic: false
+		};
+	
+		this.handleSortChange = this.handleSortChange.bind(this);
+		this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+	}
+	
+	// TODO: Logic
+    handleSortChange(event, { value }) {
+        this.setState({ sortValue: value });
+        
+    }
+
+    // TODO: Logic
+    handleCheckboxChange(event, { checked }) {
+        this.setState({ onlyPublic: checked });
+    }
+
+    render() {
+        return (
+			<div>
+				<Header as='h2'>Search for a Game</Header>
+				<Searchbar placeholder='Game name' source={source} field='name' resultRenderer={({ name }) => name}/>
+				<Header as='h2'>Current Games</Header>
+				<Dropdown placeholder='Sort By' selection options={sortOptions} value={this.state.sortValue} onChange={this.handleSortChange} />
+				<Checkbox className={styles.onlyPublic} label='Only show public games' checked={this.state.onlyPublic} onChange={this.handleCheckboxChange} />
+				{_.map(games, (game, index) =>
+					<Game key={index} game={game} />
+				)}
+			</div>
+        );
+    }
+}
