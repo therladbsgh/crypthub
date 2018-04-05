@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Tab } from 'semantic-ui-react';
 import { Navbar, Searchbar } from 'components';
-import { GameOverview, GamePortfolio, GameRankings, GameSettings } from 'components';
+import { TradeModal, GameOverview, GamePortfolio, GameRankings, GameSettings } from 'components';
 
 // TODO: get coins
 const source = [
@@ -18,9 +18,10 @@ const source = [
     }
 ];
 
-const resultRenderer = ({ name, symbol }) => (
+const resultRenderer = (coin) => (
     <div>
-        {name} - {symbol}
+        {coin.name} - {coin.symbol}<br />
+        <TradeModal coin={coin} />
     </div>
 );
 
@@ -46,15 +47,40 @@ export default class GamePage extends Component {
                                 amount: 250
                             }
                         ],
-                        transactions: [
-                            {
-                                id: '1',
-                                side: 'buy',
-                                size: 25,
-                                price: 100,
-                                symbol: 'BTC'
-                            }
-                        ]
+                        transactions: {
+                            history: [
+                                {
+                                    id: '1',
+                                    side: 'buy',
+                                    size: 25,
+                                    price: 100,
+                                    symbol: 'BTC'
+                                },
+                                {
+                                    id: '2',
+                                    side: 'buy',
+                                    size: 35,
+                                    price: 200,
+                                    symbol: 'ETH'
+                                }
+                            ],
+                            current: [
+                                {
+                                    id: '3',
+                                    side: 'sell',
+                                    size: 80,
+                                    price: 100,
+                                    symbol: 'BTC'
+                                },
+                                {
+                                    id: '4',
+                                    side: 'buy',
+                                    size: 2,
+                                    price: 200,
+                                    symbol: 'ETH'
+                                }
+                            ]
+                        }
                     },
                     {
                         name: 'player2',
@@ -78,7 +104,13 @@ export default class GamePage extends Component {
             },
             thisPlayer: 0
         };
-	}
+
+        this.noEvent = this.noEvent.bind(this);
+    }
+    
+    noEvent(event) {
+        event.preventDefault();
+    }
 
   	render() {
         const { game, thisPlayer } = this.state;
@@ -86,7 +118,7 @@ export default class GamePage extends Component {
         const TradeHeader = (
             <div>
                 <Header as='h2'>Search/Trade a Coin</Header>
-                <Searchbar placeholder='Coin name or symbol' source={source} field='name' resultRenderer={resultRenderer}/>
+                <Searchbar placeholder='Coin name or symbol' source={source} field='name' resultRenderer={resultRenderer} />
                 <br />
             </div>
         );

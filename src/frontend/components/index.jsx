@@ -15,4 +15,6 @@ export { default as GameRankings } from './GameRankings';
 export { default as GameSettings } from './GameSettings';
 export { default as ProfileCard } from './ProfileCard';
 export { default as LeaderboardCard } from './LeaderboardCard';
+export { default as TradeModal } from './TradeModal';
+export { default as Transactions } from './Transactions';
 export { default as PageNotFound } from './PageNotFound';
