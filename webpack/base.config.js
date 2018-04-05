@@ -6,8 +6,14 @@ const htmlPlugin = new HtmlWebpackPlugin({
 	filename: "index.html"
 });
 
+// Change this as necessary for react routing to work correctly
+const PUBLIC_PATH = 'http://localhost:8080';
+
 module.exports = {
 	entry: "./src/frontend/index.jsx",
+	output: {
+		publicPath: PUBLIC_PATH
+	},
 	devServer: {
 		historyApiFallback: true
 	},
