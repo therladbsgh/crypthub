@@ -32,7 +32,8 @@ module.exports = {
 		extensions: ['.js', '.jsx', '.scss'],
 		alias: {
 			"components": path.join(__dirname, '../src/frontend/components'),
-			"styles": path.join(__dirname, '../src/frontend/stylesheets')
+			"styles": path.join(__dirname, '../src/frontend/stylesheets'),
+			"common": path.join(__dirname, '../src/common')
 		}
 	},
   	plugins: [

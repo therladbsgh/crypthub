@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Tab } from 'semantic-ui-react';
-import { Navbar, Searchbar } from 'components';
-import { TradeModal, GameOverview, GamePortfolio, GameRankings, GameSettings } from 'components';
+import { Navbar, Searchbar, TradeModal, GameOverview, GamePortfolio, GameRankings, GameSettings } from 'components';
+import { GameMocks } from 'common';
 
 // TODO: get coins
 const source = [
@@ -30,92 +30,9 @@ export default class GamePage extends Component {
         super(props);
         // TODO: get game from id: this.props.match.params.id
 		this.state = {
-            game: {
-                name: 'game1',
-                description: 'desc1',
-                host: 'user1',
-                created: '1 sec ago',
-                startOn: '04/03/18',
-                endIn: '20 hours',
-                numPlayers: '2',
-                players: [
-                    {
-                        name: 'player1',
-                        portfolio: [
-                            {
-                                name: 'Bitcoin',
-                                amount: 250
-                            }
-                        ],
-                        transactions: {
-                            history: [
-                                {
-                                    id: '1',
-                                    side: 'buy',
-                                    size: 25,
-                                    price: 100,
-                                    symbol: 'BTC'
-                                },
-                                {
-                                    id: '2',
-                                    side: 'buy',
-                                    size: 35,
-                                    price: 200,
-                                    symbol: 'ETH'
-                                }
-                            ],
-                            current: [
-                                {
-                                    id: '3',
-                                    side: 'sell',
-                                    size: 80,
-                                    price: 100,
-                                    symbol: 'BTC'
-                                },
-                                {
-                                    id: '4',
-                                    side: 'buy',
-                                    size: 2,
-                                    price: 200,
-                                    symbol: 'ETH'
-                                }
-                            ]
-                        },
-                        netWorth: 200,
-                        numTrades: 80,
-                        netReturn: 20
-                    },
-                    {
-                        name: 'player2',
-                        portfolio: [
-                            {
-                                name: 'Bitcoin',
-                                amount: 300
-                            }
-                        ],
-                        transactions: [
-                            {
-                                id: '1',
-                                side: 'sell',
-                                size: 20,
-                                price: 200,
-                                symbol: 'BTC'
-                            }
-                        ],
-                        netWorth: 300,
-                        numTrades: 2,
-                        netReturn: 120
-                    }
-                ]
-            },
+            game: GameMocks.game1,
             thisPlayer: 0
         };
-
-        this.noEvent = this.noEvent.bind(this);
-    }
-    
-    noEvent(event) {
-        event.preventDefault();
     }
 
   	render() {
