@@ -12,7 +12,8 @@ const games = [
 		created: '1 sec ago',
 		startOn: '04/03/18',
 		endIn: '20 hours',
-		numPlayers: '2'
+		numPlayers: '2',
+		id: '1'
 	},
 	{
 		name: 'game2',
@@ -21,7 +22,8 @@ const games = [
 		created: '10 sec ago',
 		startOn: '04/02/18',
 		endIn: '40 hours',
-		numPlayers: '10'
+		numPlayers: '10',
+		id: '2'
 	},
 	{
 		name: 'game3',
@@ -30,7 +32,8 @@ const games = [
 		created: '25 sec ago',
 		startOn: '04/01/18',
 		endIn: '400 hours',
-		numPlayers: '80'
+		numPlayers: '80',
+		id: '3'
 	}
 ];
 
@@ -43,7 +46,8 @@ const pastGames = [
 		created: '1 sec ago',
 		startOn: '04/03/18',
 		endIn: '20 hours',
-		numPlayers: '2'
+		numPlayers: '2',
+		id: '1'
 	},
 	{
 		name: 'game2',
@@ -52,7 +56,8 @@ const pastGames = [
 		created: '10 sec ago',
 		startOn: '04/02/18',
 		endIn: '40 hours',
-		numPlayers: '10'
+		numPlayers: '10',
+		id: '2'
 	},
 	{
 		name: 'game3',
@@ -61,7 +66,8 @@ const pastGames = [
 		created: '25 sec ago',
 		startOn: '04/01/18',
 		endIn: '400 hours',
-		numPlayers: '80'
+		numPlayers: '80',
+		id: '3'
 	}
 ];
 

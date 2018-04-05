@@ -15,7 +15,8 @@ const games = [
 		startOn: '04/03/18',
 		endIn: '20 hours',
 		numPlayers: '2',
-		key: '1'
+		key: '1',
+		id: '1'
 	},
 	{
 		name: 'game2',
@@ -25,7 +26,8 @@ const games = [
 		startOn: '04/02/18',
 		endIn: '40 hours',
 		numPlayers: '10',
-		key: '2'
+		key: '2',
+		id: '2'
 	},
 	{
 		name: 'game3',
@@ -35,7 +37,8 @@ const games = [
 		startOn: '04/01/18',
 		endIn: '400 hours',
 		numPlayers: '80',
-		key: '3'
+		key: '3',
+		id: '3'
 	}
 ];
 

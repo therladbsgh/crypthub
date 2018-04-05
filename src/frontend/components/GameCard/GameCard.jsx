@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from 'semantic-ui-react';
 
 export default class GameCard extends Component {
@@ -8,7 +9,7 @@ export default class GameCard extends Component {
 			<Card>
 				<Card.Content>
 				    <Card.Header>
-						{game.name}
+						<Link to={`/game/${game.id}`}>{game.name}</Link>
 					</Card.Header>
 					<Card.Meta>
 						{game.description}
