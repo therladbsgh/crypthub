@@ -10,6 +10,7 @@ export default class Navbar extends Component {
                 <Menu.Item name='crypthub' as={Link} to='/' />
 
                 <Menu.Menu position='right'>
+                    <Menu.Item as={Link} to='/rankings' name='global rankings' />
                     {this.props.loggedIn ? 
                     <Dropdown item text='Username'>
                         <Dropdown.Menu>
