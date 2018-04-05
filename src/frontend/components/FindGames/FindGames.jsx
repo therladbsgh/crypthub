@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Tab, Header, Dropdown, Checkbox } from 'semantic-ui-react';
-import { Searchbar, Game } from 'components';
+import { Searchbar, GameCard } from 'components';
 import { FindGamesStyle as styles } from 'styles';
 
 // TODO: get games
@@ -101,7 +101,7 @@ export default class FindGames extends Component {
 				<Dropdown placeholder='Sort By' selection options={sortOptions} value={this.state.sortValue} onChange={this.handleSortChange} />
 				<Checkbox className={styles.onlyPublic} label='Only show public games' checked={this.state.onlyPublic} onChange={this.handleCheckboxChange} />
 				{_.map(games, (game, index) =>
-					<Game key={index} game={game} />
+					<GameCard key={index} game={game} />
 				)}
 			</div>
         );

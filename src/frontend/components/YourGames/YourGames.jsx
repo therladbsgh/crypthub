@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Tab, Header, Dropdown } from 'semantic-ui-react';
-import { Searchbar, Game } from 'components';
+import { Searchbar, GameCard } from 'components';
 
 // TODO: get games
 const games = [
@@ -71,11 +71,11 @@ export default class YourGames extends Component {
 			<div>
 				<Header as='h2'>Your Current Games</Header>
 				{_.map(games, (game, index) =>
-					<Game key={index} game={game} />
+					<GameCard key={index} game={game} />
 				)}
 				<Header as='h2'>Your Past Games</Header>
 				{_.map(pastGames, (game, index) =>
-					<Game key={index} game={game} />
+					<GameCard key={index} game={game} />
 				)}
 			</div>
         );

@@ -7,5 +7,5 @@ export { default as YourGames } from './YourGames';
 export { default as FindGames } from './FindGames';
 export { default as CreateGame } from './CreateGame';
 export { default as Searchbar } from './Searchbar';
-export { default as Game } from './Game';
+export { default as GameCard } from './GameCard';
 export { default as PageNotFound } from './PageNotFound';

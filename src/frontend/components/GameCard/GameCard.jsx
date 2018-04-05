@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Card } from 'semantic-ui-react';
 
-export default class Game extends Component {
+export default class GameCard extends Component {
     render() {
         const { game } = this.props;
         return (
