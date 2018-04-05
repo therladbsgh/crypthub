@@ -28,11 +28,13 @@ export default class UserPage extends Component {
             { menuItem: 'Create Game', pane: CreateGamePane }
         ];
 
+        const propsState = this.props.location.state;
+
 		return (
 			<div>
 				<Navbar loggedIn={true} />
 				<Header as='h1'>Username</Header>
-				<Tab panes={panes} renderActiveOnly={false} />
+				<Tab panes={panes} renderActiveOnly={false} defaultActiveIndex={propsState ? propsState.openTab : 0} />
 			</div>
 		);
   	}

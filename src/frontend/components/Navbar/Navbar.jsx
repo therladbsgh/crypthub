@@ -13,7 +13,7 @@ export default class Navbar extends Component {
                     {this.props.loggedIn ? 
                     <Dropdown item text='Username'>
                         <Dropdown.Menu>
-                            <Dropdown.Item>Games</Dropdown.Item>
+                            <Dropdown.Item as={Link} to='/games'>Games</Dropdown.Item>
                             <Dropdown.Item>Settings</Dropdown.Item>
                             <Dropdown.Item>Logout</Dropdown.Item>
                         </Dropdown.Menu>

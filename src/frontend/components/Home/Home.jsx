@@ -32,10 +32,20 @@ export default class Home extends Component {
 			<div>
 				<Navbar loggedIn={false} />
 				<Header as='h1'>CryptHub</Header>
-				<Button as={Link} to='/signup'>
+				<Button as={Link} to={{
+  					pathname: '/games',
+					state: { 
+						openTab: 2
+					}
+				}}>
 					Create Game
 				</Button>
-				<Button as={Link} to='/signup'>
+				<Button as={Link} to={{
+  					pathname: '/games',
+					state: { 
+						openTab: 1
+					}
+				}}>
 					Find Game
 				</Button>
 			</div>
