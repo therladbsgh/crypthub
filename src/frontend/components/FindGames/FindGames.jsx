@@ -101,6 +101,7 @@ export default class FindGames extends Component {
 				<Header as='h2'>Search for a Game</Header>
 				<Searchbar placeholder='Game name' source={source} field='name' resultRenderer={({ name }) => name}/>
 				<Header as='h2'>Current Games</Header>
+				<label id={styles.sortLabel}>Sort By</label>
 				<Dropdown placeholder='Sort By' selection options={sortOptions} value={this.state.sortValue} onChange={this.handleSortChange} />
 				<Checkbox className={styles.onlyPublic} label='Only show public games' checked={this.state.onlyPublic} onChange={this.handleCheckboxChange} />
 				{_.map(games, (game, index) =>
