@@ -80,7 +80,10 @@ export default class GamePage extends Component {
                                     symbol: 'ETH'
                                 }
                             ]
-                        }
+                        },
+                        netWorth: 200,
+                        numTrades: 80,
+                        netReturn: 20
                     },
                     {
                         name: 'player2',
@@ -98,7 +101,10 @@ export default class GamePage extends Component {
                                 price: 200,
                                 symbol: 'BTC'
                             }
-                        ]
+                        ],
+                        netWorth: 300,
+                        numTrades: 2,
+                        netReturn: 120
                     }
                 ]
             },
