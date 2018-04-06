@@ -9,10 +9,23 @@ const GameType = {
     start: Date,
     end: Date,
     numPlayers: Number,
+    url: String,
+    playerPortfolioPublic: Boolean,
+    private: Boolean,
+    password: String,
+    startingBalance: Number,
+    commissionValue: Number,
+    shortSelling: Boolean,
+    limitOrders: Boolean,
+    stopOrders: Boolean,
+    lastUpdated: Date,
+    completed: Boolean,
     players: Array.of.PlayerType
 };
 
 const PlayerType = {
+    id: String,
+    userId: String,
     name: String,
     netWorth: Number,
     numTrades: Number,
@@ -31,13 +44,24 @@ const AssetType = {
 
 const TradeType = {
     id: String,
+    type: String,
     side: String,
     size: Number,
     price: Number,
-    symbol: String
+    symbol: String,
+    date: Date,
+    GTC: Boolean,
+    filled: Boolean
 };
 
 const CoinType = {
     name: String,
     symbol: String
+};
+
+const UserType = {
+    id: String,
+    name: String,
+    ELO: Number,
+    games: Array.of.GameType,
 };
