@@ -1,11 +1,11 @@
 const express = require('express');
 const db = require('./db');
-<<<<<<< HEAD
+
 const bCrypt = require('bcrypt-nodejs');
 
-=======
+
 const routes = require('./routes/index.js');
->>>>>>> 68c9435d1b7433b13defb50e9de1e5b0b088b93b
+
 
 const app = express();
 
