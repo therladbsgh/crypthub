@@ -2,21 +2,10 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Tab } from 'semantic-ui-react';
 import { Navbar, Searchbar, TradeModal, GameOverview, GamePortfolio, GameRankings, GameSettings } from 'components';
-import { GameMocks } from 'common';
+import { GameMocks, CoinMocks } from 'mocks';
 
 // TODO: get coins
-const source = [
-    {
-        name: 'Bitcoin',
-        symbol: 'BTC',
-        key: '1'
-    },
-    {
-        name: 'Ethereum',
-        symbol: 'ETH',
-        key: '2'
-    }
-];
+const source = CoinMocks.coins;
 
 const resultRenderer = (coin) => (
     <div>

@@ -33,7 +33,7 @@ module.exports = {
 		alias: {
 			"components": path.join(__dirname, '../src/frontend/components'),
 			"styles": path.join(__dirname, '../src/frontend/stylesheets'),
-			"common": path.join(__dirname, '../src/common')
+			"mocks": path.join(__dirname, '../src/common/mocks')
 		}
 	},
   	plugins: [
