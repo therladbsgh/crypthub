@@ -14,7 +14,7 @@ const games = [
 ];
 
 // Necessary to pull just name and key out for search result generation
-const source = _.map(games, ({ name }, key) => ({ name, key }));
+// const source = _.map(games, ({ name }, key) => ({ name, key }));
 
 const sortOptions = [
 	{
@@ -70,7 +70,7 @@ export default class FindGames extends Component {
 		return (
 			<div>
 				<Header as='h2'>Search for a Game</Header>
-				<Searchbar placeholder='Game name' source={source} field='name' resultRenderer={({ name }) => name} />
+				<Searchbar placeholder='Game name' source={games} field='name' resultRenderer={({ name }) => name} />
 				<Header as='h2'>Current Games</Header>
 				<label id={styles.sortLabel}>Sort By</label>
 				<Dropdown placeholder='Sort By' selection options={sortOptions} value={this.state.sortValue} onChange={this.handleSortChange} />

@@ -5,10 +5,15 @@ import { Search, Label } from 'semantic-ui-react';
 export default class SearchExampleStandard extends Component {
 	constructor(props) {
 		super(props);
+		/*
+			The source needs to have a key field, and all fields must be lowercase (otherwise rendering errors).
+			Note that you will need to use lowercase field names in the render function as a result.
+		*/
 		this.state = {
 			isLoading: false,
 			results: [],
-			value: ''
+			value: '',
+			source: _.map(this.props.source, (e, key) => ({ ..._.mapKeys(e, (v, k) => k.toLowerCase()), key }))
 		};
 	
 		this.resetComponent = this.resetComponent.bind(this);
@@ -29,7 +34,7 @@ export default class SearchExampleStandard extends Component {
 	}
 
   	handleSearchChange(e, { value }) {
-		const { field, source } = this.props;
+		const { field } = this.props;
 		this.setState({ isLoading: true, value });
 
 		setTimeout(() => {
@@ -40,7 +45,7 @@ export default class SearchExampleStandard extends Component {
 
 			this.setState({
 				isLoading: false,
-				results: _.filter(source, isMatch)
+				results: _.filter(this.state.source, isMatch)
 			});
 		}, 300)
   	}

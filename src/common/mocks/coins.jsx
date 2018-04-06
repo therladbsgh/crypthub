@@ -1,12 +1,10 @@
 export const coins = [
     {
         name: 'Bitcoin',
-        symbol: 'BTC',
-        key: '1'
+        symbol: 'BTC'
     },
     {
         name: 'Ethereum',
-        symbol: 'ETH',
-        key: '2'
+        symbol: 'ETH'
     }
 ]
