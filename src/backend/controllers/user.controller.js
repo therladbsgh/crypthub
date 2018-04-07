@@ -6,10 +6,10 @@ const User = require('../models/user.model');
  * @return {User}
  */
 function get(req, res) {
-  User.get(req.params.id).then((user) => {
-    res.json(user);
+  User.get(req.params.id).then((result) => {
+    res.json({ result });
   }).catch((err) => {
-    res.json(err);
+    res.json({ err });
   });
 }
 

@@ -26,10 +26,7 @@ UserSchema.statics = {
    * @return {Promise<User, APIError>}
    */
   get(id) {
-    this.findbyid(id).exec().then((user) => {
-      if (user) return user;
-      return Promise.reject(new Error('No user exists'));
-    });
+    return this.findById(id).exec().then(user => user);
   },
 };
 

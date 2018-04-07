@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
+const bluebird = require('bluebird');
 
 // Set native promises as mongoose promise
-mongoose.Promise = global.Promise;
+mongoose.Promise = bluebird;
 
 // MongoDB Connection
 mongoose.connect('mongodb://35.192.71.2:4000', (error) => {
