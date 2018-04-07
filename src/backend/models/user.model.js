@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+  firstname: {
+    type: String,
+    required: true,
+  },
+  lastname: {
+    type: String,
+    required: true,
+  },
   username: {
     type: String,
     required: true,
@@ -23,7 +31,7 @@ UserSchema.statics = {
   /**
    * Gets the user by ID.
    * @param  {string} id - The id
-   * @return {Promise<User, APIError>}
+   * @return {Promise<User>}
    */
   get(id) {
     return this.findById(id).exec().then(user => user);

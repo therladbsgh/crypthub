@@ -1,16 +1,15 @@
 const express = require('express');
-const db = require('./db');
-
+const expressSession = require('express-session');
 const bCrypt = require('bcrypt-nodejs');
+const passport = require('passport');
+const localStrategy = require('passport-local').Strategy;
+const flash = require('connect-flash');
 
-
-const routes = require('./routes/index.js');
-
+const db = require('./db');
+const initPassport = require('./passport/passportInit');
+const router = require('./routes/index.js');
 
 const app = express();
-
-
-const localStrategy = require('passport-local').Strategy;
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -18,12 +17,19 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', routes);
+// Configure passport
+// app.use(expressSession({secret: 'mySecretKey'}));
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.get('/getData', (req, res) => {
-  console.log('hit getData endpoint');
-  res.send({ data: 'this is data' });
-});
+// Configure flash
+app.use(flash());
+
+// Initialize Passport
+initPassport(passport);
+
+// Configure router
+app.use('/', router);
 
 app.listen(5000, (err) => {
   if (err) {
@@ -32,25 +38,3 @@ app.listen(5000, (err) => {
   }
   console.log('Listening at http://localhost:5000');
 });
-
-// configure passport
-const passport = require('passport'); 
-const expressSession = require('express-session');
-
-//app.use(expressSession({secret: 'mySecretKey'}));
-app.use(passport.initialize());
-app.use(passport.session());
-
-// configure flash 
-var flash = require('connect-flash');
-app.use(flash());
-
-// Initialize Passport
-var initPassport = require('./passportInit');
-initPassport(passport);
-
-// potentially not needed 
-// var routes = require('./routes/index')(passport);
-// app.use('/', routes);
-
-

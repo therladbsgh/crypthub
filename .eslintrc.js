@@ -9,5 +9,8 @@ module.exports = {
       "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
       "no-alert": 0,
       "no-console": 0,
+      "comma-dangle": ["error", {
+        "functions": "ignore"
+      }]
     }
 };
