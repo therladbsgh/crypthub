@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Button } from 'semantic-ui-react';
+import { GameBackend } from 'endpoints';
 import { Navbar } from 'components'; 
 import { HomeStyle as styles } from 'styles';
 
@@ -12,19 +13,12 @@ export default class Home extends Component {
 			data: ''
 		}
 
-		fetch('http://localhost:5000/getData')
-		.then(res => res.json())
-		.then(
-			(result) => {
-				console.log(result.data);
-				this.setState({
-					data: result.data
-				});
-			},
-			(error) => {
-				console.log('ERROR:', error);
-			}
-		);
+		GameBackend.getData()
+		.then(res => {
+			console.log('success! ', res);
+		}, err => {
+			console.log('error! ', err);
+		});
 	}
 
   	render() {
