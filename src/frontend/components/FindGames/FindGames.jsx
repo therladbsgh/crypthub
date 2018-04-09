@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
 import { Tab, Header, Dropdown, Checkbox } from 'semantic-ui-react';
 import { Searchbar, GameCard } from 'components';
 import { GameMocks } from 'mocks';
@@ -12,9 +13,6 @@ const games = [
 	GameMocks.game2,
 	GameMocks.game3
 ];
-
-// Necessary to pull just name and key out for search result generation
-// const source = _.map(games, ({ name }, key) => ({ name, key }));
 
 const sortOptions = [
 	{
@@ -43,7 +41,7 @@ const sortOptions = [
 	}
 ];
 
-export default class FindGames extends Component {
+class FindGames extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -70,7 +68,7 @@ export default class FindGames extends Component {
 		return (
 			<div>
 				<Header as='h2'>Search for a Game</Header>
-				<Searchbar placeholder='Game name' source={games} field='name' resultRenderer={({ name }) => name} />
+				<Searchbar placeholder='Game name' source={games} field='name' resultRenderer={({ name }) => name} onResultSelect={(e, d) => this.props.history.push(`/game/${d.result.id}`)} />
 				<Header as='h2'>Current Games</Header>
 				<label id={styles.sortLabel}>Sort By</label>
 				<Dropdown placeholder='Sort By' selection options={sortOptions} value={this.state.sortValue} onChange={this.handleSortChange} />
@@ -82,3 +80,6 @@ export default class FindGames extends Component {
 		);
 	}
 }
+
+// This puts the history prop on props which allows for redirection
+export default withRouter(FindGames);
