@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Header, Form, Button, Message } from 'semantic-ui-react';
+import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { SharedStyles as sharedStyles } from 'styles';
 
-export default class Login extends Component {
+class Login extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -13,6 +14,7 @@ export default class Login extends Component {
             err: '',
             forgot: false,
             email: '',
+            loading: false,
             submitted: false
 		};
 	
@@ -32,22 +34,37 @@ export default class Login extends Component {
 	handleSubmitLogin(event) {
 		event.preventDefault();
 		this.setState({
+            loading: true,
 			err: ''
-		})
-
-		// TODO: Logic
-		console.log(this.state);
+        })
+        
+        UserBackend.login(_.pick(this.state, ['login', 'password']))
+		.then(res => {
+			console.log('success! ', res);
+            this.setState({ loading: false });
+            this.props.history.push('/games');
+		}, err => {
+			console.log('error! ', err);
+			this.setState({ loading: false, err });
+		});
     }
 
     handleSubmitForgot(event) {
 		event.preventDefault();
 		this.setState({
             err: '',
+            loading: true,
             submitted: true
 		})
 
-		// TODO: Logic
-		console.log(this.state);
+		UserBackend.forgot(_.get(this.state, 'email'))
+		.then(res => {
+			console.log('success! ', res);
+            this.setState({ loading: false });
+		}, err => {
+			console.log('error! ', err);
+			this.setState({ loading: false, err });
+		});
     }
     
     toggleForgot() {
@@ -57,30 +74,34 @@ export default class Login extends Component {
             err: '',
             forgot: !this.state.forgot,
             email: '',
+            loading: false,
             submitted: false
         });
     }
 
   	render() {
+        const { login, password, err, forgot, email, loading, submitted } = this.state;
+        const success = submitted && !err;
+        
 		return (
 			<div style={sharedStyles}>
 				<Navbar loggedIn={false} />
-                {!this.state.forgot ?  
+                {!forgot ?  
                 <div>
                     <Header as='h1'>Login</Header>
-                    <Form onSubmit={this.handleSubmitLogin} error={!!this.state.err}>
+                    <Form onSubmit={this.handleSubmitLogin} loading={loading} error={!!err}>
                         <Form.Field>
                             <label>Email or Username</label>
-                            <input placeholder='Email or Username' name='login' value={this.state.login} onChange={this.handleChange} />
+                            <input placeholder='Email or Username' name='login' value={login} onChange={this.handleChange} />
                         </Form.Field>
                         <Form.Field>
                             <label>Password</label>
-                            <input type='password' placeholder='Password' name='password' value={this.state.password} onChange={this.handleChange} />
+                            <input type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
                         </Form.Field>
                         <Message
                             error
                             header='Error'
-                            content={this.state.err}
+                            content={err}
                         />
                         <Button type='submit'>Sign In</Button>
                     </Form>
@@ -90,10 +111,10 @@ export default class Login extends Component {
                 :
                 <div>
                     <Header as='h1'>Request Password Reset</Header>
-                    <Form onSubmit={this.handleSubmitForgot} success={this.state.submitted && !this.state.err} error={!!this.state.err}>
-                        <Form.Field>
+                    <Form onSubmit={this.handleSubmitForgot} loading={loading} success={success} error={!!err}>
+                        <Form.Field disabled={success}>
                             <label>Email</label>
-                            <input placeholder='Email' name='email' value={this.state.email} onChange={this.handleChange} />
+                            <input placeholder='Email' name='email' value={email} onChange={this.handleChange} />
                         </Form.Field>
                         <Message
                             success
@@ -103,9 +124,9 @@ export default class Login extends Component {
                         <Message
                             error
                             header='Error'
-                            content={this.state.err}
+                            content={err}
                         />
-                        <Button type='submit'>Submit</Button>
+                        <Button type='submit' disabled={success}>Submit</Button>
                     </Form>
                     <a onClick={this.toggleForgot}>Back to Login</a>
                 </div>}
@@ -113,3 +134,6 @@ export default class Login extends Component {
 		);
   	}
 }
+
+// This puts the history prop on props which allows for redirection
+export default withRouter(Login);
