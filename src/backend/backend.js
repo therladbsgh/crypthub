@@ -34,16 +34,16 @@ initPassport(passport);
  // process the signup form
  
 
-  app.post('/signup',
-  passport.authenticate('signup'),
-  function(req, res) {
-    console.log('in signup: ', req.body);
-    // If this function gets called, authentication was successful.
-    // `req.user` contains the authenticated user.
-   // res.redirect('/users/' + req.user.username);
+app.post('/signup',
+passport.authenticate('signup'),
+function(req, res) {
+  console.log('in signup: ', req.body);
+  // If this function gets called, authentication was successful.
+  // `req.user` contains the authenticated user.
+  // res.redirect('/users/' + req.user.username);
 
-    res.send(req.body);
-  });
+  res.send(req.body);
+});
 
 
 

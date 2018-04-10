@@ -3,7 +3,11 @@ const BASE_URI = 'http://localhost:5000/';
 
 function handleError(reject, err) {
     console.log('FETCH ERROR: ', err);
-    reject(err);
+    if (_.isString(err)) {
+        reject(err);
+    } else {
+        reject('An unknown error has occurred. Please try again later.');
+    }
 }
 
 export function get(url) {

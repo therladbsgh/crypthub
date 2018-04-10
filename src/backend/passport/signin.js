@@ -13,7 +13,7 @@ function signup(passport) {
   passport.use('signup', new LocalStrategy(
     { passReqToCallback: true },
     (req, username, password, done) => {
-      console.log('IM HERE');
+      console.log('IM HERE: ', req.body);
       process.nextTick(() => {
         // Find a user in Mongo with provided username
         User.findOne({ username }, (err, user) => {

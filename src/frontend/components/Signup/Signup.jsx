@@ -14,8 +14,10 @@ export default class Signup extends Component {
 			password: '',
 			passwordConfirm: '',
 			agree: false,
+			loading: false,
 			submitted: false,
-			err: ''
+			errMsg: '',
+			errField: ''
 		};
 	
 		this.handleChange = this.handleChange.bind(this);
@@ -31,44 +33,69 @@ export default class Signup extends Component {
 	}
 
 	handleSubmit(event) {
+		const { password, passwordConfirm, agree } = this.state;
+
 		event.preventDefault();
 		this.setState({
+			loading: true,
 			submitted: true,
-			err: ''
+			errMsg: '',
+			errField: ''
 		})
 
-		UserBackend.signup({ username: 'testUsername', email: 'testEmail', password: 'testPassword' })
+		if (password !== passwordConfirm) {
+			return this.setState({
+				loading: false,
+				errMsg: 'Passwords don\'t match.', 
+				errField: 'password' 
+			});
+		}
+
+		if (!agree) {
+			return this.setState({
+				loading: false,
+				errMsg: 'You must agree to the Terms and Conditions.', 
+				errField: 'agree' 
+			});
+		}
+
+		UserBackend.signup(_.pick(this.state, ['username', 'password', 'email']))
 		.then(res => {
 			console.log('success! ', res);
+			this.setState({ loading: false });
 		}, err => {
 			console.log('error! ', err);
+			this.setState({ loading: false, errMsg: err });
 		});
 	}	
 
   	render() {
+		const { username, email, password, passwordConfirm, agree, loading, submitted, errMsg, errField } = this.state;
+		const success = submitted && !errMsg;
+
 		return (
 			<div>
 				<Navbar loggedIn={false} />
 				<Header as='h1'>Signup</Header>
-				<Form onSubmit={this.handleSubmit} success={this.state.submitted && !this.state.err} error={!!this.state.err}>
-					<Form.Field>
+				<Form onSubmit={this.handleSubmit} loading={loading} success={success} error={!!errMsg}>
+					<Form.Field error={errField == 'username'} disabled={success}>
 						<label>Username</label>
-						<input placeholder='Username' name='username' value={this.state.username} onChange={this.handleChange} />
+						<input placeholder='Username' name='username' value={username} onChange={this.handleChange} />
 					</Form.Field>
-					<Form.Field>
+					<Form.Field error={errField == 'email'} disabled={success}>
 						<label>Email</label>
-						<input placeholder='Email' name='email' value={this.state.email} onChange={this.handleChange} />
+						<input placeholder='Email' name='email' value={email} onChange={this.handleChange} />
 					</Form.Field>
-					<Form.Field>
+					<Form.Field error={errField == 'password'} disabled={success}>
 						<label>Password</label>
-						<input type='password' placeholder='Password' name='password' value={this.state.password} onChange={this.handleChange} />
+						<input type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
 					</Form.Field>
-					<Form.Field>
+					<Form.Field error={errField == 'password'} disabled={success}>
 						<label>Confirm Password</label>
-						<input type='password' placeholder='Confirm Password' name='passwordConfirm' value={this.state.passwordConfirm} onChange={this.handleChange} />
+						<input type='password' placeholder='Confirm Password' name='passwordConfirm' value={passwordConfirm} onChange={this.handleChange} />
 					</Form.Field>
-					<Form.Field>
-						<Checkbox label='I agree to the Terms and Conditions' name='agree' checked={this.state.agree} onChange={(e, data) => this.handleChange({ target: data })} />
+					<Form.Field error={errField == 'agree'} disabled={success}>
+						<Checkbox label='I agree to the Terms and Conditions' name='agree' checked={agree} onChange={(e, data) => this.handleChange({ target: data })} />
 					</Form.Field>
 					<Message
 						success
@@ -78,9 +105,9 @@ export default class Signup extends Component {
 					<Message
 						error
 						header='Error'
-						content={this.state.err}
+						content={errMsg}
 					/>
-					<Button type='submit'>Submit</Button>
+					<Button type='submit' disabled={success}>Submit</Button>
 				</Form>
 				<Link to='/login'>Already have an account?</Link>
 			</div>
