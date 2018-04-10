@@ -28,6 +28,21 @@ app.use(flash());
 // Initialize Passport
 initPassport(passport);
 
+ // process the signup form
+ 
+
+  app.post('/signup',
+  passport.authenticate('local'),
+  function(req, res) {
+    // If this function gets called, authentication was successful.
+    // `req.user` contains the authenticated user.
+   // res.redirect('/users/' + req.user.username);
+
+    res.send(req.body);
+  });
+
+
+
 // Configure router
 app.use('/', router);
 

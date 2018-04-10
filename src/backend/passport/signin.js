@@ -53,5 +53,6 @@ function signin(passport) {
     }
   ));
 }
+// need a function that takes the sign up object from the front end 
 
 module.exports = signin;
