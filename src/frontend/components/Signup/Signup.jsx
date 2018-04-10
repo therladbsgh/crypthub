@@ -33,7 +33,7 @@ export default class Signup extends Component {
 	}
 
 	handleSubmit(event) {
-		const { password, passwordConfirm, agree } = this.state;
+		const { email, password, passwordConfirm, agree } = this.state;
 
 		event.preventDefault();
 		this.setState({
@@ -42,6 +42,14 @@ export default class Signup extends Component {
 			errMsg: '',
 			errField: ''
 		})
+
+		if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
+			return this.setState({
+				loading: false,
+				errMsg: 'Incorrectly formatted email.',
+				errField: 'email'
+			});
+		}
 
 		if (password !== passwordConfirm) {
 			return this.setState({
