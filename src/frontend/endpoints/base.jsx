@@ -25,7 +25,7 @@ export function post(url, data) {
             headers: {
                 'content-type': 'application/json'
             },
-            method: 'POST'
+            method: 'POST',
         })
         .then(res => {
             if (res.ok) return res.json();

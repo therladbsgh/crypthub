@@ -9,10 +9,11 @@ function createHash(password) {
   return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
 }
 
-function signin(passport) {
+function signup(passport) {
   passport.use('signup', new LocalStrategy(
     { passReqToCallback: true },
     (req, username, password, done) => {
+      console.log('IM HERE');
       process.nextTick(() => {
         // Find a user in Mongo with provided username
         User.findOne({ username }, (err, user) => {
@@ -35,9 +36,9 @@ function signin(passport) {
           // set the user's local credentials
           newUser.username = username;
           newUser.password = createHash(password);
-          newUser.email = req.param('email');
-          newUser.firstName = req.param('firstName');
-          newUser.lastName = req.param('lastName');
+          newUser.email = req.body.email;
+          newUser.firstName = 'firstname';
+          newUser.lastName = 'lastname';
 
           // save the user
           newUser.save((err2) => {
@@ -55,4 +56,4 @@ function signin(passport) {
 }
 // need a function that takes the sign up object from the front end 
 
-module.exports = signin;
+module.exports = signup;

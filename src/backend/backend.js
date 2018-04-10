@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser')
 const expressSession = require('express-session');
 const bCrypt = require('bcrypt-nodejs');
 const passport = require('passport');
@@ -10,6 +11,8 @@ const initPassport = require('./passport/passportInit');
 const router = require('./routes/index.js');
 
 const app = express();
+
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -23,7 +26,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Configure flash
-app.use(flash());
+// app.use(flash());
 
 // Initialize Passport
 initPassport(passport);
@@ -32,8 +35,9 @@ initPassport(passport);
  
 
   app.post('/signup',
-  passport.authenticate('local'),
+  passport.authenticate('signup'),
   function(req, res) {
+    console.log('in signup: ', req.body);
     // If this function gets called, authentication was successful.
     // `req.user` contains the authenticated user.
    // res.redirect('/users/' + req.user.username);
