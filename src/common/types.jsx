@@ -9,10 +9,7 @@ const GameType = {
     start: Date,
     end: Date,
     numPlayers: Number,
-    url: String,
     playerPortfolioPublic: Boolean,
-    private: Boolean,
-    password: String,
     startingBalance: Number,
     commissionValue: Number,
     shortSelling: Boolean,
@@ -20,7 +17,9 @@ const GameType = {
     stopOrders: Boolean,
     lastUpdated: Date,
     completed: Boolean,
-    players: Array.of.PlayerType
+    players: Array.of.PlayerType,
+    private: Boolean,
+    password: String
 };
 
 const PlayerType = {

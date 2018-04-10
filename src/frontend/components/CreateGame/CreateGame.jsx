@@ -1,21 +1,43 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Header, Form, Button, Message } from 'semantic-ui-react';
+import { GameBackend } from 'endpoints';
 import { CreateGameStyle as styles } from 'styles';
 
-export default class CreateGame extends Component {
+class CreateGame extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			name: '',
-			id: '',
+			gameObj: {
+				id: '',
+				name: '',
+				description: '',
+				host: 'MyUsername',
+				created: new Date(),
+				start: new Date(),
+				end: new Date(),
+				numPlayers: 1,
+				playerPortfolioPublic: true,
+				startingBalance: 0,
+				commissionValue: 0,
+				shortSelling: true,
+				limitOrders: true,
+				stopOrders: true,
+				lastUpdated: new Date(),
+				completed: false,
+				players: [],
+				private: false,
+				password: ''
+			},
 			err: '',
-			continue: false,
+			loading: false,
+			review: false,
             submitted: false
 		};
 	
 		this.handleChange = this.handleChange.bind(this);
-		this.handleContinue = this.handleContinue.bind(this);
+		this.handleReview = this.handleReview.bind(this);
 		this.handleCreate = this.handleCreate.bind(this);
 		this.goBack = this.goBack.bind(this);
 	}
@@ -27,76 +49,97 @@ export default class CreateGame extends Component {
 		});
 	}
 	
-	handleContinue() {
+	handleReview() {
 		this.setState({
-			err: ''
+			err: '',
+			loading: true
 		})
 
-		// TODO: Logic
-		console.log('continue', this.state);
-
-		this.setState({
-			continue: true,
+		GameBackend.validateGame(this.state.gameObj)
+		.then(res => {
+			console.log('success! ', res);
+			this.setState({
+				loading: false,
+				review: true,
+			});
+		}, err => {
+			console.log('error! ', err);
+			this.setState({
+				loading: false, 
+				err
+			});
 		});
 	}
 
 	handleCreate(event) {
 		event.preventDefault();
 		this.setState({
-			err: ''
+			err: '',
+			loading: true
 		})
 
-		// TODO: Logic
-		console.log('create', this.state);
+		GameBackend.createGame(this.state.gameObj)
+		.then(res => {
+			console.log('success! ', res);
+			this.setState({ loading: false });
+			this.props.history.push(`/game/${this.state.id}`);
+		}, err => {
+			console.log('error! ', err);
+			this.setState({
+				loading: false, 
+				err
+			});
+		});
 	}
 
 	goBack() {
 		this.setState({
 			err: '',
-			continue: false,
+			review: false,
 		});
-
-		console.log('back', this.state);
 	}
 
     render() {
+		const { gameObj, err, loading, review, submitted } = this.state;
+		const { id, name } = gameObj;
+
 		// Using onClick instead of submit because of weird immediate submitting problem
         return (
 			<div>
-				{!this.state.continue ? 
+				{!review ? 
 				<div>
 					<Header as='h2'>Create a Game</Header>
-					<Form error={!!this.state.err}>
+					<Form loading={loading} error={!!err}>
 						<Form.Field>
 							<label>Game Name</label>
-							<input placeholder='Game name' name='name' value={this.state.name} onChange={this.handleChange} />
+							<input placeholder='Game name' name='name' value={name} onChange={this.handleChange} />
 						</Form.Field>
 						<Form.Field>
-							<label id={styles.urlLabel}>URL: crypthub.com/game/</label>{this.state.id}
-							<input placeholder='unique-game-identifier' name='id' value={this.state.id} onChange={this.handleChange} />
+							<label id={styles.urlLabel}>URL: crypthub.com/game/</label>{id}
+							<input placeholder='unique-game-identifier' name='id' value={id} onChange={this.handleChange} />
 						</Form.Field>
 						<Message
 							error
 							header='Error'
-							content={this.state.err}
+							content={err}
 						/>
-						<Button onClick={this.handleContinue} positive>Continue</Button>
+						<Button onClick={this.handleReview} positive>Continue</Button>
 					</Form>
 				</div>
 				:
-				<div id={styles.review}>
+				<div loading={loading} id={styles.review}>
 					<Header as='h2'>Review</Header>
-					<Form error={!!this.state.err}>
+					<Form error={!!err}>
 						<Form.Field>
-							<label>Game Name: </label>{this.state.name}
+							<label>Game Name: </label>{name}
 						</Form.Field>
 						<Form.Field>
-							<label>URL: crypthub.com/game/</label>{this.state.id}
+							<label>URL: crypthub.com/game/</label>{id}
 						</Form.Field>
 						<Message
 							error
 							header='Error'
-							content={this.state.err}
+							content={err}
 						/>
 						<Button onClick={this.goBack} negative>Back</Button>
 						<Button onClick={this.handleCreate} positive>Create</Button>
@@ -106,3 +149,5 @@ export default class CreateGame extends Component {
         );
     }
 }
+
+export default withRouter(CreateGame);
