@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Form, Button, Checkbox, Message } from 'semantic-ui-react';
+import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { SignupStyle as styles } from 'styles';
 
@@ -36,8 +37,12 @@ export default class Signup extends Component {
 			err: ''
 		})
 
-		// TODO: Logic
-		console.log(this.state);
+		UserBackend.signup({ username: 'testUsername', email: 'testEmail', password: 'testPassword' })
+		.then(res => {
+			console.log('success! ', res);
+		}, err => {
+			console.log('error! ', err);
+		});
 	}	
 
   	render() {

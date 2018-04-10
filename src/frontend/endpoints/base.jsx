@@ -17,3 +17,21 @@ export function get(url) {
         .catch(err => handleError(reject, err));
     });
 }
+
+export function post(url, data) {
+    return new Promise((resolve, reject) => {
+        fetch(`${BASE_URI}${url}`, {
+            body: JSON.stringify(data),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST'
+        })
+        .then(res => {
+            if (res.ok) return res.json();
+            handleError(reject, res.status);
+        })
+        .then(res => resolve(res))
+        .catch(err => handleError(reject, err));
+    });
+}

@@ -1,5 +1,5 @@
-import * as Base from './base';
+import * as Backend from './base';
 
-export function getData() {
-    // console.log('userdata:', Base.BASE_URI);
+export function signup(signupObj) {
+    return Backend.post('signup', signupObj);
 }
