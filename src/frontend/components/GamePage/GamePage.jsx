@@ -1,18 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Tab } from 'semantic-ui-react';
-import { Navbar, Searchbar, TradeModal, GameOverview, GamePortfolio, GameRankings, GameSettings } from 'components';
-import { GameMocks, CoinMocks } from 'mocks';
-
-// TODO: get coins
-const source = CoinMocks.coins;
-
-const resultRenderer = (coin) => (
-    <div>
-        {coin.name} - {coin.symbol}<br />
-        <TradeModal coin={coin} />
-    </div>
-);
+import { Navbar, Searchbar, GameOverview, GamePortfolio, GameRankings, GameSettings, TradeCard } from 'components';
+import { GameMocks } from 'mocks';
 
 export default class GamePage extends Component {
     constructor(props) {
@@ -27,29 +17,18 @@ export default class GamePage extends Component {
   	render() {
         const { game, thisPlayer } = this.state;
 
-        const TradeHeader = (
-            <div>
-                <Header as='h2'>Search/Trade a Coin</Header>
-                <Searchbar placeholder='Coin name or symbol' source={source} field='name' resultRenderer={resultRenderer} />
-                <br />
-            </div>
-        );
-
         const GameOverviewPane = (
             <Tab.Pane key='tab1'>
-                {TradeHeader}
                 <GameOverview game={game} thisPlayer={thisPlayer} />
             </Tab.Pane>
         );
         const GamePortfolioPane = (
             <Tab.Pane key='tab2'>
-                {TradeHeader}
                 <GamePortfolio player={game.players[thisPlayer]} />
             </Tab.Pane>
         );
         const GameRankingsPane = (
             <Tab.Pane key='tab3'>
-                {TradeHeader}
                 <GameRankings players={game.players} />
             </Tab.Pane>
         );
@@ -70,7 +49,12 @@ export default class GamePage extends Component {
 			<div>
 				<Navbar loggedIn={true} />
 				<Header as='h1'>Game Name</Header>
-				<Tab panes={panes} renderActiveOnly={false} />
+                <div className='ui grid'>
+                    <div className='three wide column'>
+                        <TradeCard />
+                    </div>
+                    <Tab className='thirteen wide column' panes={panes} renderActiveOnly={false} />
+                </div>
 			</div>
 		);
   	}

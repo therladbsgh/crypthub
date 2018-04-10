@@ -18,4 +18,5 @@ export { default as LeaderboardCard } from './LeaderboardCard';
 export { default as TradeModal } from './TradeModal';
 export { default as Transactions } from './Transactions';
 export { default as GlobalRankings } from './GlobalRankings';
+export { default as TradeCard } from './TradeCard';
 export { default as PageNotFound } from './PageNotFound';
