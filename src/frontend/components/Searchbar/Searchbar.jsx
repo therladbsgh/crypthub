@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Search, Label } from 'semantic-ui-react';
+import { Search } from 'semantic-ui-react';
 
-export default class SearchExampleStandard extends Component {
+export default class Searchbar extends Component {
 	constructor(props) {
 		super(props);
 		/*
@@ -26,6 +26,8 @@ export default class SearchExampleStandard extends Component {
   	}
 
 	resetComponent() {
+		const { handleResults } = this.props;
+		handleResults && handleResults(['RESET']);
 		this.setState({ isLoading: false, results: [], value: '' });
 	}
 
@@ -34,25 +36,29 @@ export default class SearchExampleStandard extends Component {
 	}
 
   	handleSearchChange(e, { value }) {
-		const { field } = this.props;
+		const { searchFields, handleResults } = this.props;
 		this.setState({ isLoading: true, value });
 
 		setTimeout(() => {
 			if (this.state.value.length < 1) return this.resetComponent();
 
 			const re = new RegExp(_.escapeRegExp(this.state.value), 'i');
-			const isMatch = result => re.test(result[field]);
+			const isMatch = result => _.some(searchFields, field => re.test(result[field]));
+			const results = _.filter(this.state.source, isMatch);
 
 			this.setState({
 				isLoading: false,
-				results: _.filter(this.state.source, isMatch)
+				results
 			});
+
+			handleResults && handleResults(results);
 		}, 300)
   	}
 
 	render() {
 		const { isLoading, value, results } = this.state;
 
+		// Need to omit any prop that was meant for Searchbar instead of of Search
 		return (
 			<Search
 				loading={isLoading}
@@ -61,7 +67,7 @@ export default class SearchExampleStandard extends Component {
 				results={results}
 				value={value}
 				fluid
-				{...this.props}
+				{..._.omit(this.props, ['handleResults', 'searchFields'])}
 			/>
 		)
   	}

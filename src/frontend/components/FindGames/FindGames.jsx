@@ -68,7 +68,7 @@ class FindGames extends Component {
 		return (
 			<div>
 				<Header as='h2'>Search for a Game</Header>
-				<Searchbar placeholder='Game name' source={games} field='name' resultRenderer={({ name }) => name} onResultSelect={(e, d) => this.props.history.push(`/game/${d.result.id}`)} />
+				<Searchbar placeholder='Game name' source={games} field='name' searchFields={['name']} resultRenderer={({ name }) => name} onResultSelect={(e, d) => this.props.history.push(`/game/${d.result.id}`)} />
 				<Header as='h2'>Current Games</Header>
 				<label id={styles.sortLabel}>Sort By</label>
 				<Dropdown placeholder='Sort By' selection options={sortOptions} value={this.state.sortValue} onChange={this.handleSortChange} />
