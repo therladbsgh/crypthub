@@ -42,11 +42,23 @@ class CreateGame extends Component {
 		this.goBack = this.goBack.bind(this);
 	}
 
-	handleChange(event) {		
+	handleChange(event) {
+		const { gameObj } = this.state;
 		const target = event.target;
-		this.setState({
-			[target.name]: target.value
-		});
+		const value = target.value;
+
+		if (_.has(gameObj, target.name)) {
+			this.setState({
+				gameObj: {
+					...gameObj,
+					[target.name]: value
+				}
+			});
+		} else {
+			this.setState({
+				[target.name]: value
+			});
+		}
 	}
 	
 	handleReview() {
@@ -78,11 +90,13 @@ class CreateGame extends Component {
 			loading: true
 		})
 
-		GameBackend.createGame(this.state.gameObj)
+		const { gameObj } = this.state;
+
+		GameBackend.createGame(gameObj)
 		.then(res => {
 			console.log('success! ', res);
 			this.setState({ loading: false });
-			this.props.history.push(`/game/${this.state.id}`);
+			this.props.history.push(`/game/${gameObj.id}`);
 		}, err => {
 			console.log('error! ', err);
 			this.setState({

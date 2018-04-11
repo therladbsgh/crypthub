@@ -9,11 +9,15 @@ class Login extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			login: '',
-			password: '',
+            loginObj: {
+                login: '',
+			    password: ''
+            },
+            forgotObj: {
+                email: ''
+            },
             err: '',
             forgot: false,
-            email: '',
             loading: false,
             submitted: false
 		};
@@ -25,10 +29,29 @@ class Login extends Component {
 	}
 
 	handleChange(event) {		
-		const target = event.target;
-		this.setState({
-			[target.name]: target.value
-		});
+        const { loginObj, forgotObj } = this.state;
+        const target = event.target;
+        const value = target.value;
+        
+        if (_.has(loginObj, target.name)) {
+			this.setState({
+				loginObj: {
+					...loginObj,
+					[target.name]: value
+				}
+			});
+		} else if (_.has(forgotObj, target.name)) {
+            this.setState({
+				forgotObj: {
+					...forgotObj,
+					[target.name]: value
+				}
+			});
+        } else {
+			this.setState({
+				[target.name]: value
+			});
+		}
 	}
 
 	handleSubmitLogin(event) {
@@ -38,7 +61,7 @@ class Login extends Component {
 			err: ''
         })
         
-        UserBackend.login(_.pick(this.state, ['login', 'password']))
+        UserBackend.login(this.state.loginObj)
 		.then(res => {
 			console.log('success! ', res);
             this.setState({ loading: false });
@@ -57,7 +80,7 @@ class Login extends Component {
             submitted: true
 		})
 
-		UserBackend.forgot(_.get(this.state, 'email'))
+		UserBackend.forgot(this.state.forgotObj)
 		.then(res => {
 			console.log('success! ', res);
             this.setState({ loading: false });
@@ -69,18 +92,24 @@ class Login extends Component {
     
     toggleForgot() {
         this.setState({
-            login: '',
-			password: '',
+            loginObj: {
+                login: '',
+			    password: ''
+            },
+            forgotObj: {
+                email: ''
+            },
             err: '',
             forgot: !this.state.forgot,
-            email: '',
             loading: false,
             submitted: false
         });
     }
 
   	render() {
-        const { login, password, err, forgot, email, loading, submitted } = this.state;
+        const { loginObj, forgotObj, err, forgot, loading, submitted } = this.state;
+        const { login, password } = loginObj;
+        const { email } = forgotObj;
         const success = submitted && !err;
         
 		return (

@@ -9,9 +9,11 @@ export default class Signup extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			username: '',
-			email: '',
-			password: '',
+			signupObj: {
+				username: '',
+				email: '',
+				password: ''
+			},
 			passwordConfirm: '',
 			agree: false,
 			loading: false,
@@ -24,16 +26,28 @@ export default class Signup extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	handleChange(event) {		
+	handleChange(event) {
+		const { signupObj } = this.state;
 		const target = event.target;
 		const value = target.type === 'checkbox' ? target.checked : target.value;
-		this.setState({
-			[target.name]: value
-		});
+		
+		if (_.has(signupObj, target.name)) {
+			this.setState({
+				signupObj: {
+					...signupObj,
+					[target.name]: value
+				}
+			});
+		} else {
+			this.setState({
+				[target.name]: value
+			});
+		}
 	}
 
 	handleSubmit(event) {
-		const { email, password, passwordConfirm, agree } = this.state;
+		const { signupObj, passwordConfirm, agree } = this.state;
+		const { email, password } = signupObj;
 
 		event.preventDefault();
 		this.setState({
@@ -68,7 +82,7 @@ export default class Signup extends Component {
 			});
 		}
 
-		UserBackend.signup(_.pick(this.state, ['username', 'password', 'email']))
+		UserBackend.signup(signupObj)
 		.then(res => {
 			console.log('success! ', res);
 			this.setState({ loading: false });
@@ -79,7 +93,8 @@ export default class Signup extends Component {
 	}	
 
   	render() {
-		const { username, email, password, passwordConfirm, agree, loading, submitted, errMsg, errField } = this.state;
+		const { signupObj, passwordConfirm, agree, loading, submitted, errMsg, errField } = this.state;
+		const { username, email, password } = signupObj;
 		const success = submitted && !errMsg;
 
 		return (
