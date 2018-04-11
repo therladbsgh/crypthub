@@ -7,7 +7,7 @@ export default class Searchbar extends Component {
 		super(props);
 		/*
 			The source needs to have a key field, and all fields must be lowercase (otherwise rendering errors).
-			Note that you will need to use lowercase field names in the render function as a result.
+			Note that you will need to use lowercase field names when referencing the results elsewhere (e.g. render function).
 		*/
 		this.state = {
 			isLoading: false,
