@@ -55,7 +55,8 @@ const TradeType = {
 
 const CoinType = {
     name: String,
-    symbol: String
+    symbol: String,
+    currPrice: Number
 };
 
 const UserType = {
