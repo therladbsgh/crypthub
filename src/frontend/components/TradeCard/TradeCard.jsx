@@ -31,7 +31,7 @@ export default class TradeCard extends Component {
 						<Table striped>
 							<Table.Body>
 								{_.map(CoinMocks.coins, (c, index) => 
-									(_.some(results, c) || results[0] === 'RESET') &&
+									(_.some(results, _.mapKeys(c, (v, k) => k.toLowerCase())) || results[0] === 'RESET') &&
 										<Table.Row key={index}>
 											<Table.Cell>{c.symbol}</Table.Cell>
 											<Table.Cell textAlign='right'><TradeModal coin={c} /></Table.Cell>

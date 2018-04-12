@@ -42,7 +42,7 @@ export const player1 = {
     },
     netWorth: 200,
     numTrades: 80,
-    netReturn: 20
+    netReturn: -20
 };
 
 export const player2 = {

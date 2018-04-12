@@ -1,7 +1,9 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
+import formatCurrency from 'format-currency';
 import { Header, Table, Icon } from 'semantic-ui-react';
 import { Searchbar, GameCard } from 'components';
+import { GameRankingsStyle as styles } from 'styles';
 
 export default class GameRankings extends Component {
     render() {
@@ -26,9 +28,9 @@ export default class GameRankings extends Component {
                             <Table.Row key={index}>
                                 <Table.Cell>{index + 1}</Table.Cell>
                                 <Table.Cell>{p.name}</Table.Cell>
-                                <Table.Cell>{p.netWorth}</Table.Cell>
+                                <Table.Cell>{formatCurrency(p.netWorth, { format: '%s%v', symbol: '$' })}</Table.Cell>
                                 <Table.Cell>{p.numTrades}</Table.Cell>
-                                <Table.Cell>{p.netReturn}</Table.Cell>
+                                <Table.Cell className={p.netReturn >= 0 ? styles.pos : styles.neg}>{formatCurrency(Math.abs(p.netReturn), { format: '%s%v', symbol: `${p.netReturn >= 0 ? '+' : '-'}$` })}</Table.Cell>
                             </Table.Row>
                         )}
                     </Table.Body>
