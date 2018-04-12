@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Tab, Header, Dropdown } from 'semantic-ui-react';
-import { Searchbar, ProfileCard, GameCard, LeaderboardCard } from 'components';
+import { Searchbar, ProfileCard, GameCard } from 'components';
 
 export default class GameOverview extends Component {
     render() {
@@ -14,8 +14,6 @@ export default class GameOverview extends Component {
 				<ProfileCard player={players[thisPlayer]} />
 				<Header as='h2'>About This Game</Header>
                 <GameCard game={game} />
-				<Header as='h2'>Game Leaderboard</Header>
-                <LeaderboardCard players={players} />
 			</div>
         );
     }

@@ -22,8 +22,8 @@ export default class GameSettings extends Component {
     render() {
         return (
 			<div>
-                <Button onClick={this.handleLeave} negative>Leave Game</Button>
                 <Button onClick={this.handleInvite} positive>Invite Players</Button>
+                <Button onClick={this.handleLeave} negative>Leave Game</Button>
 				<Header as='h2'>About This Game</Header>
                 <GameCard game={this.props.game} />
                 <Header as='h2'>Game Options</Header>

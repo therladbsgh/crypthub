@@ -5,4 +5,5 @@ export { default as FindGamesStyle } from './findgames';
 export { default as CreateGameStyle } from './creategame';
 export { default as TradeModalStyle } from './trademodal';
 export { default as GameRankingsStyle } from './gamerankings';
+export { default as GameCardStyle } from './gamecard';
 export { default as SharedStyle } from './shared';

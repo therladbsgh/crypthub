@@ -4,6 +4,14 @@ export const player1 = {
         {
             name: 'Bitcoin',
             amount: 250
+        },
+        {
+            name: 'Ethereum',
+            amount: 1000.28373623
+        },
+        {
+            name: 'USD',
+            amount: 250
         }
     ],
     transactions: {

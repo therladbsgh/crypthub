@@ -1,3 +1,4 @@
+import date from 'date-and-time';
 import * as PlayerMocks from './players';
 
 export const game1 = {
@@ -5,14 +6,24 @@ export const game1 = {
     name: 'game1',
     description: 'desc1',
     host: 'user1',
-    created: '1 sec ago',
-    start: '04/03/18',
-    end: '20 hours',
-    numPlayers: '2',
+    created: date.parse('Apr 1 2018', 'MMM D YYYY'),
+    start: date.parse('Apr 2 2018', 'MMM D YYYY'),
+    end: date.parse('May 7 2018', 'MMM D YYYY'),
+    numPlayers: 2,
+    playerPortfolioPublic: true,
+    startingBalance: 10000,
+    commissionValue: 10,
+    shortSelling: true,
+    limitOrders: true,
+    stopOrders: true,
+    lastUpdated: new Date(),
+    completed: false,
     players: [
         PlayerMocks.player1,
         PlayerMocks.player2
-    ]
+    ],
+    private: false,
+    password: ''
 };
 
 export const game2 = {
@@ -20,14 +31,24 @@ export const game2 = {
     name: 'game2',
     description: 'desc2',
     host: 'user2',
-    created: '10 sec ago',
-    start: '04/02/18',
-    end: '40 hours',
-    numPlayers: '10',
+    created: date.parse('Apr 2 2018', 'MMM D YYYY'),
+    start: date.parse('Apr 3 2018', 'MMM D YYYY'),
+    end: date.parse('May 1 2018', 'MMM D YYYY'),
+    numPlayers: 20,
+    playerPortfolioPublic: true,
+    startingBalance: 10000,
+    commissionValue: 10,
+    shortSelling: true,
+    limitOrders: true,
+    stopOrders: true,
+    lastUpdated: new Date(),
+    completed: false,
     players: [
         PlayerMocks.player1,
         PlayerMocks.player2
-    ]
+    ],
+    private: false,
+    password: ''
 };
 
 export const game3 = {
@@ -35,12 +56,22 @@ export const game3 = {
     name: 'game3',
     description: 'desc3',
     host: 'user3',
-    created: '25 sec ago',
-    start: '04/01/18',
-    end: '400 hours',
-    numPlayers: '80',
+    created: date.parse('Apr 4 2018', 'MMM D YYYY'),
+    start: date.parse('Apr 8 2018', 'MMM D YYYY'),
+    end: date.parse('Apr 28 2018', 'MMM D YYYY'),
+    numPlayers: 80,
+    playerPortfolioPublic: true,
+    startingBalance: 10000,
+    commissionValue: 10,
+    shortSelling: true,
+    limitOrders: true,
+    stopOrders: true,
+    lastUpdated: new Date(),
+    completed: false,
     players: [
         PlayerMocks.player1,
         PlayerMocks.player2
-    ]
+    ],
+    private: false,
+    password: ''
 };
