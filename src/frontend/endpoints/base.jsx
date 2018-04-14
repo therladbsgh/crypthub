@@ -27,11 +27,15 @@ export function post(url, data) {
         fetch(`${BASE_URI}${url}`, {
             body: JSON.stringify(data),
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
             },
             method: 'POST',
         })
         .then(res => {
+            return res.json();
+        })
+        .then(res => {
+            console.log(res);
             if (res.ok) return res.json();
             handleError(reject, res.status);
         })

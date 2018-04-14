@@ -1,7 +1,7 @@
 import * as Backend from './base';
 
 export function signup(signupObj) {
-    return Backend.post('signup', signupObj);
+    return Backend.post('passport/signup', signupObj);
 }
 
 export function login(loginObj) {

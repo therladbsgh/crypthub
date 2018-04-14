@@ -1,16 +1,18 @@
 const express = require('express');
-const bodyParser = require('body-parser')
-const expressSession = require('express-session');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const bCrypt = require('bcrypt-nodejs');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
-const flash = require('connect-flash');
+const flash = require('express-flash');
 
 const db = require('./db');
 const initPassport = require('./passport/passportInit');
 const router = require('./routes/index.js');
 
 const app = express();
+const sessionStore = new session.MemoryStore;
 
 app.use(bodyParser.json());
 
@@ -20,35 +22,29 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cookieParser('secret'));
+app.use(session({
+  key: 'user_sid',
+  cookie: { maxAge: 60000 },
+  store: sessionStore,
+  saveUninitialized: true,
+  resave: true,
+  secret: 'secret'
+}));
+
+// Configure flash
+app.use(flash());
+
 // Configure passport
 // app.use(expressSession({secret: 'mySecretKey'}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Configure flash
-// app.use(flash());
-
 // Initialize Passport
 initPassport(passport);
 
- // process the signup form
- 
-
-app.post('/signup',
-passport.authenticate('signup'),
-function(req, res) {
-  console.log('in signup: ', req.body);
-  // If this function gets called, authentication was successful.
-  // `req.user` contains the authenticated user.
-  // res.redirect('/users/' + req.user.username);
-
-  res.send(req.body);
-});
-
-
-
 // Configure router
-app.use('/', router);
+app.use('/', router(passport));
 
 app.listen(5000, (err) => {
   if (err) {

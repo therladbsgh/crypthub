@@ -26,7 +26,7 @@ function signup(passport) {
           // already exists
           if (user) {
             console.log('User already exists with username: ', username);
-            return done(null, false, req.flash('message', 'User Already Exists'));
+            return done(null, false, { message: 'User already exists'});
           }
 
           // if there is no user with that email
@@ -54,6 +54,6 @@ function signup(passport) {
     }
   ));
 }
-// need a function that takes the sign up object from the front end 
+// need a function that takes the sign up object from the front end
 
 module.exports = signup;
