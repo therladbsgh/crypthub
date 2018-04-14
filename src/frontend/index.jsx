@@ -3,6 +3,12 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Home, Signup, Login, UserPage, GamePage, GlobalRankings, PageNotFound } from 'components';
 
+// Necessary for date picker to work
+import 'react-dates/initialize';
+// This ensures datapicker css isn't hashed like local css
+import '../../node_modules/react-dates/lib/css/_datepicker.css?raw';
+
+
 ReactDOM.render(
 	<Router>
 		<div>
