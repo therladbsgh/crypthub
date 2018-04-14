@@ -32,7 +32,8 @@ class CreateGame extends Component {
 				private: false,
 				password: ''
 			},
-			err: '',
+			errMsg: '',
+			errField: '',
 			loading: false,
 			review: false,
 			submitted: false,
@@ -77,7 +78,8 @@ class CreateGame extends Component {
 	
 	handleReview() {
 		this.setState({
-			err: '',
+			errMsg: '',
+			errField: '',
 			loading: true
 		})
 
@@ -88,11 +90,12 @@ class CreateGame extends Component {
 		// 		loading: false,
 		// 		review: true,
 		// 	});
-		// }, err => {
+		// }, ({ err, field }) => {
 		// 	console.log('error! ', err);
 		// 	this.setState({
 		// 		loading: false, 
-		// 		err
+		// 		errMsg: err,
+		//		errField: field
 		// 	});
 		// });
 		this.setState({
@@ -104,7 +107,8 @@ class CreateGame extends Component {
 	handleCreate(event) {
 		event.preventDefault();
 		this.setState({
-			err: '',
+			errMsg: '',
+			errField: '',
 			loading: true
 		})
 
@@ -115,24 +119,26 @@ class CreateGame extends Component {
 			console.log('success! ', res);
 			this.setState({ loading: false });
 			this.props.history.push(`/game/${gameObj.id}`);
-		}, err => {
+		}, ({ err, field }) => {
 			console.log('error! ', err);
 			this.setState({
 				loading: false, 
-				err
+				errMsg: err,
+				errField: field
 			});
 		});
 	}
 
 	goBack() {
 		this.setState({
-			err: '',
+			errMsg: '',
+			errField: '',
 			review: false,
 		});
 	}
 
     render() {
-		const { gameObj, err, loading, review, submitted, focusedDate } = this.state;
+		const { gameObj, errMsg, errField, loading, review, submitted, focusedDate } = this.state;
 		const { id, name, description, start, end } = gameObj;
 
 		// Using onClick instead of submit because of weird immediate submitting problem
@@ -141,7 +147,7 @@ class CreateGame extends Component {
 				{!review ? 
 				<div>
 					<Header as='h2'>Create a Game</Header>
-					<Form loading={loading} error={!!err}>
+					<Form loading={loading} error={!!errMsg}>
 						<Form.Field>
 							<label>Game Name</label>
 							<input placeholder='Game name' name='name' value={name} onChange={this.handleChange} />
@@ -171,7 +177,7 @@ class CreateGame extends Component {
 						<Message
 							error
 							header='Error'
-							content={err}
+							content={errMsg}
 						/>
 						<Button onClick={this.handleReview} positive>Continue</Button>
 					</Form>
@@ -179,7 +185,7 @@ class CreateGame extends Component {
 				:
 				<div id={styles.review}>
 					<Header as='h2'>Review</Header>
-					<Form loading={loading} error={!!err}>
+					<Form loading={loading} error={!!errMsg}>
 						<Form.Field>
 							<label>Game Name: </label>{name}
 						</Form.Field>
@@ -198,7 +204,7 @@ class CreateGame extends Component {
 						<Message
 							error
 							header='Error'
-							content={err}
+							content={errMsg}
 						/>
 						<Button onClick={this.goBack} negative>Back</Button>
 						<Button onClick={this.handleCreate} positive>Create</Button>

@@ -16,7 +16,8 @@ class Login extends Component {
             forgotObj: {
                 email: ''
             },
-            err: '',
+            errMsg: '',
+            errField: '',
             forgot: false,
             loading: false,
             submitted: false
@@ -58,7 +59,8 @@ class Login extends Component {
 		event.preventDefault();
 		this.setState({
             loading: true,
-			err: ''
+            errMsg: '',
+            errField: ''
         })
         
         UserBackend.login(this.state.loginObj)
@@ -66,16 +68,17 @@ class Login extends Component {
 			console.log('success! ', res);
             this.setState({ loading: false });
             this.props.history.push('/games');
-		}, err => {
+		}, ({ err, field }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, err });
-		});
+			this.setState({ loading: false, errMsg: err, errField: field });
+        });
     }
 
     handleSubmitForgot(event) {
 		event.preventDefault();
 		this.setState({
-            err: '',
+            errMsg: '',
+            errField: '',
             loading: true,
             submitted: true
 		})
@@ -84,9 +87,9 @@ class Login extends Component {
 		.then(res => {
 			console.log('success! ', res);
             this.setState({ loading: false });
-		}, err => {
+		}, ({ err, field }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, err });
+			this.setState({ loading: false, errMsg: err, errField: field });
 		});
     }
     
@@ -99,7 +102,8 @@ class Login extends Component {
             forgotObj: {
                 email: ''
             },
-            err: '',
+            errMsg: '',
+            errField: '',
             forgot: !this.state.forgot,
             loading: false,
             submitted: false
@@ -107,10 +111,10 @@ class Login extends Component {
     }
 
   	render() {
-        const { loginObj, forgotObj, err, forgot, loading, submitted } = this.state;
+        const { loginObj, forgotObj, errMsg, errField, forgot, loading, submitted } = this.state;
         const { login, password } = loginObj;
         const { email } = forgotObj;
-        const success = submitted && !err;
+        const success = submitted && !errMsg;
         
 		return (
 			<div style={sharedStyles}>
@@ -118,19 +122,19 @@ class Login extends Component {
                 {!forgot ?  
                 <div>
                     <Header as='h1'>Login</Header>
-                    <Form onSubmit={this.handleSubmitLogin} loading={loading} error={!!err}>
-                        <Form.Field>
+                    <Form onSubmit={this.handleSubmitLogin} loading={loading} error={!!errMsg}>
+                        <Form.Field error={errField == 'username' || errField == 'email'}>
                             <label>Email or Username</label>
                             <input placeholder='Email or Username' name='login' value={login} onChange={this.handleChange} />
                         </Form.Field>
-                        <Form.Field>
+                        <Form.Field error={errField == 'password'}>
                             <label>Password</label>
                             <input type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
                         </Form.Field>
                         <Message
                             error
                             header='Error'
-                            content={err}
+                            content={errMsg}
                         />
                         <Button type='submit'>Sign In</Button>
                     </Form>
@@ -140,8 +144,8 @@ class Login extends Component {
                 :
                 <div>
                     <Header as='h1'>Request Password Reset</Header>
-                    <Form onSubmit={this.handleSubmitForgot} loading={loading} success={success} error={!!err}>
-                        <Form.Field disabled={success}>
+                    <Form onSubmit={this.handleSubmitForgot} loading={loading} success={success} error={!!errMsg}>
+                        <Form.Field disabled={success} error={errField == 'email'}>
                             <label>Email</label>
                             <input placeholder='Email' name='email' value={email} onChange={this.handleChange} />
                         </Form.Field>
@@ -153,7 +157,7 @@ class Login extends Component {
                         <Message
                             error
                             header='Error'
-                            content={err}
+                            content={errMsg}
                         />
                         <Button type='submit' disabled={success}>Submit</Button>
                     </Form>

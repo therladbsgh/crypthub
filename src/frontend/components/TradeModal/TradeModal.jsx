@@ -187,9 +187,9 @@ export default class TradeModal extends Component {
 		.then(res => {
 			console.log('success! ', res);
 			this.setState({ loading: false, success: true });
-		}, err => {
+		}, ({ err, field }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, errMsg: err });
+			this.setState({ loading: false, errMsg: err, errField: field });
 		});
     }
     

@@ -38,7 +38,7 @@ function signup(req, res) {
 
     if (user) {
       console.log('User already exists with username: ', username);
-      res.status(401).send({ err: 'Username already exists' });
+      res.status(401).send({ err: 'Username already exists', field: 'username' });
       return;
     }
 
@@ -74,12 +74,12 @@ function login(req, res) {
     }
 
     if (!user) {
-      res.status(401).send({ err: 'User not found' });
+      res.status(401).send({ err: 'User not found', field: 'username' });
       return;
     }
 
     if (!isValidPassword(user, password)) {
-      res.status(401).send({ err: 'Invalid password' });
+      res.status(401).send({ err: 'Invalid password', field: 'password' });
       return;
     }
 

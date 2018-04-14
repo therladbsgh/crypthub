@@ -86,9 +86,9 @@ export default class Signup extends Component {
 		.then(res => {
 			console.log('success! ', res);
 			this.setState({ loading: false });
-		}, err => {
+		}, ({ err, field }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, errMsg: err });
+			this.setState({ loading: false, errMsg: err, errField: field });
 		});
 	}	
 
