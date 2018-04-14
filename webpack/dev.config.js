@@ -10,25 +10,45 @@ module.exports = merge(baseConfig, {
 	module: {
 		rules: [
 			{
-				test: /\.scss$/,
-				use: [
-					{
-						loader: "style-loader"
-					},
-					{
-						loader: "css-loader",
-						options: {
-							modules: true,
-							importLoaders: 1,
-							localIdentName: "[name]_[local]_[hash:base64]",
-							sourceMap: true,
-							minimize: true
+				test: /\.(css|scss)$/,
+				oneOf: [{
+					resourceQuery: /^\?raw$/,
+					use: [
+						{
+							loader: "style-loader"
+						},
+						{
+							loader: "css-loader",
+							options: {
+								importLoaders: 1,
+								sourceMap: true,
+								minimize: true
+							}
+						},
+						{
+							loader: "sass-loader"
 						}
-					},
-					{
-						loader: "sass-loader"
-					}
-				]
+					]
+				}, {
+					use: [
+						{
+							loader: "style-loader"
+						},
+						{
+							loader: "css-loader",
+							options: {
+								modules: true,
+								importLoaders: 1,
+								localIdentName: "[name]_[local]_[hash:base64]",
+								sourceMap: true,
+								minimize: true
+							}
+						},
+						{
+							loader: "sass-loader"
+						}
+					]
+				}]
 			}
 		]
   	}
