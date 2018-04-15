@@ -40,25 +40,26 @@ const PlayerType = {
 };
 
 const AssetType = {
-    name: String,
+    name: CoinType.symbol | 'USD',
     amount: Number
 };
 
 const TradeType = {
     id: String,
-    type: String,
-    side: String,
+    type: 'market' | 'limit' | 'short' | 'stop',
+    side: 'buy' | 'sell',
     size: Number,
     price: Number,
-    symbol: String,
+    symbol: CoinType.symbol,
     date: Date,
     GTC: Boolean,
+    expiration: Date,
     filled: Boolean
 };
 
 const CoinType = {
-    name: String,
-    symbol: String,
+    name: 'Bitcoin' | 'Ethereum',
+    symbol: 'BTC' | 'ETH',
     currPrice: Number
 };
 

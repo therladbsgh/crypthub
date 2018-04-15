@@ -99,7 +99,7 @@ export default class Signup extends Component {
 
 		return (
 			<div>
-				<Navbar loggedIn={false} />
+				<Navbar />
 				<Header as='h1'>Signup</Header>
 				<Form onSubmit={this.handleSubmit} loading={loading} success={success} error={!!errMsg}>
 					<Form.Field error={errField == 'username'} disabled={success}>

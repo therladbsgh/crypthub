@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { withCookies } from 'react-cookie';
 import { Header, Tab } from 'semantic-ui-react';
 import { Navbar } from 'components';
 import { YourGames, FindGames, CreateGame } from 'components';
 
-export default class UserPage extends Component {    
+class UserPage extends Component {
+    componentWillMount() {
+		const { history, cookies } = this.props;
+		if (_.isEmpty(cookies.getAll())) {
+			history.push('/login');
+		}
+    }
+    
   	render() {
         const YourGamesPane = (
             <Tab.Pane key='tab1'>
@@ -32,10 +40,12 @@ export default class UserPage extends Component {
 
 		return (
 			<div>
-				<Navbar loggedIn={true} />
+				<Navbar/>
 				<Header as='h1'>Username</Header>
 				<Tab panes={panes} renderActiveOnly={false} defaultActiveIndex={propsState ? propsState.openTab : 0} />
 			</div>
 		);
   	}
 }
+
+export default withCookies(withRouter(UserPage));
