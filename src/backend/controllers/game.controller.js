@@ -87,9 +87,11 @@ function create(req, res) {
   player.save().then((newPlayer) => {
     game.players = [newPlayer._id];
     game.save().then((newGame) => {
-      newGame.populate('Player').then((gameToReturn) => {
-        res.json({ data: gameToReturn });
-      });
+      Game.findOne({ _id: newGame._id })
+        .populate('players')
+        .exec((err, gameToReturn) => {
+          res.status(200).json({ data: gameToReturn });
+        });
     });
   });
 }
