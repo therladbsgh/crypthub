@@ -13,7 +13,7 @@ export default class Searchbar extends Component {
 			isLoading: false,
 			results: [],
 			value: '',
-			source: _.map(this.props.source, (e, key) => ({ ..._.mapKeys(e, (v, k) => k.toLowerCase()), key }))
+			source: _.map(this.props.source, (e, key) => ({ ..._.mapKeys(_.mapValues(e, v => String(v)), (v, k) => k.toLowerCase()), key }))
 		};
 	
 		this.resetComponent = this.resetComponent.bind(this);
