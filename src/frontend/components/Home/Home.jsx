@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { withCookies } from 'react-cookie';
 import { Header, Button } from 'semantic-ui-react';
 import { Navbar } from 'components'; 
 import { HomeStyle as styles } from 'styles';
 
-export default class Home extends Component {
+class Home extends Component {
   	render() {
+		console.log(this.props.cookies);
 		return (
 			<div>
 				<Navbar loggedIn={false} />
@@ -30,3 +32,5 @@ export default class Home extends Component {
 		);
   	}
 }
+
+export default withCookies(Home);
