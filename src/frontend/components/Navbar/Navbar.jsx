@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { withCookies } from 'react-cookie';
 import { UserBackend } from 'endpoints';
 import { Menu, Dropdown, Button } from 'semantic-ui-react';
 import { NavbarStyle as styles } from 'styles';
@@ -9,17 +8,32 @@ class Navbar extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            username: ''
+        };
+
         this.logout = this.logout.bind(this);
     }
 
+    componentWillMount() {
+		UserBackend.getUser()
+		.then(res => {
+			console.log('success! ', res);
+            if (!_.isEmpty(res)) {
+				this.setState({ username: res.user });
+			}
+		}, ({ err }) => {
+			console.log('error! ', err);
+			alert('Error: ', err);
+        });
+	}
+
     logout() {
-        const { history, cookies } = this.props;
+        const { history } = this.props;
 
         UserBackend.logout()
 		.then(res => {
             console.log('success! ', res);
-            console.log(cookies.getAll());
-            _.forEach(cookies.getAll(), (v, cookie) => cookies.remove(cookie));
             history.push('/');
 		}, ({ err }) => {
             console.log('error! ', err);
@@ -28,7 +42,7 @@ class Navbar extends Component {
     }
 
   	render() {
-        const user = this.props.cookies.getAll();
+        const { username } = this.state;
 
 		return (
             <Menu inverted>
@@ -36,8 +50,8 @@ class Navbar extends Component {
 
                 <Menu.Menu position='right'>
                     <Menu.Item as={Link} to='/rankings' name='global rankings' />
-                    {!_.isEmpty(user) ? 
-                    <Dropdown item text={user.username}>
+                    {username ? 
+                    <Dropdown item text={username}>
                         <Dropdown.Menu>
                             <Dropdown.Item as={Link} to='/games'>Games</Dropdown.Item>
                             <Dropdown.Item>Settings</Dropdown.Item>
@@ -58,4 +72,4 @@ class Navbar extends Component {
   	}
 }
 
-export default withCookies(withRouter(Navbar));
+export default withRouter(Navbar);

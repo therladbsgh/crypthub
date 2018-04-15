@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { withCookies } from 'react-cookie';
 import { Header, Form, Button, Message } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
@@ -21,7 +20,8 @@ class Login extends Component {
             errField: '',
             forgot: false,
             loading: false,
-            submitted: false
+            submitted: false,
+            hasMounted: false
 		};
 	
 		this.handleChange = this.handleChange.bind(this);
@@ -31,10 +31,19 @@ class Login extends Component {
     }
     
     componentWillMount() {
-		const { history, cookies } = this.props;
-		if (!_.isEmpty(cookies.getAll())) {
-			history.push('/games');
-		}
+		const { history } = this.props;
+		UserBackend.getUser()
+		.then(res => {
+			console.log('success! ', res);
+            if (_.isEmpty(res)) {
+				this.setState({ hasMounted: true });
+			} else {
+				history.push('/games');
+			}
+		}, ({ err }) => {
+			console.log('error! ', err);
+			alert('Error: ', err);
+        });
 	}
 
 	handleChange(event) {		
@@ -64,7 +73,7 @@ class Login extends Component {
 	}
 
 	handleSubmitLogin(event) {
-        const { history, cookies } = this.props;
+        const { history } = this.props;
 
 		event.preventDefault();
 		this.setState({
@@ -77,7 +86,6 @@ class Login extends Component {
 		.then(res => {
 			console.log('success! ', res);
             this.setState({ loading: false });
-            cookies.set('username', res.user, { path: '/' });
             history.push('/games');
 		}, ({ err, field }) => {
 			console.log('error! ', err);
@@ -122,12 +130,13 @@ class Login extends Component {
     }
 
   	render() {
-        const { loginObj, forgotObj, errMsg, errField, forgot, loading, submitted } = this.state;
+        const { loginObj, forgotObj, errMsg, errField, forgot, loading, submitted, hasMounted } = this.state;
         const { login, password } = loginObj;
         const { email } = forgotObj;
         const success = submitted && !errMsg;
         
 		return (
+            hasMounted &&
 			<div style={sharedStyles}>
 				<Navbar />
                 {!forgot ?  
@@ -180,4 +189,4 @@ class Login extends Component {
 }
 
 // This puts the history prop on props which allows for redirection
-export default withCookies(withRouter(Login));
+export default withRouter(Login);
