@@ -5,7 +5,7 @@ export function signup(signupObj) {
 }
 
 export function login(loginObj) {
-    return Backend.post('login', loginObj);
+    return Backend.post('passport/login', loginObj);
 }
 
 export function forgot(forgotObj) {

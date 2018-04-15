@@ -65,9 +65,11 @@ function signup(req, res) {
  * @return 500 on server error, 401 if user does not exist, 200 if success
  */
 function login(req, res) {
-  const { username, password } = req.body;
+  console.log(req.session.user);
+  const loginObj = req.body.login;
+  const { password } = req.body;
 
-  User.findOne({ username }, (err, user) => {
+  User.findOne({ $or: [{ username: loginObj }, { email: loginObj }] }, (err, user) => {
     if (err) {
       res.status(500).json({ err: 'MongoDB Server Error: Cannot query' });
       return;
@@ -83,7 +85,8 @@ function login(req, res) {
       return;
     }
 
-    req.session.user = username;
+    req.session.user = loginObj;
+    req.session.save();
     res.status(200).send({ success: true });
   });
 }

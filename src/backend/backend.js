@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
+const session = require('cookie-session');
 const connectMongo = require('connect-mongo');
 
 const db = require('./db');
@@ -19,15 +19,12 @@ app.use((req, res, next) => {
 });
 
 // Setup sessions
-const MongoStore = connectMongo(session);
 
 app.use(cookieParser('secret'));
 app.use(session({
-  key: 'user_sid',
-  cookie: { maxAge: 60000 },
-  store: new MongoStore({ mongooseConnection: db }),
-  saveUninitialized: true,
-  resave: true,
+  name: 'session',
+  maxAge: 60000,
+  signed: false,
   secret: 'secret'
 }));
 
