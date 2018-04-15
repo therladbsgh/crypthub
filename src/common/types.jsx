@@ -40,7 +40,7 @@ const PlayerType = {
 };
 
 const AssetType = {
-    name: CoinType.symbol | 'USD',
+    type: CoinType,
     amount: Number
 };
 
@@ -58,8 +58,8 @@ const TradeType = {
 };
 
 const CoinType = {
-    name: 'Bitcoin' | 'Ethereum',
-    symbol: 'BTC' | 'ETH',
+    name: 'Bitcoin' | 'Ethereum' | 'US Dollars',
+    symbol: 'BTC' | 'ETH' | 'USD',
     currPrice: Number
 };
 
