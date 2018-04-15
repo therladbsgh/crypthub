@@ -40,7 +40,7 @@ const PlayerType = {
 };
 
 const AssetType = {
-    name: String,
+    name: CoinType,
     amount: Number
 };
 
