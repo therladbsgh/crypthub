@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { withCookies, Cookies } from 'react-cookie';
 import { Menu, Dropdown, Button } from 'semantic-ui-react';
 import { NavbarStyle as styles } from 'styles';
 
-export default class Navbar extends Component {
+class Navbar extends Component {
   	render() {
+        
 		return (
             <Menu inverted>
                 <Menu.Item name='crypthub' as={Link} to='/' />
@@ -32,3 +34,5 @@ export default class Navbar extends Component {
 		);
   	}
 }
+
+export default withCookies(Navbar);

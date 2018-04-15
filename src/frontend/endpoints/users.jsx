@@ -1,5 +1,9 @@
 import * as Backend from './base';
 
+export function getUser() {
+    return Backend.get('passport/user');
+}
+
 export function signup(signupObj) {
     return Backend.post('passport/signup', signupObj);
 }

@@ -12,7 +12,13 @@ function handleError(reject, err) {
 
 export function get(url) {
     return new Promise((resolve, reject) => {
-        fetch(`${BASE_URI}${url}`)
+        fetch(`${BASE_URI}${url}`, {
+            headers: {
+                'content-type': 'application/json',
+            },
+            method: 'GET',
+            credentials: 'include',
+        })
         .then(res => {
             if (res.ok) return resolve(res.json());
             res.json().then(json => handleError(reject, json));
