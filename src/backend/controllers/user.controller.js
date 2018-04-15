@@ -3,6 +3,7 @@ const User = require('../models/user.model');
 /**
  * Gets the user by ID.
  * @param  req.params.id - The id
+ *
  * @return User object
  */
 function get(req, res) {
@@ -19,6 +20,7 @@ function get(req, res) {
  * @param  req.body.username - The username
  * @param  req.body.password - The password
  * @param  req.body.email - The email
+ *
  * @return User object
  */
 function create(req, res) {

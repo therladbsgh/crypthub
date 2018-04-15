@@ -10,11 +10,6 @@ router.use('/ping', (req, res) => {
   res.send('OK');
 });
 
-router.use('/getData', (req, res) => {
-  console.log('hit getData endpoint');
-  res.json({ data: 'this is data' });
-});
-
 router.use('/passport', sessionRoutes);
 router.use('/users', userRoutes);
 router.use('/game', gameRoutes);
