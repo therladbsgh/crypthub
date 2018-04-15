@@ -3,6 +3,32 @@ const { Types } = require('mongoose');
 const Game = require('../models/game.model');
 const Player = require('../models/player.model');
 
+
+/**
+ * Validates information before creating game
+ *
+ * @param  req.body.name - The name of the game
+ *
+ * @return User object
+ */
+function validate(req, res) {
+  const { name } = req.body;
+
+  Game.findOne({ name }, (err, game) => {
+    if (err) {
+      res.status(500).json({ err: 'MongoDB query error' });
+      return;
+    }
+
+    if (game) {
+      res.status(400).json({ err: 'Name already exists' });
+      return;
+    }
+
+    res.status(200).json({ success: true });
+  });
+}
+
 /**
  * Create new user
  *
@@ -19,6 +45,7 @@ const Player = require('../models/player.model');
  * @param  req.body.stopOrders - Whether to allow stop orders
  * @param  req.body.isPrivate - Whether the game is private
  * @param  req.body.password - Password. Set to empty string if public
+ *
  * @return User object
  */
 function create(req, res) {
@@ -68,5 +95,6 @@ function create(req, res) {
 }
 
 module.exports = {
+  validate,
   create
 };

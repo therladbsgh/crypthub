@@ -5,6 +5,7 @@ const User = require('../models/user.model');
 /**
  * Generates hash using bCrypt
  * @param  password : The password
+ *
  * @return the hashed password
  */
 function createHash(password) {
@@ -15,6 +16,7 @@ function createHash(password) {
  * Compares password string to a hashed string
  * @param  user : The user object from MongoDB
  * @param  password : The hashed password string
+ *
  * @return true if password and hashed string match, false otherwise
  */
 function isValidPassword(user, password) {
@@ -23,8 +25,10 @@ function isValidPassword(user, password) {
 
 /**
  * Sign up method.
- * @param  req : The request
- * @param  res : The response
+ * @param  req.body.username - The username
+ * @param  req.body.password - The password
+ * @param  req.body.email - The email
+ *
  * @return 500 on server error, 401 if user exists, 200 if success
  */
 function signup(req, res) {
@@ -60,8 +64,9 @@ function signup(req, res) {
 
 /**
  * Login method.
- * @param  req : The request
- * @param  res : The response
+ * @param  req.body.login - The login username or email
+ * @param  req.body.password - The password
+ *
  * @return 500 on server error, 401 if user does not exist, 200 if success
  */
 function login(req, res) {
@@ -94,8 +99,7 @@ function login(req, res) {
 
 /**
  * Logout method.
- * @param  req : The request
- * @param  res : The response
+ *
  * @return 500 on server error, 200 if success
  */
 function logout(req, res) {
@@ -112,8 +116,7 @@ function logout(req, res) {
 
 /**
  * Authentication middleware.
- * @param  req : The request
- * @param  res : The response
+ *
  * @return 403 if authentication failed, calls next otherwise
  */
 function authenticate(req, res, next) {
@@ -126,8 +129,7 @@ function authenticate(req, res, next) {
 
 /**
  * Gets user name from session.
- * @param  req : The request
- * @param  res : The response
+ *
  * @return user name if exists, null otherwise
  */
 function getUser(req, res) {
