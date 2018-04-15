@@ -8,7 +8,6 @@ const GameType = {
     created: Date,
     start: Date,
     end: Date,
-    numPlayers: Number,
     playerPortfolioPublic: Boolean,
     startingBalance: Number,
     commissionValue: Number,

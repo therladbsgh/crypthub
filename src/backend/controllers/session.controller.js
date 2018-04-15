@@ -85,9 +85,9 @@ function login(req, res) {
       return;
     }
 
-    req.session.user = loginObj;
+    req.session.user = user.username;
     req.session.save();
-    res.status(200).send({ success: true });
+    res.status(200).send({ success: true, user: user.username });
   });
 }
 
