@@ -29,6 +29,7 @@ export function post(url, data) {
                 'content-type': 'application/json',
             },
             method: 'POST',
+            credentials: 'include',
         })
         .then(res => {
             if (res.ok) return resolve(res.json());
