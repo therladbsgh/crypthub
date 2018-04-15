@@ -18,7 +18,7 @@ const GameType = {
     lastUpdated: Date,
     completed: Boolean,
     players: Array.of.PlayerType,
-    private: Boolean,
+    isPrivate: Boolean,
     password: String
 };
 
