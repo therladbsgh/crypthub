@@ -50,7 +50,11 @@ export const player1 = {
     },
     netWorth: 200,
     numTrades: 80,
-    netReturn: -20
+    netReturn: -20,
+    todayReturn: 5,
+    currRank: 2,
+    buyingPower: 150,
+    shortReserve: 50
 };
 
 export const player2 = {

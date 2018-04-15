@@ -14,7 +14,7 @@ class Home extends Component {
 				<Header as='h1'>CryptHub</Header>
 				<Button as={Link} to={{
   					pathname: '/games',
-					state: { 
+					state: {
 						openTab: 2
 					}
 				}}>
@@ -22,7 +22,7 @@ class Home extends Component {
 				</Button>
 				<Button as={Link} to={{
   					pathname: '/games',
-					state: { 
+					state: {
 						openTab: 1
 					}
 				}}>

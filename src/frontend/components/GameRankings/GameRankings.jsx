@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
 import { Header, Table, Icon } from 'semantic-ui-react';
 import { Searchbar, GameCard } from 'components';
-import { GameRankingsStyle as styles } from 'styles';
+import { SharedStyle as styles } from 'styles';
 
 export default class GameRankings extends Component {
     render() {

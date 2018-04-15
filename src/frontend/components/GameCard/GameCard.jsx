@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import date from 'date-and-time';
 import { Link } from 'react-router-dom';
 import { Card } from 'semantic-ui-react';
-import { GameCardStyle as styles } from 'styles';
+import { SharedStyle as styles } from 'styles';
 
 date.subtractStr = (date1, date2) => {
 	const subtract = date.subtract(date1, date2);

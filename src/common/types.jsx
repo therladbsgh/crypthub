@@ -29,6 +29,10 @@ const PlayerType = {
     netWorth: Number,
     numTrades: Number,
     netReturn: Number,
+    todayReturn: Number,
+    currRank: Number,
+    buyingPower: Number,
+    shortReserve: Number,
     portfolio: Array.of.AssetType,
     transactions: {
         history: Array.of.TradeType,
