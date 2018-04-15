@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import { withCookies } from 'react-cookie';
 import { Header, Form, Button, Message } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
@@ -27,6 +28,13 @@ class Login extends Component {
 		this.handleSubmitLogin = this.handleSubmitLogin.bind(this);
 		this.handleSubmitForgot = this.handleSubmitForgot.bind(this);
 		this.toggleForgot = this.toggleForgot.bind(this);
+    }
+    
+    componentWillMount() {
+		const { history, cookies } = this.props;
+		if (!_.isEmpty(cookies.getAll())) {
+			history.push('/games');
+		}
 	}
 
 	handleChange(event) {		
@@ -56,6 +64,8 @@ class Login extends Component {
 	}
 
 	handleSubmitLogin(event) {
+        const { history, cookies } = this.props;
+
 		event.preventDefault();
 		this.setState({
             loading: true,
@@ -67,7 +77,8 @@ class Login extends Component {
 		.then(res => {
 			console.log('success! ', res);
             this.setState({ loading: false });
-            this.props.history.push('/games');
+            cookies.set('username', res.user, { path: '/' });
+            history.push('/games');
 		}, ({ err, field }) => {
 			console.log('error! ', err);
 			this.setState({ loading: false, errMsg: err, errField: field });
@@ -118,7 +129,7 @@ class Login extends Component {
         
 		return (
 			<div style={sharedStyles}>
-				<Navbar loggedIn={false} />
+				<Navbar />
                 {!forgot ?  
                 <div>
                     <Header as='h1'>Login</Header>
@@ -169,4 +180,4 @@ class Login extends Component {
 }
 
 // This puts the history prop on props which allows for redirection
-export default withRouter(Login);
+export default withCookies(withRouter(Login));

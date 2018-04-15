@@ -47,7 +47,7 @@ export default class GamePage extends Component {
 
 		return (
 			<div>
-				<Navbar loggedIn={true} />
+				<Navbar />
 				<Header as='h1'>Game Name</Header>
                 <div className='ui grid'>
                     <div className='three wide column'>

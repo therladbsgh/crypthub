@@ -103,14 +103,8 @@ function login(req, res) {
  * @return 500 on server error, 200 if success
  */
 function logout(req, res) {
-  req.session.destroy((err) => {
-    if (err) {
-      res.status(500).json({ err: 'Server Error: Failed to destroy session' });
-      return;
-    }
-
-    res.status(200).json({ success: true });
-  });
+  req.session = null;
+  res.status(200).json({ success: true });
 }
 
 

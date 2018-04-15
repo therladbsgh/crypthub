@@ -1,24 +1,47 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { withCookies, Cookies } from 'react-cookie';
+import { Link, withRouter } from 'react-router-dom';
+import { withCookies } from 'react-cookie';
+import { UserBackend } from 'endpoints';
 import { Menu, Dropdown, Button } from 'semantic-ui-react';
 import { NavbarStyle as styles } from 'styles';
 
 class Navbar extends Component {
+    constructor(props) {
+        super(props);
+
+        this.logout = this.logout.bind(this);
+    }
+
+    logout() {
+        const { history, cookies } = this.props;
+
+        UserBackend.logout()
+		.then(res => {
+            console.log('success! ', res);
+            console.log(cookies.getAll());
+            _.forEach(cookies.getAll(), (v, cookie) => cookies.remove(cookie));
+            history.push('/');
+		}, ({ err }) => {
+            console.log('error! ', err);
+            alert('Logout error: ', err);
+        });
+    }
+
   	render() {
-        
+        const user = this.props.cookies.getAll();
+
 		return (
             <Menu inverted>
                 <Menu.Item name='crypthub' as={Link} to='/' />
 
                 <Menu.Menu position='right'>
                     <Menu.Item as={Link} to='/rankings' name='global rankings' />
-                    {this.props.loggedIn ? 
-                    <Dropdown item text='Username'>
+                    {!_.isEmpty(user) ? 
+                    <Dropdown item text={user.username}>
                         <Dropdown.Menu>
                             <Dropdown.Item as={Link} to='/games'>Games</Dropdown.Item>
                             <Dropdown.Item>Settings</Dropdown.Item>
-                            <Dropdown.Item>Logout</Dropdown.Item>
+                            <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                     :
@@ -35,4 +58,4 @@ class Navbar extends Component {
   	}
 }
 
-export default withCookies(Navbar);
+export default withCookies(withRouter(Navbar));

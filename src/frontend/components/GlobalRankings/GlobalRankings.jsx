@@ -30,7 +30,7 @@ export default class GlobalRankings extends Component {
         // User's keys need to be lowercase to work with searchbar results
         return (
             <div>
-                <Navbar loggedIn={false} />
+                <Navbar />
                 <Header as='h2'>Global Rankings</Header>
 				<Searchbar placeholder='Username' source={users} field='name' searchFields={['name']} handleResults={this.handleResults} open={false} />                
                 {!_.isEmpty(results) ?
