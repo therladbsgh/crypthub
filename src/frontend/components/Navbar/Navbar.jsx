@@ -23,7 +23,7 @@ class Navbar extends Component {
             this.setState({ username: res.user, hasMounted: true });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert('Error: ', err);
+			alert(`Error: ${err}`);
         });
 	}
 
@@ -36,7 +36,7 @@ class Navbar extends Component {
             history.push('/');
 		}, ({ err }) => {
             console.log('error! ', err);
-            alert('Logout error: ', err);
+            alert(`Logout error: ${err}`);
         });
     }
 

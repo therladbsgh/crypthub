@@ -42,7 +42,7 @@ class Login extends Component {
 			}
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert('Error: ', err);
+			alert(`Error: ${err}`);
         });
 	}
 
