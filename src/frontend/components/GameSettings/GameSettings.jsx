@@ -154,48 +154,48 @@ export default class GameSettings extends Component {
                 </Form>
                 <Header as='h2'>Game Settings</Header>
                 <Grid className={styles.settings} columns={2}>
-                        <Grid.Row>
-                            <Grid.Column>
-                                <div className={`${styles.column} ${styles.firstColumn}`}>
-                                    <label>Player Portfolios:</label>
-                                    <p>{playerPortfolioPublic ? 'Public' : 'Private'}</p>
-                                </div>
-                            </Grid.Column>
-                            <Grid.Column>
-                                <div className={`${styles.column} ${styles.firstColumn}`}>
-                                    <label>Starting Balance:</label>
-                                    <p>{formatCurrency(startingBalance, { format: '%s%v', symbol: '$' })}</p>
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row className={styles.row}>
-                            <Grid.Column>
-                                <div className={styles.column}>
-                                    <label>Trade Commission:</label>
-                                    <p>{formatCurrency(commissionValue, { format: '%s%v', symbol: '$' })}</p>
-                                </div>
-                            </Grid.Column>
-                            <Grid.Column>
-                                <div className={styles.column}>
-                                    <label>Short Selling:</label>
-                                    <p>{shortSelling ? 'Enabled' : 'Disabled'}</p>
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row className={styles.row}>
-                            <Grid.Column>
-                                <div className={styles.column}>
-                                    <label>Limit Orders:</label>
-                                    <p>{limitOrders ? 'Enabled' : 'Disabled'}</p>
-                                </div>
-                            </Grid.Column>
-                            <Grid.Column>
-                                <div className={styles.column}>
-                                    <label>Stop Orders:</label>
-                                    <p>{stopOrders ? 'Enabled' : 'Disabled'}</p>
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <div className={`${styles.column} ${styles.firstColumn}`}>
+                                <label>Player Portfolios:</label>
+                                <p>{playerPortfolioPublic ? 'Public' : 'Private'}</p>
+                            </div>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <div className={`${styles.column} ${styles.firstColumn}`}>
+                                <label>Starting Balance:</label>
+                                <p>{formatCurrency(startingBalance, { format: '%s%v', symbol: '$' })}</p>
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row className={styles.row}>
+                        <Grid.Column>
+                            <div className={styles.column}>
+                                <label>Trade Commission:</label>
+                                <p>{formatCurrency(commissionValue, { format: '%s%v', symbol: '$' })}</p>
+                            </div>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <div className={styles.column}>
+                                <label>Short Selling:</label>
+                                <p>{shortSelling ? 'Enabled' : 'Disabled'}</p>
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row className={styles.row}>
+                        <Grid.Column>
+                            <div className={styles.column}>
+                                <label>Limit Orders:</label>
+                                <p>{limitOrders ? 'Enabled' : 'Disabled'}</p>
+                            </div>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <div className={styles.column}>
+                                <label>Stop Orders:</label>
+                                <p>{stopOrders ? 'Enabled' : 'Disabled'}</p>
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
                 </Grid>
 			</div>
         );

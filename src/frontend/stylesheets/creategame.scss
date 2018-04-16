@@ -11,3 +11,30 @@
 .description {
     min-height: 100px;
 }
+
+.review {
+    width: 75%;
+
+    label {
+        font-weight: bolder;
+    }
+
+    p {
+        float: right;
+    }
+
+    
+}
+
+.firstColumn {
+    border-top: 1px solid lightgray;    
+}
+
+.column {
+    padding: 5px;
+    border-bottom: 1px solid lightgray;
+}
+
+.row {
+    margin-top: -28px;
+}

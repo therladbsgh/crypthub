@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Header, Form, Button, Message, TextArea, Input } from 'semantic-ui-react';
+import formatCurrency from 'format-currency';
+import { Header, Form, Button, Message, TextArea, Input, Grid } from 'semantic-ui-react';
 import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
 import moment from 'moment';
 import { GameBackend } from 'endpoints';
@@ -210,7 +211,7 @@ class CreateGame extends Component {
 
     render() {
 		const { gameObj, errMsg, errField, loading, review, focusedDate } = this.state;
-		const { id, name, description, start, end, startingBalance, commissionValue, isPrivate, password, passwordConfirm } = gameObj;
+		const { id, name, description, start, end, playerPortfolioPublic, startingBalance, commissionValue, shortSelling, limitOrders, stopOrders, isPrivate, password, passwordConfirm } = gameObj;
 
 		const numPattern2Dec = '^\\d*(?:\\.\\d{0,2})?$';
 
@@ -289,35 +290,97 @@ class CreateGame extends Component {
 				<div id={styles.review}>
 					<Header as='h2'>Review</Header>
 					<Form loading={loading} error={!!errMsg}>
-						<Form.Field>
-							<label>Game Name: </label>{name}
-						</Form.Field>
-						<Form.Field>
-							<label>URL: crypthub.com/game/</label>{id}
-						</Form.Field>
-						<Form.Field>
-							<label>Start: </label>{start.format('MM/DD/YYYY')}
-						</Form.Field>
-						<Form.Field>
-							<label>End: </label>{end.format('MM/DD/YYYY')}
-						</Form.Field>
-						<Form.Field>
-							<label>Starting Balance: </label>{startingBalance}
-						</Form.Field>
-						<Form.Field>
-							<label>Trade Commission: </label>{commissionValue}
-						</Form.Field>
-						<Form.Field>
-							<label>Description: </label>{description}
-						</Form.Field>
-						<Form.Field>
-							<label>Game Access: </label>{isPrivate ? 'private' : 'public'}
-						</Form.Field>
+						<Grid className={styles.review} columns={2}>
+							<Grid.Row>
+								<Grid.Column>
+									<div className={`${styles.column} ${styles.firstColumn}`}>
+										<label>Game Name:</label>
+										<p>{name}</p>
+									</div>
+								</Grid.Column>
+								<Grid.Column>
+									<div className={`${styles.column} ${styles.firstColumn}`}>
+										<label>Unique ID:</label>
+										<p>{id}</p>
+									</div>
+								</Grid.Column>
+							</Grid.Row>
+							<Grid.Row className={styles.row}>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>Start:</label>
+										<p>{start.format('MM/DD/YYYY')}</p>
+									</div>
+								</Grid.Column>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>End</label>
+										<p>{end.format('MM/DD/YYYY')}</p>
+									</div>
+								</Grid.Column>
+							</Grid.Row>
+							<Grid.Row className={styles.row}>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>Starting Balance:</label>
+										<p>{formatCurrency(startingBalance, { format: '%s%v', symbol: '$' })}</p>
+									</div>
+								</Grid.Column>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>Trade Commission:</label>
+										<p>{formatCurrency(commissionValue, { format: '%s%v', symbol: '$' })}</p>
+									</div>
+								</Grid.Column>
+							</Grid.Row>
+							<Grid.Row className={styles.row}>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>Short Selling:</label>
+										<p>{shortSelling ? 'Enabled' : 'Disabled'}</p>
+									</div>
+								</Grid.Column>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>Limit Orders:</label>
+										<p>{limitOrders ? 'Enabled' : 'Disabled'}</p>
+									</div>
+								</Grid.Column>
+							</Grid.Row>
+							<Grid.Row className={styles.row}>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>Stop Orders:</label>
+										<p>{stopOrders ? 'Enabled' : 'Disabled'}</p>
+									</div>
+								</Grid.Column>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>Game access:</label>
+										<p>{isPrivate ? 'Private' : 'Public'}</p>
+									</div>
+								</Grid.Column>
+							</Grid.Row>
+							<Grid.Row className={styles.row}>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>Player Portfolios:</label>
+										<p>{playerPortfolioPublic ? 'Public' : 'Private'}</p>
+									</div>
+								</Grid.Column>
+								<Grid.Column>
+									<div className={styles.column}>
+										<label>Description: </label>{description}
+									</div>
+								</Grid.Column>
+							</Grid.Row>
+						</Grid>
 						<Message
 							error
 							header='Error'
 							content={errMsg}
 						/>
+						{!errMsg && <br />}
 						<Button onClick={this.goBack} negative>Back</Button>
 						<Button onClick={this.handleCreate} positive>Create</Button>
 					</Form>
