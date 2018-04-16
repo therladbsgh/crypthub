@@ -51,8 +51,8 @@ export default class Signup extends Component {
 
 		event.preventDefault();
 		this.setState({
+			submitted: false,			
 			loading: true,
-			submitted: true,
 			errMsg: '',
 			errField: ''
 		})
@@ -85,10 +85,18 @@ export default class Signup extends Component {
 		UserBackend.signup(signupObj)
 		.then(res => {
 			console.log('success! ', res);
-			this.setState({ loading: false });
+			this.setState({
+				submitted: true,
+				loading: false
+			});
 		}, ({ err, field }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, errMsg: err, errField: field });
+			this.setState({
+				submitted: true,
+				loading: false,
+				errMsg: err,
+				errField: field
+			});
 		});
 	}	
 

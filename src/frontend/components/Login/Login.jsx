@@ -98,17 +98,25 @@ class Login extends Component {
 		this.setState({
             errMsg: '',
             errField: '',
+            submitted: false,
             loading: true,
-            submitted: true
 		})
 
 		UserBackend.forgot(this.state.forgotObj)
 		.then(res => {
 			console.log('success! ', res);
-            this.setState({ loading: false });
+            this.setState({
+                submitted: true,
+                loading: false
+            });
 		}, ({ err, field }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, errMsg: err, errField: field });
+			this.setState({
+                submitted: true,
+                loading: false,
+                errMsg: err,
+                errField: field
+            });
 		});
     }
     

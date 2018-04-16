@@ -37,7 +37,6 @@ class CreateGame extends Component {
 			errField: '',
 			loading: false,
 			review: false,
-			submitted: false,
 			focusedDate: null
 		};
 	
@@ -210,7 +209,7 @@ class CreateGame extends Component {
 	}
 
     render() {
-		const { gameObj, errMsg, errField, loading, review, submitted, focusedDate } = this.state;
+		const { gameObj, errMsg, errField, loading, review, focusedDate } = this.state;
 		const { id, name, description, start, end, startingBalance, commissionValue, isPrivate, password, passwordConfirm } = gameObj;
 
 		const numPattern2Dec = '^\\d*(?:\\.\\d{0,2})?$';

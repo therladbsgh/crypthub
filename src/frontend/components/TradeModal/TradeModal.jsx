@@ -46,7 +46,6 @@ export default class TradeModal extends Component {
             },
             open: false,
 			loading: false,
-            submitted: false,
             success: false,
             done: false,
 			errMsg: '',
@@ -81,7 +80,6 @@ export default class TradeModal extends Component {
             },
             open: false,
 			loading: false,
-            submitted: false,
             success: false,
             done: false,
 			errMsg: '',
@@ -157,7 +155,6 @@ export default class TradeModal extends Component {
 		event.preventDefault();
 		this.setState({
 			loading: true,
-			submitted: true,
 			errMsg: '',
 			errField: ''
         })
@@ -195,7 +192,7 @@ export default class TradeModal extends Component {
     
     render() {
         const { name, symbol, currPrice } = this.props.coin;
-        const { tradeObj, open, loading, submitted, success, errMsg, errField } = this.state;
+        const { tradeObj, open, loading, success, errMsg, errField } = this.state;
         const { type, side, size, price, GTC } = tradeObj;
 
         const numPattern2Dec = '^\\d*(?:\\.\\d{0,2})?$';

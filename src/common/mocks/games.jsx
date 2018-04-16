@@ -22,7 +22,7 @@ export const game1 = {
         PlayerMocks.player1,
         PlayerMocks.player2
     ],
-    private: false,
+    isPrivate: false,
     password: ''
 };
 
@@ -47,7 +47,7 @@ export const game2 = {
         PlayerMocks.player1,
         PlayerMocks.player2
     ],
-    private: false,
+    isPrivate: false,
     password: ''
 };
 
@@ -72,6 +72,6 @@ export const game3 = {
         PlayerMocks.player1,
         PlayerMocks.player2
     ],
-    private: false,
+    isPrivate: false,
     password: ''
 };

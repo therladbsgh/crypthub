@@ -15,3 +15,7 @@ export function placeOrder(tradeObj) {
 export function cancelOrder(tradeId) {
     return Backend.get(`game/cancelOrder?id=${tradeId}`);
 }
+
+export function saveGame(gameObj) {
+    return Backend.post('game/saveGame', gameObj);
+}
