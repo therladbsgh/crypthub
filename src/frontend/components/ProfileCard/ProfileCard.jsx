@@ -21,7 +21,7 @@ export default class ProfileCard extends Component {
 							</Grid.Column>
 							<Grid.Column>
 								<label>Today's Return</label>
-								<p className={player.todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{formatCurrency(player.todayReturn, { format: '%v%s', symbol: '%' })}</p>
+								<p className={player.todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{player.todayReturn >= 0 ? '+' : ''}{formatCurrency(player.todayReturn, { format: '%v%s', symbol: '%' })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>Net Return</label>
@@ -35,7 +35,7 @@ export default class ProfileCard extends Component {
 						<Grid.Row>
 							<Grid.Column>
 								<label>Current Cash</label>
-								<p>{formatCurrency(_.find(player.portfolio, { name: 'USD' }).amount, { format: '%s%v', symbol: '$' })}</p>
+								<p>{formatCurrency(_.find(player.portfolio, a => a.type.symbol === 'USD').amount, { format: '%s%v', symbol: '$' })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>Buying Power</label>

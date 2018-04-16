@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Header, Button } from 'semantic-ui-react';
-import { Transactions } from 'components';
+import { Portfolio, Transactions } from 'components';
 
 export default class GamePortfolio extends Component {
 	constructor(props) {
@@ -26,7 +26,7 @@ export default class GamePortfolio extends Component {
 		return (
 			<div>
 				<Header as='h2'>Your Portfolio</Header>
-				{JSON.stringify(player.portfolio)}
+				<Portfolio portfolio={player.portfolio} />
 				<Header as='h2'>Transactions</Header>
 				<Button.Group>
 					<Button toggle active={!history} onClick={() => this.setHistory(false)}>Current Orders</Button>

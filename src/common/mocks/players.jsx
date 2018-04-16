@@ -4,16 +4,31 @@ export const player1 = {
     name: 'player1',
     portfolio: [
         {
-            name: 'Bitcoin',
+            type: {
+                name: 'Bitcoin',
+                symbol: 'BTC',
+                currPrice: 10000,
+                todayReturn: 3.25
+            },
             amount: 250
         },
         {
-            name: 'Ethereum',
+            type: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                currPrice: 5000,
+                todayReturn: -20.01
+            },
             amount: 1000.28373623
         },
         {
-            name: 'USD',
-            amount: 250
+            type: {
+                name: 'US Dollars',
+                symbol: 'USD',
+                currPrice: null,
+                todayReturn: null
+            },
+            amount: 1000000
         }
     ],
     transactions: {

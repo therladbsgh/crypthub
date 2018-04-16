@@ -61,7 +61,8 @@ const TradeType = {
 const CoinType = {
     name: 'Bitcoin' | 'Ethereum' | 'US Dollars',
     symbol: 'BTC' | 'ETH' | 'USD',
-    currPrice: Number
+    currPrice: Number,
+    todayReturn: Number
 };
 
 const UserType = {

@@ -46,7 +46,7 @@ export default class YourGames extends Component {
                                 return (
                                 <Table.Row key={index}>
                                     <Table.Cell><Link to={`/game/${g.id}`}>{g.name}</Link></Table.Cell>
-                                    <Table.Cell className={g.completed ? '' : p.todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{g.completed ? '-' : formatCurrency(p.todayReturn, { format: '%v%s', symbol: '%' })}</Table.Cell>
+                                    <Table.Cell className={g.completed ? '' : p.todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{g.completed ? '-' : `${p.todayReturn >= 0 ? '+' : ''}${formatCurrency(p.todayReturn, { format: '%v%s', symbol: '%' })}`}</Table.Cell>
                                     <Table.Cell className={p.netReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{formatCurrency(Math.abs(p.netReturn), { format: '%s%v', symbol: `${p.netReturn >= 0 ? '+' : '-'}$` })}</Table.Cell>
                                     <Table.Cell>{p.currRank}</Table.Cell>
                                     <Table.Cell>{date.format(g.end, 'MM/DD/YYYY')}</Table.Cell>
