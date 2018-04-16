@@ -59,13 +59,12 @@ class Navbar extends Component {
                         </Dropdown.Menu>
                     </Dropdown>
                     :
-                    <Menu.Item>
-                        <Button.Group>
-                            <Button primary as={Link} to='/login'>Login</Button>
-                            <Button.Or />
-                            <Button positive as={Link} to='/signup'>Signup</Button>
-                        </Button.Group>
-                    </Menu.Item>}
+                    [<Menu.Item key='signup' as={Link} to='/signup'>
+                        Signup
+                    </Menu.Item>,
+                    <Menu.Item key='login' as={Link} to='/login'>
+                        Login
+                    </Menu.Item>]}
                 </Menu.Menu>
             </Menu>
 		);

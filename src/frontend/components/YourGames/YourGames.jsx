@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import formatCurrency from 'format-currency';
 import date from 'date-and-time';
 import { Header, Table, Icon } from 'semantic-ui-react';
@@ -44,7 +45,7 @@ export default class YourGames extends Component {
                                 const p = g.players[0];
                                 return (
                                 <Table.Row key={index}>
-                                    <Table.Cell>{g.name}</Table.Cell>
+                                    <Table.Cell><Link to={`/game/${g.id}`}>{g.name}</Link></Table.Cell>
                                     <Table.Cell className={g.completed ? '' : p.todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{g.completed ? '-' : formatCurrency(p.todayReturn, { format: '%v%s', symbol: '%' })}</Table.Cell>
                                     <Table.Cell className={p.netReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{formatCurrency(Math.abs(p.netReturn), { format: '%s%v', symbol: `${p.netReturn >= 0 ? '+' : '-'}$` })}</Table.Cell>
                                     <Table.Cell>{p.currRank}</Table.Cell>

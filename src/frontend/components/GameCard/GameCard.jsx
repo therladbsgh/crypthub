@@ -43,7 +43,7 @@ export default class GameCard extends Component {
 						{game.description}
 					</Card.Meta>
 					<Card.Description>
-						Created <strong>{date.subtractStr(now, game.created)} ago</strong> by {game.host} to start on <strong>{date.format(game.start, 'MM/DD/YYYY')}</strong> and end in <strong>{date.subtractStr(game.end, now)}</strong>
+						Created <strong>{date.subtractStr(now, game.created)} ago</strong> by <strong>{game.host}</strong> to start on <strong>{date.format(game.start, 'MM/DD/YYYY')}</strong> and end in <strong>{date.subtractStr(game.end, now)}</strong>
 					</Card.Description>
 				</Card.Content>
 				<Card.Content extra>

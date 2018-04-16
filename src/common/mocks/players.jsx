@@ -1,3 +1,5 @@
+import date from 'date-and-time';
+
 export const player1 = {
     name: 'player1',
     portfolio: [
@@ -18,33 +20,57 @@ export const player1 = {
         history: [
             {
                 id: '1',
+                type: 'market',
                 side: 'buy',
                 size: 25,
                 price: 100,
-                symbol: 'BTC'
+                symbol: 'BTC',
+                date: date.parse('Apr 1 2018', 'MMM D YYYY'),
+                GTC: true,
+                expiration: null,
+                filled: true,
+                filledDate: date.parse('Apr 3 2018', 'MMM D YYYY')
             },
             {
                 id: '2',
+                type: 'limit',
                 side: 'buy',
-                size: 35,
+                size: 35.000006,
                 price: 200,
-                symbol: 'ETH'
+                symbol: 'ETH',
+                date: date.parse('Apr 2 2018', 'MMM D YYYY'),
+                GTC: false,
+                expiration: date.parse('Apr 5 2018', 'MMM D YYYY'),
+                filled: false,
+                filledDate: null
             }
         ],
         current: [
             {
                 id: '3',
+                type: 'short',
                 side: 'sell',
                 size: 80,
                 price: 100,
-                symbol: 'BTC'
+                symbol: 'BTC',
+                date: date.parse('Apr 2 2018', 'MMM D YYYY'),
+                GTC: true,
+                expiration: null,
+                filled: false,
+                filledDate: null
             },
             {
                 id: '4',
+                type: 'limit',
                 side: 'buy',
                 size: 2,
                 price: 200,
-                symbol: 'ETH'
+                symbol: 'ETH',
+                date: date.parse('Apr 7 2018', 'MMM D YYYY'),
+                GTC: false,
+                expiration: date.parse('May 2 2018', 'MMM D YYYY'),
+                filled: false,
+                filledDate: null
             }
         ]
     },

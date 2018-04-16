@@ -26,7 +26,7 @@ export default class TradeCard extends Component {
 			<Card>
 				<Card.Content className={styles.center}>
 					<Header as='h2'>Search/Trade a Coin</Header>
-					<Searchbar placeholder='Coin name or symbol' source={CoinMocks.coins} field='name' searchFields={['name', 'symbol']} handleResults={this.handleResults} open={false} />
+					<Searchbar input={{ fluid: true }} placeholder='Coin name or symbol' source={CoinMocks.coins} field='name' searchFields={['name', 'symbol']} handleResults={this.handleResults} open={false} />
 					{!_.isEmpty(results) ?
 						<Table striped>
 							<Table.Body>

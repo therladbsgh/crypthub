@@ -36,10 +36,10 @@ class Home extends Component {
 			<div>
 				<Navbar />
 				<Header as='h1'>CryptHub</Header>
-				<Button as={Link} to='/login'>
+				<Button positive as={Link} to='/login'>
 					Create Game
 				</Button>
-				<Button as={Link} to='/login'>
+				<Button primary as={Link} to='/login'>
 					Find Game
 				</Button>
 			</div>

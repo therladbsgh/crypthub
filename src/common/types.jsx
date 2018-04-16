@@ -54,7 +54,8 @@ const TradeType = {
     date: Date,
     GTC: Boolean,
     expiration: Date,
-    filled: Boolean
+    filled: Boolean,
+    filledDate: Date
 };
 
 const CoinType = {

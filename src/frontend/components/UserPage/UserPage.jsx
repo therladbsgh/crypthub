@@ -4,6 +4,7 @@ import { Header, Tab } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { YourGames, FindGames, CreateGame } from 'components';
+import { UserPageStyle as styles } from 'styles';
 
 class UserPage extends Component {
     constructor(props) {
@@ -59,7 +60,8 @@ class UserPage extends Component {
             this.state.hasMounted &&
 			<div>
 				<Navbar/>
-				<Header as='h1'>Username</Header>
+                <p className={styles.welcome}>Welcome back,</p>
+				<Header id={styles.username} as='h1'>Username</Header>
 				<Tab panes={panes} renderActiveOnly={false} defaultActiveIndex={propsState ? propsState.openTab : 0} />
 			</div>
 		);

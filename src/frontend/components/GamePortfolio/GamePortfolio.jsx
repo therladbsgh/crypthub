@@ -8,7 +8,7 @@ export default class GamePortfolio extends Component {
 		super(props);
 
 		this.state = {
-			history: true
+			history: false
 		};
 
 		this.setHistory = this.setHistory.bind(this);
@@ -29,8 +29,8 @@ export default class GamePortfolio extends Component {
 				{JSON.stringify(player.portfolio)}
 				<Header as='h2'>Transactions</Header>
 				<Button.Group>
-					<Button toggle active={history} onClick={() => this.setHistory(true)}>History</Button>
 					<Button toggle active={!history} onClick={() => this.setHistory(false)}>Current Orders</Button>
+					<Button toggle active={history} onClick={() => this.setHistory(true)}>History</Button>					
 				</Button.Group>
 				<Transactions transactions={this.state.history ? transactions.history : transactions.current} />
 			</div>
