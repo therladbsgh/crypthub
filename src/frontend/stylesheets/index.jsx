@@ -7,4 +7,5 @@ export { default as TradeModalStyle } from './trademodal';
 export { default as ProfileCardStyle } from './profilecard';
 export { default as UserPageStyle } from './userpage';
 export { default as TransactionsStyle } from './transactions';
+export { default as CancelModalStyle } from './cancelmodal';
 export { default as SharedStyle } from './shared';

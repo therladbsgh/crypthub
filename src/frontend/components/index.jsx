@@ -19,4 +19,5 @@ export { default as Transactions } from './Transactions';
 export { default as GlobalRankings } from './GlobalRankings';
 export { default as TradeCard } from './TradeCard';
 export { default as Portfolio } from './Portfolio';
+export { default as CancelModal } from './CancelModal';
 export { default as PageNotFound } from './PageNotFound';

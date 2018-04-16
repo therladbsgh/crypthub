@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
 import date from 'date-and-time';
 import { Table, Button } from 'semantic-ui-react';
+import { CancelModal } from 'components';
 import { TransactionsStyle as styles } from 'styles';
 
 date.subtractStr = (date1, date2) => {
@@ -51,7 +52,7 @@ export default class Transactions extends Component {
                 <Table.Body>
                     {_.map(transactions, (t, index) => 
                         <Table.Row key={index} positive={t.filled} error={!current && !t.filled && t.expiration <= now}>
-                            {current && <Table.Cell id={styles.cancel}><Button compact negative size='small' content='Cancel' /></Table.Cell>}
+                            {current && <Table.Cell id={styles.cancel}><CancelModal tradeId={t.id} /></Table.Cell>}
                             <Table.Cell>{_.capitalize(`${t.type} ${t.side}`)}</Table.Cell>
                             <Table.Cell>{date.format(t.date, 'MM/DD/YYYY')}</Table.Cell>
                             <Table.Cell>{t.symbol}</Table.Cell>
