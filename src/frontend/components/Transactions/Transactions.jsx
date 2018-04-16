@@ -39,7 +39,7 @@ export default class Transactions extends Component {
 			<Table celled definition={current}>
                 <Table.Header>
                     <Table.Row>
-                        {current && <Table.HeaderCell />}                     
+                        {current && <Table.HeaderCell />}
                         <Table.HeaderCell>Type</Table.HeaderCell>
                         <Table.HeaderCell>Placed</Table.HeaderCell>                        
                         <Table.HeaderCell>Coin</Table.HeaderCell>                        

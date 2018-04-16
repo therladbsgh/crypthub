@@ -2,6 +2,7 @@ import date from 'date-and-time';
 
 export const player1 = {
     name: 'player1',
+    id: '1',
     portfolio: [
         {
             type: {
@@ -100,10 +101,34 @@ export const player1 = {
 
 export const player2 = {
     name: 'player2',
+    id: '2',
     portfolio: [
         {
-            name: 'Bitcoin',
-            amount: 300
+            type: {
+                name: 'Bitcoin',
+                symbol: 'BTC',
+                currPrice: 10000,
+                todayReturn: 3.25
+            },
+            amount: 200.425
+        },
+        {
+            type: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                currPrice: 5000,
+                todayReturn: -20.01
+            },
+            amount: 780.00000002
+        },
+        {
+            type: {
+                name: 'US Dollars',
+                symbol: 'USD',
+                currPrice: null,
+                todayReturn: null
+            },
+            amount: 1200000
         }
     ],
     transactions: {

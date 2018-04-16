@@ -6,11 +6,15 @@ import { Table } from 'semantic-ui-react';
 
 export default class Portfolio extends Component {
     render() {
-        const { portfolio } = this.props;
+        const { portfolio, header } = this.props;
 
         return (
 			<Table celled>
                 <Table.Header>
+                    {header && 
+                    <Table.Row>
+                        <Table.HeaderCell colSpan='5'>{header}</Table.HeaderCell>
+                    </Table.Row>}
                     <Table.Row>
                         <Table.HeaderCell>Symbol</Table.HeaderCell>
                         <Table.HeaderCell>% of Holdings</Table.HeaderCell>                        

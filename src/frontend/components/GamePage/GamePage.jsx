@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Tab } from 'semantic-ui-react';
-import { Navbar, Searchbar, GameOverview, GamePortfolio, GameRankings, GameSettings, TradeCard } from 'components';
+import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard } from 'components';
 import { GameMocks } from 'mocks';
 
 export default class GamePage extends Component {
@@ -27,13 +27,18 @@ export default class GamePage extends Component {
                 <GamePortfolio player={game.players[thisPlayer]} />
             </Tab.Pane>
         );
-        const GameRankingsPane = (
+        const GameComparePane = (
             <Tab.Pane key='tab3'>
+                <GameCompare players={game.players} />
+            </Tab.Pane>
+        );
+        const GameRankingsPane = (
+            <Tab.Pane key='tab4'>
                 <GameRankings players={game.players} />
             </Tab.Pane>
         );
         const GameSettingsPane = (
-            <Tab.Pane key='tab4'>
+            <Tab.Pane key='tab5'>
                 <GameSettings game={game} />
             </Tab.Pane>
         );
@@ -41,6 +46,7 @@ export default class GamePage extends Component {
         const panes = [
             { menuItem: 'Overview', pane: GameOverviewPane },
             { menuItem: 'Portfolio', pane: GamePortfolioPane },
+            { menuItem: 'Compare', pane: GameComparePane },
             { menuItem: 'Rankings', pane: GameRankingsPane },
             { menuItem: 'Settings', pane: GameSettingsPane }
         ];
