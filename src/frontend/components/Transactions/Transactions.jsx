@@ -2,7 +2,8 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
 import date from 'date-and-time';
-import { Table } from 'semantic-ui-react';
+import { Table, Button } from 'semantic-ui-react';
+import { TransactionsStyle as styles } from 'styles';
 
 date.subtractStr = (date1, date2) => {
 	const subtract = date.subtract(date1, date2);
@@ -30,13 +31,14 @@ date.subtractStr = (date1, date2) => {
 
 export default class Transactions extends Component {
     render() {
-        const { transactions } = this.props;
+        const { transactions, current } = this.props;
         const now = new Date();
 
         return (
-			<Table celled>
+			<Table celled definition={current}>
                 <Table.Header>
                     <Table.Row>
+                        {current && <Table.HeaderCell />}                     
                         <Table.HeaderCell>Type</Table.HeaderCell>
                         <Table.HeaderCell>Placed</Table.HeaderCell>                        
                         <Table.HeaderCell>Coin</Table.HeaderCell>                        
@@ -48,13 +50,14 @@ export default class Transactions extends Component {
 
                 <Table.Body>
                     {_.map(transactions, (t, index) => 
-                        <Table.Row key={index} positive={t.filled} error={!t.filled && t.expiration && t.expiration <= now}>
+                        <Table.Row key={index} positive={t.filled} error={!current && !t.filled && t.expiration <= now}>
+                            {current && <Table.Cell id={styles.cancel}><Button compact negative size='small' content='Cancel' /></Table.Cell>}
                             <Table.Cell>{_.capitalize(`${t.type} ${t.side}`)}</Table.Cell>
                             <Table.Cell>{date.format(t.date, 'MM/DD/YYYY')}</Table.Cell>
-                            <Table.Cell>{t.symbol}</Table.Cell>                            
+                            <Table.Cell>{t.symbol}</Table.Cell>
                             <Table.Cell>{t.size}</Table.Cell>
                             <Table.Cell>{formatCurrency(t.price, { format: '%s%v', symbol: '$' })}</Table.Cell>
-                            <Table.Cell>{t.filled ? `Filled ${date.format(t.filledDate, 'MM/DD/YYYY')}` : t.GTC ? 'GTC' : t.expiration && t.expiration <= now ? `Expired ${date.format(t.expiration, 'MM/DD/YYYY')}` : `Expires in ${date.subtractStr(t.expiration, now)}`}</Table.Cell>
+                            <Table.Cell>{current ? t.GTC ? 'GTC' : `Expires in ${date.subtractStr(t.expiration, now)}` : t.filled ? `Filled ${date.format(t.filledDate, 'MM/DD/YYYY')}` : `Expired ${date.format(t.expiration, 'MM/DD/YYYY')}`}</Table.Cell>
                         </Table.Row>
                     )}
                 </Table.Body>
