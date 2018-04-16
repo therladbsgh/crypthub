@@ -9,7 +9,8 @@ class Navbar extends Component {
         super(props);
 
         this.state = {
-            username: ''
+            username: '',
+            hasMounted: false
         };
 
         this.logout = this.logout.bind(this);
@@ -19,9 +20,7 @@ class Navbar extends Component {
 		UserBackend.getUser()
 		.then(res => {
 			console.log('success! ', res);
-            if (!_.isEmpty(res)) {
-				this.setState({ username: res.user });
-			}
+            this.setState({ username: res.user, hasMounted: true });
 		}, ({ err }) => {
 			console.log('error! ', err);
 			alert('Error: ', err);
@@ -42,11 +41,12 @@ class Navbar extends Component {
     }
 
   	render() {
-        const { username } = this.state;
-
+        const { username, hasMounted } = this.state;
+        
 		return (
+            hasMounted &&
             <Menu inverted>
-                <Menu.Item name='crypthub' as={Link} to='/' />
+                <Menu.Item name='crypthub' as={Link} to={username ? '/games' : '/'} />
 
                 <Menu.Menu position='right'>
                     <Menu.Item as={Link} to='/rankings' name='global rankings' />

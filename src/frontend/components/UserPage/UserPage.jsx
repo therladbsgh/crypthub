@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Header, Tab } from 'semantic-ui-react';
+import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { YourGames, FindGames, CreateGame } from 'components';
 
