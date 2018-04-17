@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
 import { Header, Button, Form, Message, Grid } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
-import { GameCard } from 'components';
+import { GameCard, JoinModal } from 'components';
 import { GameSettingsStyle as styles } from 'styles';
 
 export default class GameSettings extends Component {
@@ -111,9 +111,9 @@ export default class GameSettings extends Component {
     }
 
     render() {
-        const { inGame, isHost } = this.props;
+        const { inGame, isHost, userId } = this.props;
         const { gameObj, submitted, loading, errMsg, errField } = this.state;
-        const { host, playerPortfolioPublic, startingBalance, commissionValue, shortSelling, limitOrders, stopOrders, isPrivate, password, passwordConfirm, completed } = gameObj;
+        const { id, host, playerPortfolioPublic, startingBalance, commissionValue, shortSelling, limitOrders, stopOrders, isPrivate, password, passwordConfirm, completed } = gameObj;
 
         return (
 			<div>
@@ -123,7 +123,7 @@ export default class GameSettings extends Component {
                 inGame ?
                 <Button key='3' onClick={this.handleLeave} negative>Leave Game</Button>
                 :
-                <Button key='3' primary content='Join Game' />]}
+                <JoinModal key='3' size='medium' isPrivate={isPrivate} gameId={id} userId={userId} />]}
 				<Header as='h2'>About This Game</Header>
                 <GameCard game={this.props.game} />
                 {isHost && !completed &&

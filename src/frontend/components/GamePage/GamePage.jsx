@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Tab, Button } from 'semantic-ui-react';
-import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard } from 'components';
+import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard, JoinModal } from 'components';
 import { GamePageStyle as styles, SharedStyle as sharedStyles } from 'styles'; 
 import { GameMocks } from 'mocks';
 
@@ -17,11 +17,14 @@ export default class GamePage extends Component {
 
   	render() {
         const { game, thisPlayer } = this.state;
-        const { players, playerPortfolioPublic, completed } = game;
+        const { id, players, playerPortfolioPublic, isPrivate, completed } = game;
+
+        // TODO: logic for getting userId
+        const userId = '1';
 
         // TODO: logic for checking if player is in the game and if they are the host
-        const inGame = true;
-        const isHost = true;
+        const inGame = false;
+        const isHost = false;
 
         const GameOverviewPane = (
             <Tab.Pane key='tab1'>
@@ -45,7 +48,7 @@ export default class GamePage extends Component {
         );
         const GameSettingsPane = (
             <Tab.Pane key='tab5'>
-                <GameSettings game={game} inGame={inGame} isHost={isHost} />
+                <GameSettings game={game} inGame={inGame} isHost={isHost} userId={userId} />
             </Tab.Pane>
         );
 
@@ -66,7 +69,9 @@ export default class GamePage extends Component {
                     {completed ?
                     <span className={styles.completedTag}>Completed</span>
                     :
-                    <Button className={styles.joinButton} primary size='tiny' content='Join Game' />}
+                    <div className={styles.joinButton}>
+                    <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} userId={userId} />
+                    </div>}
                 </div>,
                 <Tab key='2' className='thirteen wide column' panes={panes} renderActiveOnly={false} />]
                 :

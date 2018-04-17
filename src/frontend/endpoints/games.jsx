@@ -19,3 +19,7 @@ export function cancelOrder(tradeId) {
 export function saveGame(gameObj) {
     return Backend.post('game/saveGame', gameObj);
 }
+
+export function joinGame(joinObj) {
+    return Backend.post('game/joinGame', joinObj);
+}

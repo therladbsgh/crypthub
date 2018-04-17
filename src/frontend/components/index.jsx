@@ -21,4 +21,5 @@ export { default as TradeCard } from './TradeCard';
 export { default as Portfolio } from './Portfolio';
 export { default as CancelModal } from './CancelModal';
 export { default as GameCompare } from './GameCompare';
+export { default as JoinModal } from './JoinModal';
 export { default as PageNotFound } from './PageNotFound';
