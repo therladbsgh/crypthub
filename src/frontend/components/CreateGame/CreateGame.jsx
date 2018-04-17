@@ -20,7 +20,6 @@ class CreateGame extends Component {
 				created: new Date(),
 				start: moment(),
 				end: moment(moment()).add(1, 'M'),
-				numPlayers: 1,
 				playerPortfolioPublic: true,
 				startingBalance: '',
 				commissionValue: '',

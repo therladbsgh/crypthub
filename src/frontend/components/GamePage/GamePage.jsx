@@ -17,7 +17,7 @@ export default class GamePage extends Component {
 
   	render() {
         const { game, thisPlayer } = this.state;
-        const { players, completed } = game;
+        const { players, playerPortfolioPublic, completed } = game;
 
         // TODO: logic for checking if player is in the game and if they are the host
         const inGame = true;
@@ -33,7 +33,7 @@ export default class GamePage extends Component {
                 <GamePortfolio player={players[thisPlayer]} completed={completed} />
             </Tab.Pane>
         );
-        const GameComparePane = (
+        const GameComparePane = playerPortfolioPublic && (
             <Tab.Pane key='tab3'>
                 <GameCompare players={players} completed={completed} />
             </Tab.Pane>
@@ -52,7 +52,7 @@ export default class GamePage extends Component {
         const panes = [
             { menuItem: 'Overview', pane: GameOverviewPane },
             ...inGame ? [{ menuItem: 'Portfolio', pane: GamePortfolioPane }] : [],
-            { menuItem: 'Compare', pane: GameComparePane },
+            ...playerPortfolioPublic ? [{ menuItem: 'Compare', pane: GameComparePane }] : [],
             { menuItem: 'Rankings', pane: GameRankingsPane },
             { menuItem: 'Settings', pane: GameSettingsPane }
         ];

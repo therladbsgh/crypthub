@@ -10,4 +10,5 @@ export { default as TransactionsStyle } from './transactions';
 export { default as CancelModalStyle } from './cancelmodal';
 export { default as GameSettingsStyle } from './gamesettings';
 export { default as GamePageStyle } from './gamepage';
+export { default as GameCardStyle } from './gamecard';
 export { default as SharedStyle } from './shared';

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import date from 'date-and-time';
 import { Link } from 'react-router-dom';
 import { Card } from 'semantic-ui-react';
-import { SharedStyle as styles } from 'styles';
+import { GameCardStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
 date.subtractStr = (date1, date2) => {
 	const subtract = date.subtract(date1, date2);
@@ -31,23 +31,26 @@ date.subtractStr = (date1, date2) => {
 export default class GameCard extends Component {
     render() {
 		const { game } = this.props;
+		const { id, name, description, created, host, start, end, players, isPrivate, completed } = game;
 		const now = new Date();
 
         return (
-			<Card id={styles.card}>
+			<Card id={sharedStyles.card}>
 				<Card.Content>
 					<Card.Header>
-						<Link to={`/game/${game.id}`}>{game.name}</Link>
+						<Link to={`/game/${id}`}>{name}</Link>
+
+						<span className={`${completed ? styles.completed : isPrivate && styles.private} ${styles.tag}`}>{completed ? 'Completed' : isPrivate ? 'Private' : ''}</span>
 					</Card.Header>
 					<Card.Meta>
-						{game.description}
+						{description}
 					</Card.Meta>
 					<Card.Description>
-						Created <strong>{date.subtractStr(now, game.created)} ago</strong> by <strong>{game.host}</strong> to start on <strong>{date.format(game.start, 'MM/DD/YYYY')}</strong> and end in <strong>{date.subtractStr(game.end, now)}</strong>
+						Created <strong>{date.subtractStr(now, created)} ago</strong> by <strong>{host}</strong> to start on <strong>{date.format(start, 'MM/DD/YYYY')}</strong> and end {end > now ? 'in' : 'on'} <strong>{end > now ? date.subtractStr(end, now) : date.format(end, 'MM/DD/YYYY')}</strong>
 					</Card.Description>
 				</Card.Content>
 				<Card.Content extra>
-					{game.numPlayers} players
+					{players.length} players
 				</Card.Content>
 			</Card>
 		);
