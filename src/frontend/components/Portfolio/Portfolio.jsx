@@ -6,7 +6,7 @@ import { Table } from 'semantic-ui-react';
 
 export default class Portfolio extends Component {
     render() {
-        const { portfolio, header } = this.props;
+        const { portfolio, header, completed } = this.props;
 
         return (
 			<Table celled>
@@ -19,7 +19,7 @@ export default class Portfolio extends Component {
                         <Table.HeaderCell>Symbol</Table.HeaderCell>
                         <Table.HeaderCell>% of Holdings</Table.HeaderCell>                        
                         <Table.HeaderCell>Amount</Table.HeaderCell>                        
-                        <Table.HeaderCell>Current Price (Today's Change)</Table.HeaderCell>
+                        <Table.HeaderCell>{completed ? 'Final Price (Final Day\'s Change)' : 'Current Price (Today\'s Change)'}</Table.HeaderCell>
                         <Table.HeaderCell>Current Value</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>

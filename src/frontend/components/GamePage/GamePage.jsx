@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Header, Tab } from 'semantic-ui-react';
+import { Header, Tab, Button } from 'semantic-ui-react';
 import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard } from 'components';
+import { GamePageStyle as styles, SharedStyle as sharedStyles } from 'styles'; 
 import { GameMocks } from 'mocks';
 
 export default class GamePage extends Component {
@@ -16,36 +17,41 @@ export default class GamePage extends Component {
 
   	render() {
         const { game, thisPlayer } = this.state;
+        const { players, completed } = game;
+
+        // TODO: logic for checking if player is in the game and if they are the host
+        const inGame = true;
+        const isHost = true;
 
         const GameOverviewPane = (
             <Tab.Pane key='tab1'>
-                <GameOverview game={game} thisPlayer={thisPlayer} />
+                <GameOverview game={game} thisPlayer={thisPlayer} completed={completed} inGame={inGame} />
             </Tab.Pane>
         );
-        const GamePortfolioPane = (
+        const GamePortfolioPane = inGame && (
             <Tab.Pane key='tab2'>
-                <GamePortfolio player={game.players[thisPlayer]} />
+                <GamePortfolio player={players[thisPlayer]} completed={completed} />
             </Tab.Pane>
         );
         const GameComparePane = (
             <Tab.Pane key='tab3'>
-                <GameCompare players={game.players} />
+                <GameCompare players={players} completed={completed} />
             </Tab.Pane>
         );
         const GameRankingsPane = (
             <Tab.Pane key='tab4'>
-                <GameRankings players={game.players} />
+                <GameRankings players={players} />
             </Tab.Pane>
         );
         const GameSettingsPane = (
             <Tab.Pane key='tab5'>
-                <GameSettings game={game} />
+                <GameSettings game={game} inGame={inGame} isHost={isHost} />
             </Tab.Pane>
         );
 
         const panes = [
             { menuItem: 'Overview', pane: GameOverviewPane },
-            { menuItem: 'Portfolio', pane: GamePortfolioPane },
+            ...inGame ? [{ menuItem: 'Portfolio', pane: GamePortfolioPane }] : [],
             { menuItem: 'Compare', pane: GameComparePane },
             { menuItem: 'Rankings', pane: GameRankingsPane },
             { menuItem: 'Settings', pane: GameSettingsPane }
@@ -54,13 +60,23 @@ export default class GamePage extends Component {
 		return (
 			<div>
 				<Navbar />
-				<Header as='h1'>Game Name</Header>
-                <div className='ui grid'>
+                {(completed || !inGame) ?
+                [<div key='1' className={styles.completedHeader}>
+                    <Header className={sharedStyles.inline} as='h1'>Game Name</Header>
+                    {completed ?
+                    <span className={styles.completedTag}>Completed</span>
+                    :
+                    <Button className={styles.joinButton} primary size='tiny' content='Join Game' />}
+                </div>,
+                <Tab key='2' className='thirteen wide column' panes={panes} renderActiveOnly={false} />]
+                :
+                [<Header key='1' as='h1'>Game Name</Header>,
+                <div key='3' className='ui grid'>
                     <div className='three wide column'>
                         <TradeCard />
                     </div>
                     <Tab className='thirteen wide column' panes={panes} renderActiveOnly={false} />
-                </div>
+                </div>]}
 			</div>
 		);
   	}

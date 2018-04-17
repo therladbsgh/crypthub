@@ -19,7 +19,7 @@ export default class GameCompare extends Component {
 	}
 	
 	render() {
-        const { players } = this.props;
+        const { players, completed } = this.props;
         const { playerIds } = this.state;
 
 		return (
@@ -29,7 +29,7 @@ export default class GameCompare extends Component {
                 {_.map(playerIds, id => {
                     const player = _.find(players, { id });
                     return (
-                        <Portfolio key={id} portfolio={player.portfolio} header={player.name} />
+                        <Portfolio key={id} portfolio={player.portfolio} header={player.name} completed={completed} />
                     );
                 })}
 			</div>

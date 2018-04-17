@@ -111,17 +111,24 @@ export default class GameSettings extends Component {
     }
 
     render() {
+        const { inGame, isHost } = this.props;
         const { gameObj, submitted, loading, errMsg, errField } = this.state;
-        const { playerPortfolioPublic, startingBalance, commissionValue, shortSelling, limitOrders, stopOrders, isPrivate, password, passwordConfirm } = gameObj;
+        const { host, playerPortfolioPublic, startingBalance, commissionValue, shortSelling, limitOrders, stopOrders, isPrivate, password, passwordConfirm, completed } = gameObj;
 
         return (
 			<div>
-                <Button onClick={this.handleInvite} positive>Invite Players</Button>
-                <Button onClick={this.handleLeave} negative>Leave Game</Button>
+                {!completed &&
+                [<Header key='1' as='h2'>Game Actions</Header>,
+                isHost && <Button key='2' onClick={this.handleInvite} positive>Invite Players</Button>,
+                inGame ?
+                <Button key='3' onClick={this.handleLeave} negative>Leave Game</Button>
+                :
+                <Button key='3' primary content='Join Game' />]}
 				<Header as='h2'>About This Game</Header>
                 <GameCard game={this.props.game} />
-                <Header as='h2'>Game Options</Header>
-                <Form loading={loading} success={submitted && !errMsg} error={!!errMsg}>
+                {isHost && !completed &&
+                [<Header key='header' as='h2'>Game Options</Header>,
+                <Form key='form' loading={loading} success={submitted && !errMsg} error={!!errMsg}>
                     <Form.Field>
                         <label>Game Access</label>
                         <Button.Group>
@@ -151,7 +158,7 @@ export default class GameSettings extends Component {
                         content={errMsg}
                     />
                     <Button onClick={this.handleSubmit} positive>Save Changes</Button>
-                </Form>
+                </Form>]}
                 <Header as='h2'>Game Settings</Header>
                 <Grid className={styles.settings} columns={2}>
                     <Grid.Row>
@@ -196,6 +203,15 @@ export default class GameSettings extends Component {
                             </div>
                         </Grid.Column>
                     </Grid.Row>
+                    {(!isHost || completed) &&
+                    <Grid.Row className={styles.row}>
+                        <Grid.Column>
+                            <div className={styles.column}>
+                                <label>Game Access:</label>
+                                <p>{isPrivate ? 'Private' : 'Public'}</p>
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>}
                 </Grid>
 			</div>
         );

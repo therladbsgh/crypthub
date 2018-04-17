@@ -5,7 +5,7 @@ import { ProfileCardStyle as styles, SharedStyle as sharedStyles } from 'styles'
 
 export default class ProfileCard extends Component {
     render() {
-        const { player } = this.props;
+        const { player, completed } = this.props;
         
         return (
 			<Card id={sharedStyles.card}>
@@ -20,7 +20,7 @@ export default class ProfileCard extends Component {
 								<p>{formatCurrency(player.netWorth, { format: '%s%v', symbol: '$' })}</p>
 							</Grid.Column>
 							<Grid.Column>
-								<label>Today's Return</label>
+								<label>{completed ? 'Final Day\'s Return' : 'Today\'s Return'}</label>
 								<p className={player.todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{player.todayReturn >= 0 ? '+' : ''}{formatCurrency(player.todayReturn, { format: '%v%s', symbol: '%' })}</p>
 							</Grid.Column>
 							<Grid.Column>
