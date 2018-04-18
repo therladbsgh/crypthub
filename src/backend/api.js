@@ -5,6 +5,7 @@ module.exports = api
 // 'uid'
 // 'action'
 // 'ticker'
+// optional 'testing'
 
 function api(request, response) {
   console.log('success');
@@ -12,6 +13,12 @@ function api(request, response) {
   
   var reply = '';
 
+  if (request.body.testing != undefined){
+    console.log("We are in test mode.  We should be behaving differently.");
+    response.send("test recieved\n");
+    return;
+  }
+	
   // get user from request.body.uid
   
   if (request.body.action == 'buy') {
