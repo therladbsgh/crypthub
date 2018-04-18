@@ -49,7 +49,9 @@ class Navbar extends Component {
                 <Menu.Item name='crypthub' as={Link} to={username ? '/games' : '/'} />
 
                 <Menu.Menu position='right'>
-                    <Menu.Item as={Link} to='/rankings' name='global rankings' />
+                    <Menu.Item as={Link} to='/rankings'>
+                        <Icon name='trophy' />Global Rankings
+                    </Menu.Item>
                     {username ? 
                     <Dropdown item text={username}>
                         <Dropdown.Menu>
@@ -60,10 +62,10 @@ class Navbar extends Component {
                     </Dropdown>
                     :
                     [<Menu.Item key='signup' as={Link} to='/signup'>
-                        Signup
+                        <Icon name='signup' />Signup
                     </Menu.Item>,
                     <Menu.Item key='login' as={Link} to='/login'>
-                        Login
+                        <Icon name='sign in' />Login
                     </Menu.Item>]}
                 </Menu.Menu>
             </Menu>

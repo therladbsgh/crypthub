@@ -164,7 +164,7 @@ class Login extends Component {
                             header='Error'
                             content={errMsg}
                         />
-                        <Button icon='sign in' primary type='submit' content='Sign In' />
+                        <Button icon='sign in' primary type='submit' content='Log In' />
                     </Form>
                     <Link to='/signup'>Don't have an account?</Link><br />
                     <a onClick={this.toggleForgot}>Forgot your password?</a>
