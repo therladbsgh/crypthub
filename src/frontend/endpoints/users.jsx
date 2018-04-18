@@ -19,3 +19,7 @@ export function forgot(forgotObj) {
 export function logout() {
     return Backend.get('passport/logout');
 }
+
+export function verifyEmail(token) {
+    return Backend.get(`passport/verifyEmail?token=${token}`);
+}
