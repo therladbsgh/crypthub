@@ -160,8 +160,6 @@ export default class TradeModal extends Component {
         _.set(tradeObjSend, 'price', Number(price));
         _.set(tradeObjSend, 'date', new Date());
 
-        console.log(tradeObjSend);
-
 		GameBackend.placeOrder(tradeObjSend)
 		.then(res => {
 			console.log('success! ', res);
