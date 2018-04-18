@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const GameSchema = new Schema({
+  gameid: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required: true
