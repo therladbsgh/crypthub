@@ -155,10 +155,12 @@ export default class TradeModal extends Component {
             });
         }
 
-        const tradeObjSend = _.clone(tradeObjSend);
+        const tradeObjSend = _.clone(tradeObj);
         _.set(tradeObjSend, 'size', Number(size));
         _.set(tradeObjSend, 'price', Number(price));
         _.set(tradeObjSend, 'date', new Date());
+
+        console.log(tradeObjSend);
 
 		GameBackend.placeOrder(tradeObjSend)
 		.then(res => {
