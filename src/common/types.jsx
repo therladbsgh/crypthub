@@ -22,9 +22,8 @@ const GameType = {
 };
 
 const PlayerType = {
-    id: String,
-    userId: String,
-    name: String,
+    _id: String,
+    username: String,
     netWorth: Number,
     numTrades: Number,
     netReturn: Number,
@@ -42,7 +41,7 @@ const PlayerType = {
 };
 
 const AssetType = {
-    type: CoinType,
+    coin: CoinType,
     amount: Number
 };
 
@@ -68,7 +67,6 @@ const CoinType = {
 };
 
 const UserType = {
-    id: String,
     name: String,
     ELO: Number,
     games: Array.of.GameType,

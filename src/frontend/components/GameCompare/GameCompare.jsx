@@ -8,7 +8,7 @@ export default class GameCompare extends Component {
 		super(props);
 
 		this.state = {
-			playerIds: _.map(this.props.players, 'id'),
+			playerIds: _.map(this.props.players, '_id'),
 		};
 
 		this.handleChange = this.handleChange.bind(this);
@@ -26,10 +26,10 @@ export default class GameCompare extends Component {
 			<div>
                 <Header as='h2'>Compare Player Portfolios</Header>
 				<Dropdown placeholder='Players to compare' multiple search selection options={_.map(players, p => ({ text: p.name, value: p.id }))} value={playerIds} onChange={this.handleChange} />
-                {_.map(playerIds, id => {
-                    const player = _.find(players, { id });
+                {_.map(playerIds, _id => {
+                    const player = _.find(players, { _id });
                     return (
-                        <Portfolio key={id} portfolio={player.portfolio} header={player.name} completed={completed} />
+                        <Portfolio key={_id} portfolio={player.portfolio} header={player.name} completed={completed} />
                     );
                 })}
 			</div>
