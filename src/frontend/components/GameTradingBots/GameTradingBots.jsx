@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { Header, Dropdown, Form, Button, Message } from 'semantic-ui-react';
+import { Header, Dropdown, Form, Button, Message, TextArea } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 
 export default class GameTradingBots extends Component {
@@ -13,8 +13,7 @@ export default class GameTradingBots extends Component {
                 botId: ''
             },
             loading: false,
-            errStop: '',
-            errSave: ''
+            err: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -35,8 +34,7 @@ export default class GameTradingBots extends Component {
         const { setBotObj } = this.state;
         this.setState({
             loading: true,
-            errStop: '',
-            errSave: ''
+            err: ''
         });
 
         GameBackend.setTradingBot(setBotObj)
@@ -51,7 +49,7 @@ export default class GameTradingBots extends Component {
             });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, errSave: err });
+			this.setState({ loading: false, err });
         });
     }
 
@@ -60,8 +58,7 @@ export default class GameTradingBots extends Component {
 
         this.setState({
             loading: true,
-            errStop: '',
-            errSave: ''
+            err: ''
         });
 
         GameBackend.setTradingBot(_.set(_.clone(setBotObj), 'botId', ''))
@@ -70,48 +67,48 @@ export default class GameTradingBots extends Component {
             this.setState({ loading: false });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, errStop: err });
+			this.setState({ loading: false, err });
         });
     }
 
     render() {
         const { player } = this.props;
-        const { setBotObj, loading, errStop, errSave } = this.state;
+        const { setBotObj, loading, err } = this.state;
         const { tradingBots, activeBotId } = player;
         const { botId } = setBotObj;
 
         return (
 			<div>
 				<Header as='h2'>Trading Bot Settings</Header>
-                <Header as='h3'>Active Trading Bot</Header>
-                {activeBotId ?
-                <Form onSubmit={this.handleStop} loading={loading} error={!!errStop}>
-                    <Form.Field>
-                        <label>Trading Bot Currently in Play:</label>
-				        {_.find(tradingBots, { id: activeBotId }).name}
-                    </Form.Field>
-                    <Message
-						error
-						header='Error'
-						content={errStop}
-					/>
-                    <Button icon='stop' negative type='submit' content='Stop Active Bot' />
+                <Form loading={loading} error={!!err}>
+                    <Form.Group widths={4}>
+                        <Form.Field>
+                            <label>Trading Bot Currently in Play</label>
+                            { activeBotId ? _.find(tradingBots, { id: activeBotId }).name : 'You currently don\'t have an active trading bot.'}
+                            <br /><br /><br />
+                            <Button icon='stop' negative disabled={!activeBotId} onClick={this.handleStop} content='Stop Active Bot' />                            
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Trading Bot to Make Active</label>
+                            <Dropdown placeholder='Trading bot to make active' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t.id }))} value={botId} onChange={this.handleChange} />  
+                            <br /><br />
+                            <Button icon='save' positive onClick={this.handleSave} content='Save Changes' />                            
+                        </Form.Field>
+                    </Form.Group>
+                    <Form.Field width={8}>
+                        <Message
+                            error
+                            header='Error'
+                            content={err}
+                        />   
+                    </Form.Field>         
                 </Form>
-                :
-                <strong>You currently don't have an active trading bot.</strong>}
-                <Header as='h3'>Change Active Trading Bot</Header>
-                <Form onSubmit={this.handleSave} loading={loading} error={!!errSave}>
+                <Header as='h2'>Debug Log</Header>
+                <Form>
                     <Form.Field>
-                        <label>Trading Bot to Make Active</label>
-				        <Dropdown placeholder='Trading bot to make active' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t.id }))} value={botId} onChange={this.handleChange} />  
+                        <TextArea name='debugLog' value={'hello'} />
                     </Form.Field>
-                    <Message
-						error
-						header='Error'
-						content={errSave}
-					/>
-                    <Button icon='save' positive type='submit' content='Save Changes' />
-                </Form>            
+                </Form>
 			</div>
         );
     }
