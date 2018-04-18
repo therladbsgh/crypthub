@@ -52,12 +52,11 @@ function validate(req, res) {
  */
 function create(req, res) {
   const {
-    name, description, start, end,
+    id, name, description, start, end,
     playerPortfolioPublic, startingBalance, commissionValue,
     shortSelling, limitOrders, stopOrders,
     isPrivate, password
   } = req.body;
-  const { id } = id;
 
   const game = new Game({
     id,
@@ -146,11 +145,20 @@ function updatePrices(cb) {
     }
 
     coins.forEach((each) => {
+      if (each.name !== 'US Dollars') {
+
+      }
       console.log(each.name);
       // TODO: UPDATE PRICES
     });
     cb(null);
   });
+}
+
+function updateSinglePrice(li, cb) {
+  if (li.length == 0) {
+    cb()
+  }
 }
 
 function placeOrder(req, res) {
