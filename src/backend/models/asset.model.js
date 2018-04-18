@@ -6,8 +6,9 @@ const AssetSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true
   },
-  name: {
+  coin: {
     type: Schema.Types.ObjectId,
+    ref: 'Coin',
     required: true
   },
   amount: {
@@ -17,4 +18,5 @@ const AssetSchema = new Schema({
 });
 
 const model = mongoose.model('Asset', AssetSchema);
+
 module.exports = model;

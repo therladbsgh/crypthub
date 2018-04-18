@@ -23,7 +23,7 @@ const TradeSchema = new Schema({
     required: true
   },
   symbol: {
-    type: Schema.Types.ObjectId,
+    type: [{ type: Schema.Types.ObjectId, ref: 'Coin' }],
     required: true
   },
   date: {
@@ -41,4 +41,5 @@ const TradeSchema = new Schema({
 });
 
 const model = mongoose.model('Trade', TradeSchema);
+
 module.exports = model;

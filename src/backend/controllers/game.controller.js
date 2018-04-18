@@ -81,12 +81,11 @@ function create(req, res) {
 
     const usdAsset = new Asset({
       _id: new Types.ObjectId(),
-      name: usdCoin._id,
+      coin: usdCoin._id,
       amount: startingBalance
     });
 
     usdAsset.save().then((newAsset) => {
-      console.log(newAsset);
       const player = new Player({
         _id: new Types.ObjectId(),
         username: req.session.user,
@@ -104,7 +103,7 @@ function create(req, res) {
         game.players = [newPlayer._id];
         game.save().then((newGame) => {
           Game.findOne({ _id: newGame._id })
-            .populate({ path: 'players', populate: { path: 'portfolio' } })
+            .populate({ path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } })
             .exec((err2, gameToReturn) => {
               if (err2) res.status(500).json({ err: 'MongoDB query error' });
               res.status(200).json({ data: gameToReturn });
