@@ -25,9 +25,7 @@ class VerifyEmail extends Component {
     componentWillMount() {
         const params = queryString.parse(this.props.location.search);
         const { token, email } = params;
-        if (!token || !email) {
-            this.props.history.push('/pagenotfound');
-        }
+        if (!token || !email) return this.props.history.push('/pagenotfound');
 
         UserBackend.verifyEmail(token)
 		.then(res => {
