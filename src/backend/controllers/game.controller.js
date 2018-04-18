@@ -16,7 +16,7 @@ const Asset = require('../models/asset.model');
 function validate(req, res) {
   const { id } = req.body;
 
-  Game.findOne({ gameid: id }, (err, game) => {
+  Game.findOne({ id }, (err, game) => {
     if (err) {
       res.status(500).json({ err: 'MongoDB query error' });
       return;
@@ -57,10 +57,10 @@ function create(req, res) {
     shortSelling, limitOrders, stopOrders,
     isPrivate, password
   } = req.body;
-  const gameid = req.body.id;
+  const { id } = id;
 
   const game = new Game({
-    gameid,
+    id,
     name,
     description,
     host: req.session.user,
@@ -115,9 +115,9 @@ function create(req, res) {
 }
 
 function getGame(req, res) {
-  const gameid = req.params.id;
+  const { id } = req.params;
 
-  Game.findOne({ gameid })
+  Game.findOne({ id })
     .populate({ path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } })
     .exec((err, game) => {
       if (err) {
