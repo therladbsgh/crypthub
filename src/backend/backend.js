@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const session = require('cookie-session');
+const session = require('express-session');
+const connectMongo = require('connect-mongo');
 
 const db = require('./db');
 const router = require('./routes/index.js');
@@ -20,13 +21,18 @@ app.use((req, res, next) => {
 });
 
 // Setup sessions
+
+const MongoStore = connectMongo(session);
 app.use(cookieParser('secret'));
 app.use(session({
-  name: 'session',
-  maxAge: 600000,
-  signed: false,
+  key: 'user_sid',
+  cookie: { maxAge: 60000 },
+  store: new MongoStore({ mongooseConnection: db }),
+  saveUninitialized: true,
+  resave: true,
   secret: 'secret'
 }));
+
 
 // Configure router
 app.use('/', router);

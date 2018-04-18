@@ -12,9 +12,12 @@ const Player = require('../models/player.model');
  * @return User object
  */
 function validate(req, res) {
-  const { name } = req.body;
+  console.log(req.body);
+  const { id } = req.body;
 
-  Game.findOne({ name }, (err, game) => {
+  Game.findOne({ gameid: id }, (err, game) => {
+    console.log(err);
+    console.log(game);
     if (err) {
       res.status(500).json({ err: 'MongoDB query error' });
       return;
@@ -55,8 +58,10 @@ function create(req, res) {
     shortSelling, limitOrders, stopOrders,
     isPrivate, password
   } = req.body;
+  const gameid = req.body.id;
 
   const game = new Game({
+    gameid,
     name,
     description,
     host: req.session.user,
