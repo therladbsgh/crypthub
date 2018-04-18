@@ -1,30 +1,10 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
-import { Modal, Button, Statistic, Form, Dropdown, Message, Input, Label, Header } from 'semantic-ui-react';
+import { Modal, Button, Statistic, Form, Dropdown, Message, Input, Label, Header, Icon } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { TradeModalStyle as styles } from 'styles';
 import { SharedStyle as sharedStyles } from 'styles';
-
-//TODO: logic for what type options are available
-const typeOptions = [
-    {
-        text: 'Market Order',
-        value: 'market'
-    },
-    {
-        text: 'Limit Order',
-        value: 'limit'
-    },
-    {
-        text: 'Short Sell',
-        value: 'short'
-    },
-    {
-        text: 'Stop Order',
-        value: 'stop'
-    },
-];
 
 const priceOrders = ['limit', 'stop'];
 
@@ -46,7 +26,6 @@ export default class TradeModal extends Component {
             },
             open: false,
 			loading: false,
-            submitted: false,
             success: false,
             done: false,
 			errMsg: '',
@@ -81,7 +60,6 @@ export default class TradeModal extends Component {
             },
             open: false,
 			loading: false,
-            submitted: false,
             success: false,
             done: false,
 			errMsg: '',
@@ -157,7 +135,6 @@ export default class TradeModal extends Component {
 		event.preventDefault();
 		this.setState({
 			loading: true,
-			submitted: true,
 			errMsg: '',
 			errField: ''
         })
@@ -194,8 +171,9 @@ export default class TradeModal extends Component {
     }
     
     render() {
-        const { name, symbol, currPrice } = this.props.coin;
-        const { tradeObj, open, loading, submitted, success, errMsg, errField } = this.state;
+        const { coin, orderTypes } = this.props;
+        const { name, symbol, currPrice } = coin;
+        const { tradeObj, open, loading, success, errMsg, errField } = this.state;
         const { type, side, size, price, GTC } = tradeObj;
 
         const numPattern2Dec = '^\\d*(?:\\.\\d{0,2})?$';
@@ -206,7 +184,7 @@ export default class TradeModal extends Component {
 
         return (
             <div>
-                <Modal trigger={<Button primary>Trade</Button>} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+                <Modal trigger={<Button icon='exchange' primary compact size='tiny' content='Trade' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
                     <Modal.Header>Trade {name} ({symbol})</Modal.Header>
                     <Modal.Content>
                         <div className={sharedStyles.center}>
@@ -219,7 +197,7 @@ export default class TradeModal extends Component {
                         <Form onSubmit={this.handleSubmit} loading={loading} error={!!errMsg}>
                             <Form.Field>
                                 <label>Order Type</label>
-                                <Dropdown placeholder='Order Type' name='type' selection options={typeOptions} value={type} onChange={(e, data) => this.handleDropdownChange(data)} />
+                                <Dropdown placeholder='Order Type' name='type' selection options={orderTypes} value={type} onChange={(e, data) => this.handleDropdownChange(data)} />
                             </Form.Field>
                             <Form.Group inline>
                                 <label><span className={!showSide ? sharedStyles.disabled : ''}>Side</span></label>
@@ -244,7 +222,7 @@ export default class TradeModal extends Component {
                                 header='Error'
                                 content={errMsg}
                             />
-                            <Button type='submit' primary>Place Order</Button>
+                            <Button icon='check' type='submit' primary content='Place Order' />
                         </Form>
                     </Modal.Content>
                 </Modal>

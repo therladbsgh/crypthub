@@ -9,7 +9,6 @@ export const game1 = {
     created: date.parse('Apr 1 2018', 'MMM D YYYY'),
     start: date.parse('Apr 2 2018', 'MMM D YYYY'),
     end: date.parse('May 7 2018', 'MMM D YYYY'),
-    numPlayers: 2,
     playerPortfolioPublic: true,
     startingBalance: 10000,
     commissionValue: 10,
@@ -22,7 +21,7 @@ export const game1 = {
         PlayerMocks.player1,
         PlayerMocks.player2
     ],
-    private: false,
+    isPrivate: false,
     password: ''
 };
 
@@ -34,7 +33,6 @@ export const game2 = {
     created: date.parse('Apr 2 2018', 'MMM D YYYY'),
     start: date.parse('Apr 3 2018', 'MMM D YYYY'),
     end: date.parse('May 1 2018', 'MMM D YYYY'),
-    numPlayers: 20,
     playerPortfolioPublic: true,
     startingBalance: 10000,
     commissionValue: 10,
@@ -47,7 +45,7 @@ export const game2 = {
         PlayerMocks.player1,
         PlayerMocks.player2
     ],
-    private: false,
+    isPrivate: false,
     password: ''
 };
 
@@ -59,7 +57,6 @@ export const game3 = {
     created: date.parse('Apr 4 2018', 'MMM D YYYY'),
     start: date.parse('Apr 8 2018', 'MMM D YYYY'),
     end: date.parse('Apr 28 2018', 'MMM D YYYY'),
-    numPlayers: 80,
     playerPortfolioPublic: true,
     startingBalance: 10000,
     commissionValue: 10,
@@ -72,6 +69,6 @@ export const game3 = {
         PlayerMocks.player1,
         PlayerMocks.player2
     ],
-    private: false,
+    isPrivate: false,
     password: ''
 };

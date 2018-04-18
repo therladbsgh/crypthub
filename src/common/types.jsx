@@ -36,7 +36,9 @@ const PlayerType = {
     transactions: {
         history: Array.of.TradeType,
         current: Array.of.TradeType
-    }
+    },
+    tradingBots: Array.of.TradingBotType,
+    activeBotId: String
 };
 
 const AssetType = {
@@ -54,13 +56,15 @@ const TradeType = {
     date: Date,
     GTC: Boolean,
     expiration: Date,
-    filled: Boolean
+    filled: Boolean,
+    filledDate: Date
 };
 
 const CoinType = {
     name: 'Bitcoin' | 'Ethereum' | 'US Dollars',
     symbol: 'BTC' | 'ETH' | 'USD',
-    currPrice: Number
+    currPrice: Number,
+    todayReturn: Number
 };
 
 const UserType = {
@@ -68,4 +72,10 @@ const UserType = {
     name: String,
     ELO: Number,
     games: Array.of.GameType,
+    tradingBots: Array.of.TradingBotType
+};
+
+const TradingBotType = {
+    id: String,
+    name: String
 };

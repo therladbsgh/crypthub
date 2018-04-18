@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { withCookies } from 'react-cookie';
-import { Header, Form, Button, Message } from 'semantic-ui-react';
+import { Header, Form, Button, Message, Icon } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { SharedStyles as sharedStyles } from 'styles';
@@ -21,7 +20,8 @@ class Login extends Component {
             errField: '',
             forgot: false,
             loading: false,
-            submitted: false
+            submitted: false,
+            hasMounted: false
 		};
 	
 		this.handleChange = this.handleChange.bind(this);
@@ -31,10 +31,19 @@ class Login extends Component {
     }
     
     componentWillMount() {
-		const { history, cookies } = this.props;
-		if (!_.isEmpty(cookies.getAll())) {
-			history.push('/games');
-		}
+		const { history } = this.props;
+		UserBackend.getUser()
+		.then(res => {
+			console.log('success! ', res);
+            if (_.isEmpty(res)) {
+				this.setState({ hasMounted: true });
+			} else {
+				history.push('/games');
+			}
+		}, ({ err }) => {
+			console.log('error! ', err);
+			alert(`Error: ${err}`);
+        });
 	}
 
 	handleChange(event) {		
@@ -64,7 +73,7 @@ class Login extends Component {
 	}
 
 	handleSubmitLogin(event) {
-        const { history, cookies } = this.props;
+        const { history } = this.props;
 
 		event.preventDefault();
 		this.setState({
@@ -77,7 +86,6 @@ class Login extends Component {
 		.then(res => {
 			console.log('success! ', res);
             this.setState({ loading: false });
-            cookies.set('username', res.user, { path: '/' });
             history.push('/games');
 		}, ({ err, field }) => {
 			console.log('error! ', err);
@@ -90,17 +98,25 @@ class Login extends Component {
 		this.setState({
             errMsg: '',
             errField: '',
+            submitted: false,
             loading: true,
-            submitted: true
 		})
 
 		UserBackend.forgot(this.state.forgotObj)
 		.then(res => {
 			console.log('success! ', res);
-            this.setState({ loading: false });
+            this.setState({
+                submitted: true,
+                loading: false
+            });
 		}, ({ err, field }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, errMsg: err, errField: field });
+			this.setState({
+                submitted: true,
+                loading: false,
+                errMsg: err,
+                errField: field
+            });
 		});
     }
     
@@ -122,12 +138,13 @@ class Login extends Component {
     }
 
   	render() {
-        const { loginObj, forgotObj, errMsg, errField, forgot, loading, submitted } = this.state;
+        const { loginObj, forgotObj, errMsg, errField, forgot, loading, submitted, hasMounted } = this.state;
         const { login, password } = loginObj;
         const { email } = forgotObj;
         const success = submitted && !errMsg;
         
 		return (
+            hasMounted &&
 			<div style={sharedStyles}>
 				<Navbar />
                 {!forgot ?  
@@ -147,7 +164,7 @@ class Login extends Component {
                             header='Error'
                             content={errMsg}
                         />
-                        <Button type='submit'>Sign In</Button>
+                        <Button icon='sign in' primary type='submit' content='Log In' />
                     </Form>
                     <Link to='/signup'>Don't have an account?</Link><br />
                     <a onClick={this.toggleForgot}>Forgot your password?</a>
@@ -170,7 +187,7 @@ class Login extends Component {
                             header='Error'
                             content={errMsg}
                         />
-                        <Button type='submit' disabled={success}>Submit</Button>
+                        <Button icon='mail outline' primary type='submit' disabled={success} content='Request Reset' />
                     </Form>
                     <a onClick={this.toggleForgot}>Back to Login</a>
                 </div>}
@@ -180,4 +197,4 @@ class Login extends Component {
 }
 
 // This puts the history prop on props which allows for redirection
-export default withCookies(withRouter(Login));
+export default withRouter(Login);

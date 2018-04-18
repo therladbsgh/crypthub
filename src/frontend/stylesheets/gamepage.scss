@@ -1,0 +1,21 @@
+.completedHeader {
+    margin-bottom: 15px;
+}
+
+.completedTag {
+    position: relative;
+    bottom: 3px;
+    margin-left: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: gold;
+    text-transform: uppercase;
+    font-size: 0.7em;
+}
+
+.joinButton {
+    display: inline;
+    position: relative;
+    bottom: 3px;
+    left: 5px;
+}

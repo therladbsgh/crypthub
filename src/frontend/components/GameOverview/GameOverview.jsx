@@ -5,13 +5,14 @@ import { Searchbar, ProfileCard, GameCard } from 'components';
 
 export default class GameOverview extends Component {
     render() {
-        const { game, thisPlayer } = this.props;
+        const { game, thisPlayer, completed, inGame } = this.props;
         const players = game.players;
 
         return (
 			<div>
-				<Header as='h2'>Your Profile</Header>
-				<ProfileCard player={players[thisPlayer]} />
+				{inGame && 
+                [<Header key='1' as='h2'>Your Profile</Header>,
+                <ProfileCard key='2' player={players[thisPlayer]} completed={completed} />]}
 				<Header as='h2'>About This Game</Header>
                 <GameCard game={game} />
 			</div>

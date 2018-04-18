@@ -45,7 +45,7 @@ export default class GlobalRankings extends Component {
 
                         <Table.Body>
                             {_.map(users, (u, index) => 
-                                (_.some(results, _.mapKeys(u, (v, k) => k.toLowerCase())) || results[0] === 'RESET') && 
+                                (_.some(results, _.mapKeys(_.mapValues(u, v => String(v)), (v, k) => k.toLowerCase())) || results[0] === 'RESET') && 
                                     <Table.Row key={index}>
                                         <Table.Cell>{index + 1}</Table.Cell>
                                         <Table.Cell>{u.name}</Table.Cell>

@@ -1,0 +1,17 @@
+.tag {
+    position: relative;
+    bottom: 3px;
+    margin-left: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 0.5em;
+}
+
+.completed {
+    background-color: gold;
+}
+
+.private {
+    background-color: red;
+}

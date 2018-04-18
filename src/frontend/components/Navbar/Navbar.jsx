@@ -1,61 +1,76 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { withCookies } from 'react-cookie';
 import { UserBackend } from 'endpoints';
-import { Menu, Dropdown, Button } from 'semantic-ui-react';
+import { Menu, Dropdown, Button, Icon } from 'semantic-ui-react';
 import { NavbarStyle as styles } from 'styles';
 
 class Navbar extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            username: '',
+            hasMounted: false
+        };
+
         this.logout = this.logout.bind(this);
     }
 
+    componentWillMount() {
+		UserBackend.getUser()
+		.then(res => {
+			console.log('success! ', res);
+            this.setState({ username: res.user, hasMounted: true });
+		}, ({ err }) => {
+			console.log('error! ', err);
+			alert(`Error: ${err}`);
+        });
+	}
+
     logout() {
-        const { history, cookies } = this.props;
+        const { history } = this.props;
 
         UserBackend.logout()
 		.then(res => {
             console.log('success! ', res);
-            console.log(cookies.getAll());
-            _.forEach(cookies.getAll(), (v, cookie) => cookies.remove(cookie));
             history.push('/');
 		}, ({ err }) => {
             console.log('error! ', err);
-            alert('Logout error: ', err);
+            alert(`Logout error: ${err}`);
         });
     }
 
   	render() {
-        const user = this.props.cookies.getAll();
-
+        const { username, hasMounted } = this.state;
+        
 		return (
+            hasMounted &&
             <Menu inverted>
-                <Menu.Item name='crypthub' as={Link} to='/' />
+                <Menu.Item name='crypthub' as={Link} to={username ? '/games' : '/'} />
 
                 <Menu.Menu position='right'>
-                    <Menu.Item as={Link} to='/rankings' name='global rankings' />
-                    {!_.isEmpty(user) ? 
-                    <Dropdown item text={user.username}>
+                    <Menu.Item as={Link} to='/rankings'>
+                        <Icon name='trophy' />Global Rankings
+                    </Menu.Item>
+                    {username ? 
+                    <Dropdown item text={username}>
                         <Dropdown.Menu>
-                            <Dropdown.Item as={Link} to='/games'>Games</Dropdown.Item>
-                            <Dropdown.Item>Settings</Dropdown.Item>
-                            <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
+                            <Dropdown.Item as={Link} to='/games'><Icon name='game' />Games</Dropdown.Item>
+                            <Dropdown.Item><Icon name='setting' />Settings</Dropdown.Item>
+                            <Dropdown.Item onClick={this.logout}><Icon name='sign out' />Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                     :
-                    <Menu.Item>
-                        <Button.Group>
-                            <Button primary as={Link} to='/login'>Login</Button>
-                            <Button.Or />
-                            <Button positive as={Link} to='/signup'>Signup</Button>
-                        </Button.Group>
-                    </Menu.Item>}
+                    [<Menu.Item key='signup' as={Link} to='/signup'>
+                        <Icon name='signup' />Signup
+                    </Menu.Item>,
+                    <Menu.Item key='login' as={Link} to='/login'>
+                        <Icon name='sign in' />Login
+                    </Menu.Item>]}
                 </Menu.Menu>
             </Menu>
 		);
   	}
 }
 
-export default withCookies(withRouter(Navbar));
+export default withRouter(Navbar);
