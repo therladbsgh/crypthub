@@ -17,10 +17,16 @@ const CoinSchema = new Schema({
   currPrice: {
     type: Number,
     required: true
+  },
+  todayReturn: {
+    type: Number,
+    required: true
   }
 });
 
 const Model = mongoose.model('Coin', CoinSchema);
+
+Model.remove({}, () => {});
 
 Model.findOne({ symbol: 'BTC' }, (err, result) => {
   if (!err) {
@@ -29,7 +35,8 @@ Model.findOne({ symbol: 'BTC' }, (err, result) => {
         _id: new mongoose.Types.ObjectId(),
         name: 'Bitcoin',
         symbol: 'BTC',
-        currPrice: 1000
+        currPrice: 1000,
+        todayReturn: 5.22
       });
       btc.save();
     }
@@ -43,7 +50,8 @@ Model.findOne({ symbol: 'ETH' }, (err, result) => {
         _id: new mongoose.Types.ObjectId(),
         name: 'Ethereum',
         symbol: 'ETH',
-        currPrice: 1000
+        currPrice: 1000,
+        todayReturn: 5.22
       });
       eth.save();
     }
@@ -53,13 +61,14 @@ Model.findOne({ symbol: 'ETH' }, (err, result) => {
 Model.findOne({ symbol: 'USD' }, (err, result) => {
   if (!err) {
     if (!result) {
-      const eth = new Model({
+      const usd = new Model({
         _id: new mongoose.Types.ObjectId(),
         name: 'US Dollars',
         symbol: 'USD',
-        currPrice: 1000
+        currPrice: 1000,
+        todayReturn: 5.22
       });
-      eth.save();
+      usd.save();
     }
   }
 });
