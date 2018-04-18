@@ -26,8 +26,6 @@ const CoinSchema = new Schema({
 
 const Model = mongoose.model('Coin', CoinSchema);
 
-Model.remove({}, () => {});
-
 Model.findOne({ symbol: 'BTC' }, (err, result) => {
   if (!err) {
     if (!result) {

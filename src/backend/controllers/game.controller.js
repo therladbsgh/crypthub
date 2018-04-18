@@ -1,4 +1,5 @@
 const { Types } = require('mongoose');
+const axios = require("axios");
 
 const Game = require('../models/game.model');
 const Player = require('../models/player.model');
@@ -137,28 +138,54 @@ function getGame(req, res) {
     });
 }
 
+function updateSinglePrice(li, cb) {
+  if (li.length === 0) {
+    cb(null);
+  } else if (li[0].name !== 'US Dollars') {
+    axios.get(`https://api.coinmarketcap.com/v1/ticker/${li[0].name}`).then((res) => {
+      const data = res.data[0];
+      console.log(data);
+
+      Coin.findOne({ name: li[0].name }, (err, coin) => {
+        if (err) {
+          cb('MongoDB query error');
+          return;
+        }
+        console.log(parseFloat(data.price_usd));
+        coin.set({ currPrice: parseFloat(data.price_usd) });
+        coin.set({ todayReturn: parseFloat(data.percent_change_24h) });
+        console.log(coin);
+        coin.save((err2) => {
+          if (err2) {
+            console.log(err2);
+            cb('MongoDB save error');
+            return;
+          }
+          const newList = li.slice();
+          newList.shift(0);
+          updateSinglePrice(newList, cb);
+        });
+      });
+    });
+  } else {
+    const newList = li.slice();
+    newList.shift(0);
+    updateSinglePrice(newList, cb);
+  }
+}
+
 function updatePrices(cb) {
   Coin.find({}, (err, coins) => {
+    console.log(coins);
     if (err) {
       cb('MongoDB query error');
       return;
     }
 
-    coins.forEach((each) => {
-      if (each.name !== 'US Dollars') {
-
-      }
-      console.log(each.name);
-      // TODO: UPDATE PRICES
+    updateSinglePrice(coins, (err2) => {
+      cb(err2);
     });
-    cb(null);
   });
-}
-
-function updateSinglePrice(li, cb) {
-  if (li.length == 0) {
-    cb()
-  }
 }
 
 function placeOrder(req, res) {
@@ -180,7 +207,7 @@ function placeOrder(req, res) {
       res.status(500).json({ error: err });
       return;
     }
-
+    res.status(200).json({ success: true });
   });
 
   if (type === 'market' && side === 'buy') {
