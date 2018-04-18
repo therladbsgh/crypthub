@@ -22,21 +22,46 @@ const CoinSchema = new Schema({
 
 const Model = mongoose.model('Coin', CoinSchema);
 
-const btc = new Model({
-  _id: new mongoose.Types.ObjectId(),
-  name: 'Bitcoin',
-  symbol: 'BTC',
-  currPrice: 1000
+Model.findOne({ symbol: 'BTC' }, (err, result) => {
+  if (!err) {
+    if (!result) {
+      const btc = new Model({
+        _id: new mongoose.Types.ObjectId(),
+        name: 'Bitcoin',
+        symbol: 'BTC',
+        currPrice: 1000
+      });
+      btc.save();
+    }
+  }
 });
 
-const eth = new Model({
-  _id: new mongoose.Types.ObjectId(),
-  name: 'Ethereum',
-  symbol: 'ETH',
-  currPrice: 1000
+Model.findOne({ symbol: 'ETH' }, (err, result) => {
+  if (!err) {
+    if (!result) {
+      const eth = new Model({
+        _id: new mongoose.Types.ObjectId(),
+        name: 'Ethereum',
+        symbol: 'ETH',
+        currPrice: 1000
+      });
+      eth.save();
+    }
+  }
 });
 
-btc.save();
-eth.save();
+Model.findOne({ symbol: 'USD' }, (err, result) => {
+  if (!err) {
+    if (!result) {
+      const eth = new Model({
+        _id: new mongoose.Types.ObjectId(),
+        name: 'US Dollars',
+        symbol: 'USD',
+        currPrice: 1000
+      });
+      eth.save();
+    }
+  }
+});
 
 module.exports = Model;

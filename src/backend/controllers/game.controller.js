@@ -3,6 +3,7 @@ const { Types } = require('mongoose');
 const Game = require('../models/game.model');
 const Player = require('../models/player.model');
 const Coin = require('../models/coin.model');
+const Asset = require('../models/asset.model');
 
 
 /**
@@ -13,12 +14,9 @@ const Coin = require('../models/coin.model');
  * @return User object
  */
 function validate(req, res) {
-  console.log(req.body);
   const { id } = req.body;
 
   Game.findOne({ gameid: id }, (err, game) => {
-    console.log(err);
-    console.log(game);
     if (err) {
       res.status(500).json({ err: 'MongoDB query error' });
       return;
@@ -78,26 +76,41 @@ function create(req, res) {
     password
   });
 
-  const player = new Player({
-    _id: new Types.ObjectId(),
-    username: req.session.user,
-    netWorth: startingBalance,
-    numTrades: 0,
-    netReturn: 0,
-    todayReturn: 0,
-    currRank: 1,
-    buyingPower: startingBalance,
-    shortReserve: 0
-  });
+  Coin.findOne({ symbol: 'USD' }, (err, usdCoin) => {
+    if (err) res.status(500).json({ err: 'MongoDB query error' });
 
-  player.save().then((newPlayer) => {
-    game.players = [newPlayer._id];
-    game.save().then((newGame) => {
-      Game.findOne({ _id: newGame._id })
-        .populate('players')
-        .exec((err, gameToReturn) => {
-          res.status(200).json({ data: gameToReturn });
+    const usdAsset = new Asset({
+      _id: new Types.ObjectId(),
+      name: usdCoin._id,
+      amount: startingBalance
+    });
+
+    usdAsset.save().then((newAsset) => {
+      console.log(newAsset);
+      const player = new Player({
+        _id: new Types.ObjectId(),
+        username: req.session.user,
+        netWorth: startingBalance,
+        numTrades: 0,
+        netReturn: 0,
+        todayReturn: 0,
+        currRank: 1,
+        buyingPower: startingBalance,
+        shortReserve: 0,
+        portfolio: [newAsset._id]
+      });
+
+      player.save().then((newPlayer) => {
+        game.players = [newPlayer._id];
+        game.save().then((newGame) => {
+          Game.findOne({ _id: newGame._id })
+            .populate({ path: 'players', populate: { path: 'portfolio' } })
+            .exec((err2, gameToReturn) => {
+              if (err2) res.status(500).json({ err: 'MongoDB query error' });
+              res.status(200).json({ data: gameToReturn });
+            });
         });
+      });
     });
   });
 }
@@ -132,6 +145,7 @@ function updatePrices(cb) {
     }
 
     coins.forEach((each) => {
+      console.log(each.name);
       // TODO: UPDATE PRICES
     });
     cb(null);
@@ -142,6 +156,8 @@ function placeOrder(req, res) {
   const {
     type, side, size, price, symbol, date, GTC, filled
   } = req.body;
+
+  console.log(req.body);
 
   if (!['market', 'short', 'limit'].includes(type) ||
       !['buy', 'sell'].includes(side)) {

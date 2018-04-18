@@ -23,5 +23,14 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
+UserSchema.statics = {
+  /**
+   * Gets the user by Username.
+   */
+  get(username) {
+    return this.find({ username }).exec().then(user => user);
+  }
+};
+
 const model = mongoose.model('User', UserSchema);
 module.exports = model;
