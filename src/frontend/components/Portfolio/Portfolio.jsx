@@ -25,15 +25,17 @@ export default class Portfolio extends Component {
                 </Table.Header>
 
                 <Table.Body>
-                    {_.map(portfolio, (a, index) => 
-                        <Table.Row key={index} positive={a.type.todayReturn && a.type.todayReturn >= 0} error={a.type.todayReturn && a.type.todayReturn < 0}>
-                            <Table.Cell>{a.type.symbol}</Table.Cell>
-                            <Table.Cell>{formatCurrency(((a.amount * (a.type.currPrice ? a.type.currPrice : 1)) / _.sumBy(portfolio, e => e.amount * (e.type.currPrice ? e.type.currPrice : 1))) * 100, { format: '%v%s', symbol: '%' })}</Table.Cell>
-                            <Table.Cell>{a.type.symbol === 'USD' ? formatCurrency(a.amount, { format: '%s%v', symbol: '$' }) : a.amount}</Table.Cell>                            
-                            <Table.Cell>{a.type.symbol === 'USD' ? '-' : `${formatCurrency(a.type.currPrice, { format: '%s%v', symbol: '$' })} (${a.type.todayReturn >= 0 ? '+' : ''}${formatCurrency(a.type.todayReturn, { format: '%v%s', symbol: '%' })})`}</Table.Cell>
-                            <Table.Cell>{formatCurrency(a.amount * (a.type.currPrice ? a.type.currPrice : 1), { format: '%s%v', symbol: '$' })}</Table.Cell>
-                        </Table.Row>
-                    )}
+                    {_.map(portfolio, (a, index) => {
+                        const { coin } = a;
+                        return (
+                            <Table.Row key={index} positive={coin.todayReturn && coin.todayReturn >= 0} error={coin.todayReturn && coin.todayReturn < 0}>
+                                <Table.Cell>{coin.symbol}</Table.Cell>
+                                <Table.Cell>{formatCurrency(((a.amount * (coin.currPrice ? coin.currPrice : 1)) / _.sumBy(portfolio, e => e.amount * (e.type.currPrice ? e.type.currPrice : 1))) * 100, { format: '%v%s', symbol: '%' })}</Table.Cell>
+                                <Table.Cell>{coin.symbol === 'USD' ? formatCurrency(a.amount, { format: '%s%v', symbol: '$' }) : a.amount}</Table.Cell>                            
+                                <Table.Cell>{coin.symbol === 'USD' ? '-' : `${formatCurrency(coin.currPrice, { format: '%s%v', symbol: '$' })} (${coin.todayReturn >= 0 ? '+' : ''}${formatCurrency(coin.todayReturn, { format: '%v%s', symbol: '%' })})`}</Table.Cell>
+                                <Table.Cell>{formatCurrency(a.amount * (coin.currPrice ? coin.currPrice : 1), { format: '%s%v', symbol: '$' })}</Table.Cell>
+                            </Table.Row>
+                    );})}
                 </Table.Body>
 
                 <Table.Footer>
@@ -42,7 +44,7 @@ export default class Portfolio extends Component {
                         <Table.HeaderCell><strong>100.00%</strong></Table.HeaderCell>
                         <Table.HeaderCell><strong>-</strong></Table.HeaderCell>
                         <Table.HeaderCell><strong>-</strong></Table.HeaderCell>
-                        <Table.HeaderCell><strong>{formatCurrency(_.sumBy(portfolio, a => a.amount * (a.type.currPrice ? a.type.currPrice : 1)), { format: '%s%v', symbol: '$' })}</strong></Table.HeaderCell>
+                        <Table.HeaderCell><strong>{formatCurrency(_.sumBy(portfolio, a => a.amount * (a.coin.currPrice ? a.coin.currPrice : 1)), { format: '%s%v', symbol: '$' })}</strong></Table.HeaderCell>
                     </Table.Row>
                 </Table.Footer>
             </Table>
