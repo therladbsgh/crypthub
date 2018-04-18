@@ -117,23 +117,25 @@ function create(req, res) {
 function getGame(req, res) {
   const gameid = req.params.id;
 
-  Game.findOne({ gameid }).populate('players').exec((err, game) => {
-    if (err) {
-      res.status(500).json({ err });
-      return;
-    }
+  Game.findOne({ gameid })
+    .populate({ path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } })
+    .exec((err, game) => {
+      if (err) {
+        res.status(500).json({ err });
+        return;
+      }
 
-    let player = {};
-    if (req.session.user) {
-      game.players.forEach((each) => {
-        if (each.username === req.session.user) {
-          player = each;
-        }
-      });
-    }
+      let player = {};
+      if (req.session.user) {
+        game.players.forEach((each) => {
+          if (each.username === req.session.user) {
+            player = each;
+          }
+        });
+      }
 
-    res.status(200).json({ game, player });
-  });
+      res.status(200).json({ game, player });
+    });
 }
 
 function updatePrices(cb) {
