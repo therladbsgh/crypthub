@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Header, Tab, Button } from 'semantic-ui-react';
-import { GameBackend } from 'endpoints';
+import { GameBackend, UserBackend } from 'endpoints';
 import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard, JoinModal, GameTradingBots } from 'components';
 import { GamePageStyle as styles, SharedStyle as sharedStyles } from 'styles'; 
 
@@ -21,7 +21,9 @@ class GamePage extends Component {
         const { match, history } = this.props;
         GameBackend.getGame(match.params.id)
 		.then(resGame => {
-			console.log('success! ', resGame);
+            console.log('success! ', resGame);
+            if (_.isEmpty(resGame.game)) return history.push('/gamenotfound');
+
             UserBackend.getUser()
             .then(resUser => {
                 console.log('success! ', resUser);
@@ -37,8 +39,10 @@ class GamePage extends Component {
 	}
 
   	render() {
-        const { game, thisPlayer, userId } = this.state;
+        const { game, thisPlayer, userId, hasMounted } = this.state;
         const { id, players, playerPortfolioPublic, isPrivate, completed } = game;
+
+        if (!hasMounted) return null;
 
         // TODO: logic for checking if player is in the game and if they are the host
         const inGame = !_.isEmpty(thisPlayer);
