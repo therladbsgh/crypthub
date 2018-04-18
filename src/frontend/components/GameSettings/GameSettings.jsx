@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
-import { Header, Button, Form, Message, Grid, Icon } from 'semantic-ui-react';
+import { Header, Button, Form, Message, Grid, Icon, Input } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { GameCard, JoinModal, LeaveModal, InviteModal } from 'components';
 import { GameSettingsStyle as styles } from 'styles';
@@ -122,19 +122,19 @@ export default class GameSettings extends Component {
                     <Form.Field>
                         <label>Game Access</label>
                         <Button.Group>
-                            <Button color={isPrivate ? null : 'blue'} onClick={() => this.setAccess(false)}>Public</Button>
-                            <Button color={isPrivate ? 'blue' : null} onClick={() => this.setAccess(true)}>Private</Button>
+                            <Button icon='unlock' color={isPrivate ? null : 'blue'} onClick={() => this.setAccess(false)} content='Public' />
+                            <Button icon='lock' color={isPrivate ? 'blue' : null} onClick={() => this.setAccess(true)} content='Private' />
                         </Button.Group>
                     </Form.Field>
                     {isPrivate && 
                     <Form.Group widths='equal'>
                         <Form.Field error={errField === 'password'}>
                             <label>Password</label>
-                            <input type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
+                            <Input icon='key' iconPosition='left' type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
                         </Form.Field>
                         <Form.Field error={errField === 'password'}>
                             <label>Confirm Password</label>
-                            <input type='password' placeholder='Confirm password' name='passwordConfirm' value={passwordConfirm} onChange={this.handleChange} />
+                            <Input icon='key' iconPosition='left' type='password' placeholder='Confirm password' name='passwordConfirm' value={passwordConfirm} onChange={this.handleChange} />
                         </Form.Field>
                     </Form.Group>}
                     <Message
