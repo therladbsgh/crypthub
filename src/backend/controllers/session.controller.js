@@ -48,7 +48,7 @@ function signup(req, res) {
       return;
     }
 
-    // check if email already is taken 
+    // check if email already is taken
 
 
 
@@ -72,7 +72,7 @@ function signup(req, res) {
       //   }
       //   var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
       //     });
-      //   var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
+      //   var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token',
       //   text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n'};
       //   transporter.sendMail(mailoptions, function(err){
       //     if (err){
@@ -94,7 +94,6 @@ function signup(req, res) {
  * @return 500 on server error, 401 if user does not exist, 200 if success
  */
 function login(req, res) {
-  console.log(req.session);
   const loginObj = req.body.login;
   const { password } = req.body;
 
@@ -117,12 +116,12 @@ function login(req, res) {
     // if (!user.isVerified){
     //   res.status(401).send({ err: 'not-verified', field: 'email'});
     //   return;
-    // } 
-       
+    // }
 
     req.session.user = user.username;
+    req.session.id = user._id;
     req.session.save();
-    // possible code 
+    // possible code
     //res.status(200).send({ success: true, user: user.username, token: generateToken(user)})
     res.status(200).send({ success: true, user: user.username });
   });
@@ -155,27 +154,27 @@ function authenticate(req, res, next) {
 /**
 * Token confirmation middleware
 *
-* @return 400 if confirmation failed, 200 otherwise with appropriate message 
+* @return 400 if confirmation failed, 200 otherwise with appropriate message
 */
 // function confirmToken (req, res, next) {
 //     req.assert('email', 'Email is not valid').isEmail();
 //     req.assert('email', 'Email cannot be blank').notEmpty();
 //     req.assert('token', 'Token cannot be blank').notEmpty();
 //     req.sanitize('email').normalizeEmail({ remove_dots: false });
- 
-//     // Check for validation errors    
+
+//     // Check for validation errors
 //     var errors = req.validationErrors();
 //     if (errors) return res.status(400).send(errors);
- 
+
 //     // Find a matching token
 //     Token.findOne({ token: req.body.token }, function (err, token) {
 //         if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' });
- 
+
 //         // If we found a token, find a matching user
 //         User.findOne({ username: token.username }, function (err, user) {
 //             if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
 //             if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
- 
+
 //             // Verify and save the user
 //             user.isVerified = true;
 //             user.save(function (err) {
@@ -188,41 +187,41 @@ function authenticate(req, res, next) {
 
 
 /**
-* Token resending middleware 
+* Token resending middleware
 *
-*@return 
+*@return
 */
 // function resendToken(req, res, next) {
 //     req.assert('email', 'Email is not valid').isEmail();
 //     req.assert('email', 'Email cannot be blank').notEmpty();
 //     req.sanitize('email').normalizeEmail({ remove_dots: false });
- 
-//     // Check for validation errors    
+
+//     // Check for validation errors
 //     var errors = req.validationErrors();
 //     if (errors) return res.status(400).send(errors);
- 
+
 //     User.findOne({ email: req.body.email }, function (err, user) {
 //         if (!user) return res.status(400).send({ msg: 'We were unable to find a user with that email.' });
 //         if (user.isVerified) return res.status(400).send({ msg: 'This account has already been verified. Please log in.' });
- 
+
 //         // Create a verification token, save it, and send email
 //         var token = new Token({ username: user.username, token: crypto.randomBytes(16).toString('hex') });
- 
+
 //         // Save the token
 //         token.save(function (err) {
 //             if (err) { return res.status(500).send({ msg: err.message }); }
- 
+
 //             // Send the email
 //               var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
 //           });
-//         var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
+//         var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token',
 //         text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n'};
 //             transporter.sendMail(mailOptions, function (err) {
 //                 if (err) { return res.status(500).send({ msg: err.message }); }
 //                 res.status(200).send('A verification email has been sent to ' + user.email + '.');
 //             });
 //         });
- 
+
 //     });
 // };
 
