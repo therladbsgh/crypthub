@@ -6,26 +6,6 @@ import { GameBackend } from 'endpoints';
 import { TradeModalStyle as styles } from 'styles';
 import { SharedStyle as sharedStyles } from 'styles';
 
-//TODO: logic for what type options are available
-const typeOptions = [
-    {
-        text: 'Market Order',
-        value: 'market'
-    },
-    {
-        text: 'Limit Order',
-        value: 'limit'
-    },
-    {
-        text: 'Short Sell',
-        value: 'short'
-    },
-    {
-        text: 'Stop Order',
-        value: 'stop'
-    },
-];
-
 const priceOrders = ['limit', 'stop'];
 
 export default class TradeModal extends Component {
@@ -191,7 +171,8 @@ export default class TradeModal extends Component {
     }
     
     render() {
-        const { name, symbol, currPrice } = this.props.coin;
+        const { coin, orderTypes } = this.props;
+        const { name, symbol, currPrice } = coin;
         const { tradeObj, open, loading, success, errMsg, errField } = this.state;
         const { type, side, size, price, GTC } = tradeObj;
 
@@ -216,7 +197,7 @@ export default class TradeModal extends Component {
                         <Form onSubmit={this.handleSubmit} loading={loading} error={!!errMsg}>
                             <Form.Field>
                                 <label>Order Type</label>
-                                <Dropdown placeholder='Order Type' name='type' selection options={typeOptions} value={type} onChange={(e, data) => this.handleDropdownChange(data)} />
+                                <Dropdown placeholder='Order Type' name='type' selection options={orderTypes} value={type} onChange={(e, data) => this.handleDropdownChange(data)} />
                             </Form.Field>
                             <Form.Group inline>
                                 <label><span className={!showSide ? sharedStyles.disabled : ''}>Side</span></label>
@@ -241,7 +222,7 @@ export default class TradeModal extends Component {
                                 header='Error'
                                 content={errMsg}
                             />
-                            <Button icon='exchange' type='submit' primary content='Place Order' />
+                            <Button icon='check' type='submit' primary content='Place Order' />
                         </Form>
                     </Modal.Content>
                 </Modal>

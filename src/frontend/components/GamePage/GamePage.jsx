@@ -84,7 +84,7 @@ export default class GamePage extends Component {
                 [<Header key='1' as='h1'>Game Name</Header>,
                 <div key='3' className='ui grid'>
                     <div className='three wide column'>
-                        <TradeCard />
+                        <TradeCard game={game} />
                     </div>
                     <Tab className='thirteen wide column' panes={panes} renderActiveOnly={false} />
                 </div>]}
