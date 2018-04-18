@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Tab, Button } from 'semantic-ui-react';
-import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard, JoinModal } from 'components';
+import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard, JoinModal, GameTradingBots } from 'components';
 import { GamePageStyle as styles, SharedStyle as sharedStyles } from 'styles'; 
 import { GameMocks } from 'mocks';
 
@@ -31,29 +31,35 @@ export default class GamePage extends Component {
                 <GameOverview game={game} thisPlayer={thisPlayer} completed={completed} inGame={inGame} />
             </Tab.Pane>
         );
-        const GamePortfolioPane = inGame && (
+        const GameTradingBotsPane = !completed && inGame && (
             <Tab.Pane key='tab2'>
+                <GameTradingBots gameId={id} player={players[thisPlayer]} />
+            </Tab.Pane>
+        );
+        const GamePortfolioPane = inGame && (
+            <Tab.Pane key='tab3'>
                 <GamePortfolio player={players[thisPlayer]} completed={completed} />
             </Tab.Pane>
         );
         const GameComparePane = playerPortfolioPublic && (
-            <Tab.Pane key='tab3'>
+            <Tab.Pane key='tab4'>
                 <GameCompare players={players} completed={completed} />
             </Tab.Pane>
         );
         const GameRankingsPane = (
-            <Tab.Pane key='tab4'>
+            <Tab.Pane key='tab5'>
                 <GameRankings players={players} />
             </Tab.Pane>
         );
         const GameSettingsPane = (
-            <Tab.Pane key='tab5'>
+            <Tab.Pane key='tab6'>
                 <GameSettings game={game} inGame={inGame} isHost={isHost} userId={userId} />
             </Tab.Pane>
         );
 
         const panes = [
             { menuItem: 'Overview', pane: GameOverviewPane },
+            ...!completed && inGame ? [{ menuItem: 'Trading Bots', pane: GameTradingBotsPane }] : [],
             ...inGame ? [{ menuItem: 'Portfolio', pane: GamePortfolioPane }] : [],
             ...playerPortfolioPublic ? [{ menuItem: 'Compare', pane: GameComparePane }] : [],
             { menuItem: 'Rankings', pane: GameRankingsPane },

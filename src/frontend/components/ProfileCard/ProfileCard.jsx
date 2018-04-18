@@ -5,53 +5,58 @@ import { ProfileCardStyle as styles, SharedStyle as sharedStyles } from 'styles'
 
 export default class ProfileCard extends Component {
     render() {
-        const { player, completed } = this.props;
+		const { player, completed } = this.props;
+		const { name, netWorth, todayReturn, netReturn, currRank, portfolio, buyingPower, shortReserve, transactions, tradingBots, activeBotId } = player;
         
         return (
 			<Card id={sharedStyles.card}>
 				<Card.Content>
 				    <Card.Header className={styles.header}>
-						{player.name}
+						{name}
 					</Card.Header>
 					<Grid columns={4} className={styles.profile}>
 						<Grid.Row>
 							<Grid.Column>
 								<label>Net Worth</label>
-								<p>{formatCurrency(player.netWorth, { format: '%s%v', symbol: '$' })}</p>
+								<p>{formatCurrency(netWorth, { format: '%s%v', symbol: '$' })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>{completed ? 'Final Day\'s Return' : 'Today\'s Return'}</label>
-								<p className={player.todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{player.todayReturn >= 0 ? '+' : ''}{formatCurrency(player.todayReturn, { format: '%v%s', symbol: '%' })}</p>
+								<p className={todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{todayReturn >= 0 ? '+' : ''}{formatCurrency(todayReturn, { format: '%v%s', symbol: '%' })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>Net Return</label>
-								<p className={player.netReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{formatCurrency(Math.abs(player.netReturn), { format: '%s%v', symbol: `${player.netReturn >= 0 ? '+' : '-'}$` })}</p>
+								<p className={netReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{formatCurrency(Math.abs(netReturn), { format: '%s%v', symbol: `${netReturn >= 0 ? '+' : '-'}$` })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>Current Rank</label>
-								<p>{player.currRank}</p>
+								<p>{currRank}</p>
 							</Grid.Column>
 						</Grid.Row>
 						<Grid.Row>
 							<Grid.Column>
 								<label>Current Cash</label>
-								<p>{formatCurrency(_.find(player.portfolio, a => a.type.symbol === 'USD').amount, { format: '%s%v', symbol: '$' })}</p>
+								<p>{formatCurrency(_.find(portfolio, a => a.type.symbol === 'USD').amount, { format: '%s%v', symbol: '$' })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>Buying Power</label>
-								<p>{formatCurrency(player.buyingPower, { format: '%s%v', symbol: '$' })}</p>
+								<p>{formatCurrency(buyingPower, { format: '%s%v', symbol: '$' })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>Short Reserve</label>
-								<p>{formatCurrency(player.shortReserve, { format: '%s%v', symbol: '$' })}</p>
+								<p>{formatCurrency(shortReserve, { format: '%s%v', symbol: '$' })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>Open Trades</label>
-								<p>{player.transactions.current.length}</p>
+								<p>{transactions.current.length}</p>
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>
 				</Card.Content>
+				{activeBotId && 
+				<Card.Content extra>
+					<strong>Active Trading Bot: </strong>{_.find(tradingBots, { id: activeBotId }).name}
+				</Card.Content>}
 		  	</Card>
 		);
   	}

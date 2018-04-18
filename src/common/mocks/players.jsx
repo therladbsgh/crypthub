@@ -96,7 +96,18 @@ export const player1 = {
     todayReturn: 5,
     currRank: 2,
     buyingPower: 150,
-    shortReserve: 50
+    shortReserve: 50,
+    tradingBots: [
+        {
+            id: 'bot1',
+            name: 'tradingbot1'
+        },
+        {
+            id: 'bot2',
+            name: 'tradingbot2'
+        }
+    ],
+    activeBotId: 'bot1'
 };
 
 export const player2 = {

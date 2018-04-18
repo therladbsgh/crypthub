@@ -31,3 +31,7 @@ export function leaveGame(leaveObj) {
 export function inviteUsers(inviteObj) {
     return Backend.post('game/inviteUsers', inviteObj);    
 }
+
+export function setTradingBot(setBotObj) {
+    return Backend.post('game/setTradingBot', setBotObj);    
+}
