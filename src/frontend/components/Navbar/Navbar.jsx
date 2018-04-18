@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { UserBackend } from 'endpoints';
-import { Menu, Dropdown, Button } from 'semantic-ui-react';
+import { Menu, Dropdown, Button, Icon } from 'semantic-ui-react';
 import { NavbarStyle as styles } from 'styles';
 
 class Navbar extends Component {
@@ -53,9 +53,9 @@ class Navbar extends Component {
                     {username ? 
                     <Dropdown item text={username}>
                         <Dropdown.Menu>
-                            <Dropdown.Item as={Link} to='/games'>Games</Dropdown.Item>
-                            <Dropdown.Item>Settings</Dropdown.Item>
-                            <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
+                            <Dropdown.Item as={Link} to='/games'><Icon name='game' />Games</Dropdown.Item>
+                            <Dropdown.Item><Icon name='setting' />Settings</Dropdown.Item>
+                            <Dropdown.Item onClick={this.logout}><Icon name='sign out' />Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                     :

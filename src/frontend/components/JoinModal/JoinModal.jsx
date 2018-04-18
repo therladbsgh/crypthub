@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { Modal, Button, Message, Form } from 'semantic-ui-react';
+import { Modal, Button, Message, Form, Icon, Input } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { JoinModalStyle as styles } from 'styles';
 
@@ -78,14 +78,14 @@ export default class JoinModal extends Component {
         const { password } = joinObj;
 
         return (
-            <Modal trigger={<Button compact={size === 'tiny'} primary size={size} content='Join Game' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+            <Modal trigger={<Button icon='user add' compact={size === 'tiny'} primary size={size} content='Join Game' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
                 <Modal.Header id={styles.join}>Join Game</Modal.Header>
                     <Modal.Content>
                         {isPrivate ?
                         <Form>
                             <Form.Field error={errField == 'password'}>
                                 <label>Password</label>
-                                <input type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
+                                <Input icon='key' iconPosition='left' type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
                             </Form.Field>
                         </Form>
                         :

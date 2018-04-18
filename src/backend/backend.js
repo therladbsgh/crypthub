@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 app.use(cookieParser('secret'));
 app.use(session({
   name: 'session',
-  maxAge: 60000,
+  maxAge: 600000,
   signed: false,
   secret: 'secret'
 }));

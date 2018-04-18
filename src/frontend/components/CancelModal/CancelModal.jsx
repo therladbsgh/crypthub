@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { Modal, Button, Message } from 'semantic-ui-react';
+import { Modal, Button, Message, Icon } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { CancelModalStyle as styles } from 'styles';
 
@@ -51,7 +51,7 @@ export default class CancelModal extends Component {
         const { open, loading, err } = this.state;
 
         return (
-            <Modal trigger={<Button compact negative size='small' content='Cancel' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+            <Modal trigger={<Button icon='cancel' compact negative size='tiny' content='Cancel' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
                 <Modal.Header id={styles.cancel}>Cancel Trade Order</Modal.Header>
                     <Modal.Content>
                         <p>Are you sure you want to cancel this trade order?</p>

@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
-import { Header, Button, Form, Message, Grid } from 'semantic-ui-react';
+import { Header, Button, Form, Message, Grid, Icon } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { GameCard, JoinModal, LeaveModal, InviteModal } from 'components';
 import { GameSettingsStyle as styles } from 'styles';
@@ -147,7 +147,7 @@ export default class GameSettings extends Component {
                         header='Error'
                         content={errMsg}
                     />
-                    <Button onClick={this.handleSubmit} positive>Save Changes</Button>
+                    <Button icon='save' onClick={this.handleSubmit} positive content='Save Changes' />
                 </Form>]}
                 <Header as='h2'>Game Settings</Header>
                 <Grid className={styles.settings} columns={2}>

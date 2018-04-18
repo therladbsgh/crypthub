@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Header, Form, Button, Checkbox, Message } from 'semantic-ui-react';
+import { Header, Form, Button, Checkbox, Message, Icon } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { SignupStyle as styles } from 'styles';
@@ -139,7 +139,7 @@ export default class Signup extends Component {
 						header='Error'
 						content={errMsg}
 					/>
-					<Button type='submit' disabled={success}>Submit</Button>
+					<Button icon='signup' primary type='submit' disabled={success} content='Submit' />
 				</Form>
 				<Link to='/login'>Already have an account?</Link>
 			</div>

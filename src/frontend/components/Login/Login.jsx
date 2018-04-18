@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Header, Form, Button, Message } from 'semantic-ui-react';
+import { Header, Form, Button, Message, Icon } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { SharedStyles as sharedStyles } from 'styles';
@@ -164,7 +164,7 @@ class Login extends Component {
                             header='Error'
                             content={errMsg}
                         />
-                        <Button type='submit'>Sign In</Button>
+                        <Button icon='sign in' primary type='submit' content='Sign In' />
                     </Form>
                     <Link to='/signup'>Don't have an account?</Link><br />
                     <a onClick={this.toggleForgot}>Forgot your password?</a>
@@ -187,7 +187,7 @@ class Login extends Component {
                             header='Error'
                             content={errMsg}
                         />
-                        <Button type='submit' disabled={success}>Submit</Button>
+                        <Button icon='mail outline' primary type='submit' disabled={success} content='Request Reset' />
                     </Form>
                     <a onClick={this.toggleForgot}>Back to Login</a>
                 </div>}

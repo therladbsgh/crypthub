@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import formatCurrency from 'format-currency';
-import { Header, Form, Button, Message, TextArea, Input, Grid } from 'semantic-ui-react';
+import { Header, Form, Button, Message, TextArea, Input, Grid, Icon } from 'semantic-ui-react';
 import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
 import moment from 'moment';
 import { GameBackend } from 'endpoints';
@@ -262,19 +262,19 @@ class CreateGame extends Component {
 						<Form.Field style={styles}>
 							<label>Game Access</label>
 							<Button.Group>
-								<Button color={isPrivate ? null : 'blue'} onClick={() => this.setAccess(false)}>Public</Button>
-								<Button color={isPrivate ? 'blue' : null} onClick={() => this.setAccess(true)}>Private</Button>
+								<Button icon='unlock' color={isPrivate ? null : 'blue'} onClick={() => this.setAccess(false)} content='Public' />
+								<Button icon='lock' color={isPrivate ? 'blue' : null} onClick={() => this.setAccess(true)} content='Private' />
 							</Button.Group>
 						</Form.Field>
 						{isPrivate && 
 						<Form.Group widths='equal'>
 							<Form.Field error={errField === 'password'}>
 								<label>Password</label>
-								<input type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
+								<Input icon='key' iconPosition='left' type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
 							</Form.Field>
 							<Form.Field error={errField === 'password'}>
 								<label>Confirm Password</label>
-								<input type='password' placeholder='Confirm password' name='passwordConfirm' value={passwordConfirm} onChange={this.handleChange} />
+								<Input icon='key' iconPosition='left' type='password' placeholder='Confirm password' name='passwordConfirm' value={passwordConfirm} onChange={this.handleChange} />
 							</Form.Field>
 						</Form.Group>}
 						<Message
@@ -282,7 +282,7 @@ class CreateGame extends Component {
 							header='Error'
 							content={errMsg}
 						/>
-						<Button onClick={this.handleReview} positive>Continue</Button>
+						<Button className={styles.continueIcon} icon='arrow right' onClick={this.handleReview} positive content='Continue' />
 					</Form>
 				</div>
 				:
@@ -380,8 +380,8 @@ class CreateGame extends Component {
 							content={errMsg}
 						/>
 						{!errMsg && <br />}
-						<Button onClick={this.goBack} negative>Back</Button>
-						<Button onClick={this.handleCreate} positive>Create</Button>
+						<Button icon='arrow left' onClick={this.goBack} negative content='Back' />
+						<Button icon='add circle' onClick={this.handleCreate} positive content='Create' />
 					</Form>
 				</div>}
 			</div>

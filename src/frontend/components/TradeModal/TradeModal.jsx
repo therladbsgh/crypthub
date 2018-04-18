@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
-import { Modal, Button, Statistic, Form, Dropdown, Message, Input, Label, Header } from 'semantic-ui-react';
+import { Modal, Button, Statistic, Form, Dropdown, Message, Input, Label, Header, Icon } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { TradeModalStyle as styles } from 'styles';
 import { SharedStyle as sharedStyles } from 'styles';
@@ -203,7 +203,7 @@ export default class TradeModal extends Component {
 
         return (
             <div>
-                <Modal trigger={<Button primary>Trade</Button>} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+                <Modal trigger={<Button icon='exchange' primary compact size='tiny' content='Trade' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
                     <Modal.Header>Trade {name} ({symbol})</Modal.Header>
                     <Modal.Content>
                         <div className={sharedStyles.center}>
@@ -241,7 +241,7 @@ export default class TradeModal extends Component {
                                 header='Error'
                                 content={errMsg}
                             />
-                            <Button type='submit' primary>Place Order</Button>
+                            <Button icon='exchange' type='submit' primary content='Place Order' />
                         </Form>
                     </Modal.Content>
                 </Modal>

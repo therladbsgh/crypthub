@@ -79,7 +79,7 @@ export default class InviteModal extends Component {
         const { userIds } = inviteObj;
 
         return (
-            <Modal trigger={<Button positive content='Invite Players' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+            <Modal trigger={<Button icon='mail outline' positive content='Invite Players' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
                 <Modal.Header id={styles.invite}>Invite Players</Modal.Header>
                     <Modal.Content>
                         <Dropdown placeholder='Users to invite' multiple search selection options={_.map(users, u => ({ text: u.name, value: u.id }))} value={userIds} onChange={this.handleChange} />

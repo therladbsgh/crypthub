@@ -53,7 +53,7 @@ export default class LeaveModal extends Component {
         const { open, loading, err } = this.state;
 
         return (
-            <Modal trigger={<Button negative content='Leave Game' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+            <Modal trigger={<Button icon='user cancel' negative content='Leave Game' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
                 <Modal.Header id={styles.leave}>Leave Game</Modal.Header>
                     <Modal.Content>
                         <p>Are you sure you want to leave this game?</p>
