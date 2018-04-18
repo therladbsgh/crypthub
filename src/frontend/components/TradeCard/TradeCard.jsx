@@ -20,7 +20,27 @@ export default class TradeCard extends Component {
 
 	render() {
 		const { game } = this.props;
+		const { limitOrders, shortSelling, stopOrders } = game;
 		const { results } = this.state;
+
+		const orderTypes = [
+			{
+				text: 'Market Order',
+				value: 'market'
+			},
+			...limitOrders ? [{
+				text: 'Limit Order',
+				value: 'limit'
+			}] : [],
+			...shortSelling ? [{
+				text: 'Short Sell',
+				value: 'short'
+			}] : [],
+			...stopOrders ? [{
+				text: 'Stop Order',
+				value: 'stop'
+			}] : [],
+		];
 
 		return (
 			<Card>
@@ -34,7 +54,7 @@ export default class TradeCard extends Component {
 									(_.some(results, _.mapKeys(_.mapValues(c, v => String(v)), (v, k) => k.toLowerCase())) || results[0] === 'RESET') &&
 										<Table.Row key={index}>
 											<Table.Cell>{c.symbol}</Table.Cell>
-											<Table.Cell textAlign='right'><TradeModal coin={c} /></Table.Cell>
+											<Table.Cell textAlign='right'><TradeModal coin={c} orderTypes={orderTypes} /></Table.Cell>
 										</Table.Row>
 								)}
 							</Table.Body>
