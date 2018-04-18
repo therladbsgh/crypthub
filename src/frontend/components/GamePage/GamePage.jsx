@@ -1,30 +1,48 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Header, Tab, Button } from 'semantic-ui-react';
+import { GameBackend } from 'endpoints';
 import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard, JoinModal, GameTradingBots } from 'components';
 import { GamePageStyle as styles, SharedStyle as sharedStyles } from 'styles'; 
-import { GameMocks } from 'mocks';
 
-export default class GamePage extends Component {
+class GamePage extends Component {
     constructor(props) {
         super(props);
-        // TODO: get game from id: this.props.match.params.id
+
 		this.state = {
-            game: GameMocks.game1,
-            thisPlayer: 0
+            game: {},
+            thisPlayer: {},
+            userId: '',
+            hasMounted: false
         };
     }
 
+    componentWillMount() {
+        const { match, history } = this.props;
+        GameBackend.getGame(match.params.id)
+		.then(resGame => {
+			console.log('success! ', resGame);
+            UserBackend.getUser()
+            .then(resUser => {
+                console.log('success! ', resUser);
+                this.setState({ game: resGame.game, thisPlayer: resGame.player, userId: resUser.id, hasMounted: true });
+            }, ({ err }) => {
+                console.log('error! ', err);
+                alert(`Error: ${err}`);
+            });
+		}, ({ err }) => {
+			console.log('error! ', err);
+			alert(`Error: ${err}`);
+        });
+	}
+
   	render() {
-        const { game, thisPlayer } = this.state;
+        const { game, thisPlayer, userId } = this.state;
         const { id, players, playerPortfolioPublic, isPrivate, completed } = game;
 
-        // TODO: logic for getting userId
-        const userId = '1';
-
         // TODO: logic for checking if player is in the game and if they are the host
-        const inGame = true;
-        const isHost = true;
+        const inGame = !_.isEmpty(thisPlayer);
+        const isHost = game.host === thisPlayer.name;
 
         const GameOverviewPane = (
             <Tab.Pane key='tab1'>
@@ -33,12 +51,12 @@ export default class GamePage extends Component {
         );
         const GameTradingBotsPane = !completed && inGame && (
             <Tab.Pane key='tab2'>
-                <GameTradingBots gameId={id} player={players[thisPlayer]} />
+                <GameTradingBots gameId={id} player={thisPlayer} />
             </Tab.Pane>
         );
         const GamePortfolioPane = inGame && (
             <Tab.Pane key='tab3'>
-                <GamePortfolio player={players[thisPlayer]} completed={completed} />
+                <GamePortfolio player={thisPlayer} completed={completed} />
             </Tab.Pane>
         );
         const GameComparePane = playerPortfolioPublic && (
@@ -76,7 +94,10 @@ export default class GamePage extends Component {
                     <span className={styles.completedTag}>Completed</span>
                     :
                     <div className={styles.joinButton}>
-                    <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} userId={userId} />
+                        {userId ?
+                        <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} userId={userId} />
+                        :
+                        <Button icon='user add' size='tiny' compact primary onClick={() => this.props.history.push('/login')} content='Join Game' />}
                     </div>}
                 </div>,
                 <Tab key='2' className='thirteen wide column' panes={panes} renderActiveOnly={false} />]
@@ -84,7 +105,7 @@ export default class GamePage extends Component {
                 [<Header key='1' as='h1'>Game Name</Header>,
                 <div key='3' className='ui grid'>
                     <div className='three wide column'>
-                        <TradeCard game={game} />
+                        <TradeCard game={game} playerId={thisPlayer.id} />
                     </div>
                     <Tab className='thirteen wide column' panes={panes} renderActiveOnly={false} />
                 </div>]}
@@ -92,3 +113,5 @@ export default class GamePage extends Component {
 		);
   	}
 }
+
+export default withRouter(GamePage);

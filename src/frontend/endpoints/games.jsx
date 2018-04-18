@@ -8,6 +8,10 @@ export function createGame(gameObj) {
     return Backend.post('game/create', gameObj);
 }
 
+export function getGame(gameId) {
+    return Backend.get(`game/get/${gameId}`);    
+}
+
 export function placeOrder(tradeObj) {
     return Backend.post('game/placeOrder', tradeObj);
 }
