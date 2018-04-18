@@ -23,3 +23,7 @@ export function logout() {
 export function verifyEmail(token) {
     return Backend.get(`passport/verifyEmail?token=${token}`);
 }
+
+export function sendVerification(email) {
+    return Backend.get(`passport/sendVerification?email=${email}`);    
+}
