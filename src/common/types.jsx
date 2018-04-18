@@ -32,10 +32,8 @@ const PlayerType = {
     buyingPower: Number,
     shortReserve: Number,
     portfolio: Array.of.AssetType,
-    transactions: {
-        history: Array.of.TradeType,
-        current: Array.of.TradeType
-    },
+    transactionCurrent: Array.of.TradeType,
+    transactionHistory: Array.of.TradeType,
     tradingBots: Array.of.TradingBotType,
     activeBotId: String
 };
