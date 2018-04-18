@@ -8,8 +8,12 @@ export function createGame(gameObj) {
     return Backend.post('game/create', gameObj);
 }
 
+export function getGame(gameId) {
+    return Backend.get(`game/get/${gameId}`);    
+}
+
 export function placeOrder(tradeObj) {
-    return Backend.post('game/placeOrder', tradeObj);
+    return Backend.post('game/placeorder', tradeObj);
 }
 
 export function cancelOrder(tradeId) {
@@ -25,13 +29,13 @@ export function joinGame(joinObj) {
 }
 
 export function leaveGame(leaveObj) {
-    return Backend.post('game/leaveGame', leaveObj);    
+    return Backend.post('game/leaveGame', leaveObj);
 }
 
 export function inviteUsers(inviteObj) {
-    return Backend.post('game/inviteUsers', inviteObj);    
+    return Backend.post('game/inviteUsers', inviteObj);
 }
 
 export function setTradingBot(setBotObj) {
-    return Backend.post('game/setTradingBot', setBotObj);    
+    return Backend.post('game/setTradingBot', setBotObj);
 }

@@ -2,6 +2,7 @@ const { Types } = require('mongoose');
 
 const Game = require('../models/game.model');
 const Player = require('../models/player.model');
+const Coin = require('../models/coin.model');
 
 
 /**
@@ -101,7 +102,83 @@ function create(req, res) {
   });
 }
 
+function getGame(req, res) {
+  const gameid = req.params.id;
+
+  Game.findOne({ gameid }).populate('players').exec((err, game) => {
+    if (err) {
+      res.status(500).json({ err });
+      return;
+    }
+
+    let player = {};
+    if (req.session.user) {
+      game.players.forEach((each) => {
+        if (each.username === req.session.user) {
+          player = each;
+        }
+      });
+    }
+
+    res.status(200).json({ game, player });
+  });
+}
+
+function updatePrices(cb) {
+  Coin.find({}, (err, coins) => {
+    if (err) {
+      cb('MongoDB query error');
+      return;
+    }
+
+    coins.forEach((each) => {
+      // TODO: UPDATE PRICES
+    });
+    cb(null);
+  });
+}
+
+function placeOrder(req, res) {
+  const {
+    type, side, size, price, symbol, date, GTC, filled
+  } = req.body;
+
+  if (!['market', 'short', 'limit'].includes(type) ||
+      !['buy', 'sell'].includes(side)) {
+    // Wrong arguments
+    res.status(400).json({ error: 'Wrong arguments' });
+    return;
+  }
+
+  updatePrices((err) => {
+    if (err) {
+      res.status(500).json({ error: err });
+      return;
+    }
+
+  });
+
+  if (type === 'market' && side === 'buy') {
+    // Regular buy
+  } else if (type === 'market' && side === 'sell') {
+    // Regular sell
+  } else if (type === 'short' && side === 'buy') {
+    // Short buying
+  } else if (type === 'short' && side === 'sell') {
+    // Short selling
+  } else if (type === 'limit' && side === 'buy') {
+    // Limit buying
+  } else if (type === 'limit' && side === 'sell') {
+    // Limit selling
+  } else {
+    // Wrong argument
+    res.status(400).json({ error: 'Wrong arguments' });
+  }
+}
+
 module.exports = {
   validate,
-  create
+  create,
+  getGame,
+  placeOrder
 };

@@ -20,5 +20,23 @@ const CoinSchema = new Schema({
   }
 });
 
-const model = mongoose.model('Coin', CoinSchema);
-module.exports = model;
+const Model = mongoose.model('Coin', CoinSchema);
+
+const btc = new Model({
+  _id: new mongoose.Types.ObjectId(),
+  name: 'Bitcoin',
+  symbol: 'BTC',
+  currPrice: 1000
+});
+
+const eth = new Model({
+  _id: new mongoose.Types.ObjectId(),
+  name: 'Ethereum',
+  symbol: 'ETH',
+  currPrice: 1000
+});
+
+btc.save();
+eth.save();
+
+module.exports = Model;
