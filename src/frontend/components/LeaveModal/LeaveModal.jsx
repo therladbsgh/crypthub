@@ -2,9 +2,9 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Modal, Button, Message } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
-import { CancelModalStyle as styles } from 'styles';
+import { LeaveModalStyle as styles } from 'styles';
 
-export default class CancelModal extends Component {
+export default class LeaveModal extends Component {
     constructor(props) {
         super(props);
 
@@ -32,12 +32,14 @@ export default class CancelModal extends Component {
     }
 
 	handleSubmit(event) {
+        const { gameId, userId } = this.props;
+
         this.setState({
             loading: true,
             err: ''
         });
 
-		GameBackend.cancelOrder(this.props.tradeId)
+		GameBackend.leaveGame({ gameId, userId })
 		.then(res => {
 			console.log('success! ', res);
             this.close();
@@ -51,14 +53,14 @@ export default class CancelModal extends Component {
         const { open, loading, err } = this.state;
 
         return (
-            <Modal trigger={<Button compact negative size='small' content='Cancel' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
-                <Modal.Header id={styles.cancel}>Cancel Trade Order</Modal.Header>
+            <Modal trigger={<Button negative content='Leave Game' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+                <Modal.Header id={styles.leave}>Leave Game</Modal.Header>
                     <Modal.Content>
-                        <p>Are you sure you want to cancel this trade order?</p>
+                        <p>Are you sure you want to leave this game?</p>
                         {err && <Message error header='Error' content={err} />}
                     </Modal.Content>
                 <Modal.Actions>
-                    <Button negative icon='check' content='Cancel Order' onClick={this.handleSubmit} loading={loading} />
+                    <Button negative icon='check' content='Leave Game' onClick={this.handleSubmit} loading={loading} />
                 </Modal.Actions>
             </Modal>
         );

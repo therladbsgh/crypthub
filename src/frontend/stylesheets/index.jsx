@@ -11,4 +11,7 @@ export { default as CancelModalStyle } from './cancelmodal';
 export { default as GameSettingsStyle } from './gamesettings';
 export { default as GamePageStyle } from './gamepage';
 export { default as GameCardStyle } from './gamecard';
+export { default as LeaveModalStyle } from './leavemodal';
+export { default as JoinModalStyle } from './joinmodal';
+export { default as InviteModalStyle } from './invitemodal';
 export { default as SharedStyle } from './shared';

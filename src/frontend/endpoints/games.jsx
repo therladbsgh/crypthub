@@ -23,3 +23,11 @@ export function saveGame(gameObj) {
 export function joinGame(joinObj) {
     return Backend.post('game/joinGame', joinObj);
 }
+
+export function leaveGame(leaveObj) {
+    return Backend.post('game/leaveGame', leaveObj);    
+}
+
+export function inviteUsers(inviteObj) {
+    return Backend.post('game/inviteUsers', inviteObj);    
+}

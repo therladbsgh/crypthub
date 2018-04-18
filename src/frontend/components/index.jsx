@@ -22,4 +22,6 @@ export { default as Portfolio } from './Portfolio';
 export { default as CancelModal } from './CancelModal';
 export { default as GameCompare } from './GameCompare';
 export { default as JoinModal } from './JoinModal';
+export { default as LeaveModal } from './LeaveModal';
+export { default as InviteModal } from './InviteModal';
 export { default as PageNotFound } from './PageNotFound';

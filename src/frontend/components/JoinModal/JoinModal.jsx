@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Modal, Button, Message, Form } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
+import { JoinModalStyle as styles } from 'styles';
 
 export default class JoinModal extends Component {
     constructor(props) {
@@ -77,8 +78,8 @@ export default class JoinModal extends Component {
         const { password } = joinObj;
 
         return (
-            <Modal trigger={<Button compact primary size={size} content='Join Game' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
-                <Modal.Header>Join Game</Modal.Header>
+            <Modal trigger={<Button compact={size === 'tiny'} primary size={size} content='Join Game' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+                <Modal.Header id={styles.join}>Join Game</Modal.Header>
                     <Modal.Content>
                         {isPrivate ?
                         <Form>

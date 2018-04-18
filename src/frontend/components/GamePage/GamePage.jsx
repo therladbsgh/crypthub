@@ -23,8 +23,8 @@ export default class GamePage extends Component {
         const userId = '1';
 
         // TODO: logic for checking if player is in the game and if they are the host
-        const inGame = false;
-        const isHost = false;
+        const inGame = true;
+        const isHost = true;
 
         const GameOverviewPane = (
             <Tab.Pane key='tab1'>

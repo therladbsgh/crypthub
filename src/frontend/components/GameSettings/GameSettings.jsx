@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
 import { Header, Button, Form, Message, Grid } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
-import { GameCard, JoinModal } from 'components';
+import { GameCard, JoinModal, LeaveModal, InviteModal } from 'components';
 import { GameSettingsStyle as styles } from 'styles';
 
 export default class GameSettings extends Component {
@@ -22,19 +22,9 @@ export default class GameSettings extends Component {
             errField: ''
         };
 
-        this.handleLeave = this.handleLeave.bind(this);
-        this.handleInvite = this.handleInvite.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.setAccess = this.setAccess.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleLeave() {
-        //TODO: logic
-    }
-
-    handleInvite() {
-        //TODO: logic
     }
 
     setAccess(bool) {
@@ -119,9 +109,9 @@ export default class GameSettings extends Component {
 			<div>
                 {!completed &&
                 [<Header key='1' as='h2'>Game Actions</Header>,
-                isHost && <Button key='2' onClick={this.handleInvite} positive>Invite Players</Button>,
+                isHost && <InviteModal key='2' gameId={id} />,
                 inGame ?
-                <Button key='3' onClick={this.handleLeave} negative>Leave Game</Button>
+                <LeaveModal key='3' gameId={id} userId={userId} />
                 :
                 <JoinModal key='3' size='medium' isPrivate={isPrivate} gameId={id} userId={userId} />]}
 				<Header as='h2'>About This Game</Header>
