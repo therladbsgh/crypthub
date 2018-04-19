@@ -44,7 +44,7 @@ const AssetType = {
 };
 
 const TradeType = {
-    id: String,
+    _id: String,
     type: 'market' | 'limit' | 'short' | 'stop',
     side: 'buy' | 'sell',
     size: Number,
@@ -72,6 +72,7 @@ const UserType = {
 };
 
 const TradingBotType = {
-    id: String,
-    name: String
+    _id: String,
+    name: String,
+    data: String
 };

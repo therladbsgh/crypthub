@@ -90,7 +90,7 @@ export default class GameTradingBots extends Component {
                         </Form.Field>
                         <Form.Field>
                             <label>Trading Bot to Make Active</label>
-                            <Dropdown placeholder='Trading bot to make active' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t.id }))} value={botId} onChange={this.handleChange} />  
+                            <Dropdown placeholder='Trading bot to make active' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleChange} />  
                             <br /><br />
                             <Button icon='save' positive onClick={this.handleSave} content='Save Changes' />                            
                         </Form.Field>

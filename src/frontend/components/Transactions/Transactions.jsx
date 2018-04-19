@@ -52,7 +52,7 @@ export default class Transactions extends Component {
                 <Table.Body>
                     {_.map(transactions, (t, index) => 
                         <Table.Row key={index} positive={t.filled} error={!current && !t.filled && t.expiration <= now}>
-                            {current && <Table.Cell id={styles.cancel}><CancelModal tradeId={t.id} /></Table.Cell>}
+                            {current && <Table.Cell id={styles.cancel}><CancelModal tradeId={t._id} /></Table.Cell>}
                             <Table.Cell>{_.capitalize(`${t.type} ${t.side}`)}</Table.Cell>
                             <Table.Cell>{date.format(t.date, 'MM/DD/YYYY')}</Table.Cell>
                             <Table.Cell>{t.symbol}</Table.Cell>

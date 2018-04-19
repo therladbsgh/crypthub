@@ -30,7 +30,10 @@ export function sendVerification(email) {
 
 export function uploadTradingBot(fileObj) {
     const fileSendObj = new FormData();
-    fileSendObj.append('file', fileObj.file)
-    fileSendObj.append('user', fileObj.user)
+    fileSendObj.append('file', fileObj.file);
     return Backend.post('uploadTradingBot', fileSendObj);
+}
+
+export function saveTradingBot(tradingBotObj) {
+    return Backend.post('saveTradingBot', tradingBotObj);
 }

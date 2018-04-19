@@ -51,7 +51,7 @@ class UserPage extends Component {
         );
         const TradingBotsPane = (
             <Tab.Pane key='tab4'>
-                <UserTradingBots username={user.name} />
+                <UserTradingBots tradingBots={user.tradingBots} />
             </Tab.Pane>
         );
 
