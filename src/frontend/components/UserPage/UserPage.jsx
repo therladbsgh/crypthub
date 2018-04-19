@@ -3,13 +3,14 @@ import { Link, withRouter } from 'react-router-dom';
 import { Header, Tab } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
-import { YourGames, FindGames, CreateGame } from 'components';
+import { YourGames, FindGames, CreateGame, UserTradingBots } from 'components';
 import { UserPageStyle as styles } from 'styles';
 
 class UserPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            user: {},
             hasMounted: false
         };
     }
@@ -22,8 +23,7 @@ class UserPage extends Component {
             if (_.isEmpty(res)) {
                 history.push('/login');
 			} else {
-                //TODO: also put the user on the state
-				this.setState({ hasMounted: true });
+				this.setState({ user: res.user, hasMounted: true });
 			}
 		}, ({ err }) => {
 			console.log('error! ', err);
@@ -32,6 +32,8 @@ class UserPage extends Component {
 	}
     
   	render() {
+        const { user, hasMounted } = this.state;
+
         const YourGamesPane = (
             <Tab.Pane key='tab1'>
                 <YourGames />
@@ -47,17 +49,23 @@ class UserPage extends Component {
                 <CreateGame />
             </Tab.Pane>
         );
+        const TradingBotsPane = (
+            <Tab.Pane key='tab4'>
+                <UserTradingBots username={user.name} />
+            </Tab.Pane>
+        );
 
         const panes = [
             { menuItem: 'Your Games', pane: YourGamesPane },
             { menuItem: 'Find Games', pane: FindGamesPane },
-            { menuItem: 'Create Game', pane: CreateGamePane }
+            { menuItem: 'Create Game', pane: CreateGamePane },
+            { menuItem: 'Trading Bots', pane: TradingBotsPane }
         ];
 
         const propsState = this.props.location.state;
 
 		return (
-            this.state.hasMounted &&
+            hasMounted &&
 			<div>
 				<Navbar/>
                 <p className={styles.welcome}>Welcome back,</p>

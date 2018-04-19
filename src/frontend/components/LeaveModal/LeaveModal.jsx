@@ -32,14 +32,14 @@ export default class LeaveModal extends Component {
     }
 
 	handleSubmit(event) {
-        const { gameId, userId } = this.props;
+        const { gameId, username } = this.props;
 
         this.setState({
             loading: true,
             err: ''
         });
 
-		GameBackend.leaveGame({ gameId, userId })
+		GameBackend.leaveGame({ gameId, username })
 		.then(res => {
 			console.log('success! ', res);
             this.close();

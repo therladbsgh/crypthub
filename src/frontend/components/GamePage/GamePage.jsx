@@ -12,7 +12,7 @@ class GamePage extends Component {
 		this.state = {
             game: {},
             thisPlayer: {},
-            userId: '',
+            username: '',
             hasMounted: false
         };
     }
@@ -27,7 +27,7 @@ class GamePage extends Component {
             UserBackend.getUser()
             .then(resUser => {
                 console.log('success! ', resUser);
-                this.setState({ game: resGame.game, thisPlayer: resGame.player, userId: resUser.id, hasMounted: true });
+                this.setState({ game: resGame.game, thisPlayer: resGame.player, username: resUser.name, hasMounted: true });
             }, ({ err }) => {
                 console.log('error! ', err);
                 alert(`Error: ${err}`);
@@ -39,7 +39,7 @@ class GamePage extends Component {
 	}
 
   	render() {
-        const { game, thisPlayer, userId, hasMounted } = this.state;
+        const { game, thisPlayer, username, hasMounted } = this.state;
         const { id, players, playerPortfolioPublic, isPrivate, completed } = game;
 
         if (!hasMounted) return null;
@@ -75,7 +75,7 @@ class GamePage extends Component {
         );
         const GameSettingsPane = (
             <Tab.Pane key='tab6'>
-                <GameSettings game={game} inGame={inGame} isHost={isHost} userId={userId} />
+                <GameSettings game={game} inGame={inGame} isHost={isHost} username={username} />
             </Tab.Pane>
         );
 
@@ -98,8 +98,8 @@ class GamePage extends Component {
                     <span className={styles.completedTag}>Completed</span>
                     :
                     <div className={styles.joinButton}>
-                        {userId ?
-                        <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} userId={userId} />
+                        {username ?
+                        <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} username={username} />
                         :
                         <Button icon='user add' size='tiny' compact primary onClick={() => this.props.history.push('/login')} content='Join Game' />}
                     </div>}

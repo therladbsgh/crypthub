@@ -27,3 +27,10 @@ export function verifyEmail(token) {
 export function sendVerification(email) {
     return Backend.get(`passport/sendVerification?email=${email}`);    
 }
+
+export function uploadTradingBot(fileObj) {
+    const fileSendObj = new FormData();
+    fileSendObj.append('file', fileObj.file)
+    fileSendObj.append('user', fileObj.user)
+    return Backend.post('uploadTradingBot', fileSendObj);
+}

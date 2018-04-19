@@ -33,7 +33,7 @@ date.subtractStr = (date1, date2) => {
 export default class Transactions extends Component {
     render() {
         const { transactions, current } = this.props;
-        const now = new Date();
+        const now = new Date(); 
 
         return (
 			<Table celled definition={current}>

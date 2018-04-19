@@ -26,4 +26,5 @@ export { default as LeaveModal } from './LeaveModal';
 export { default as InviteModal } from './InviteModal';
 export { default as GameTradingBots } from './GameTradingBots';
 export { default as VerifyEmail } from './VerifyEmail';
+export { default as UserTradingBots } from './UserTradingBots';
 export { default as PageNotFound } from './PageNotFound';

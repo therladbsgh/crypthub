@@ -40,7 +40,7 @@ class VerifyEmail extends Component {
 	handleSubmit(event) {
         this.setState({
             loading: true,
-            submitted: true,
+            submitted: false,
             err: '',
             success: ''
         });
@@ -48,10 +48,10 @@ class VerifyEmail extends Component {
 		UserBackend.sendVerification(this.state.email)
 		.then(res => {
 			console.log('success! ', res);
-            this.setState({ loading: false, submitted: false, success: 'Verification email sent!' });
+            this.setState({ loading: false, submitted: true, success: 'Verification email sent!' });
 		}, ({ err }) => {
 			console.log('error! ', err);
-            this.setState({ loading: false, submitted: false, err });
+            this.setState({ loading: false, submitted: true, err });
         });
     }
     
@@ -62,7 +62,7 @@ class VerifyEmail extends Component {
             hasMounted &&
             <div>
                 <Navbar />
-                {!submitted &&
+                {submitted &&
                 <Message error={!!err} success={!!success} header={err ? 'Error' : 'Success'} content={err || success} />}
                 {(err || submitted) &&
                 <Button icon='mail outline' loading={loading} primary onClick={this.handleSubmit} content='Resend Verification Email' />}

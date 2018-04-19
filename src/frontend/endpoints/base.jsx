@@ -44,3 +44,21 @@ export function post(url, data) {
         .catch(err => handleError(reject, err));
     });
 }
+
+export function postFormData(url, data) {
+    return new Promise((resolve, reject) => {
+        fetch(`${BASE_URI}${url}`, {
+            body: data,
+            headers: {
+                'content-type': 'multipart/form-data',
+            },
+            method: 'POST',
+            credentials: 'include',
+        })
+        .then(res => {
+            if (res.ok) return resolve(res.json());
+            res.json().then(json => handleError(reject, json));
+        })
+        .catch(err => handleError(reject, err));
+    });
+}
