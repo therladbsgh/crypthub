@@ -245,11 +245,12 @@ function simpleBuy(username, symbol, size, cb) {
           type: 'market',
           side: 'buy',
           size,
-          price: size * coinPrice,
-          symbol: coinId,
+          price: coinPrice,
+          coin: coinId,
           date: Date.now(),
           GTC: false,
-          filled: true
+          filled: true,
+          filledDate: Date.now()
         });
         return trade.save();
       }).then((newTrade) => {
@@ -263,12 +264,10 @@ function simpleBuy(username, symbol, size, cb) {
         cb(err);
       });
     } else {
-      Asset.findOne({ _id: sym._id });
+      Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+        console.log(asset);
+      });
     }
-
-    console.log(player);
-    console.log(usd);
-    console.log(sym);
   });
 }
 
