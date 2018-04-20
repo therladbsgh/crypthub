@@ -246,7 +246,7 @@ function simpleBuy(username, symbol, size, cb) {
           side: 'buy',
           size,
           price: size * coinPrice,
-          symbol: coinId,
+          coin: coinId,
           date: Date.now(),
           GTC: false,
           filled: true
