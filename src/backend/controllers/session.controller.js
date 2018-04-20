@@ -134,8 +134,12 @@ function login(req, res) {
  * @return 500 on server error, 200 if success
  */
 function logout(req, res) {
-  req.session = null;
-  res.status(200).json({ success: true });
+  req.session.destroy((err) => {
+    if (err) {
+      res.status(500).json({ err: 'Server error' });
+    }
+    res.status(200).json({ success: true });
+  });
 }
 
 
