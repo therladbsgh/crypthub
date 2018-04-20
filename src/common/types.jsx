@@ -65,7 +65,7 @@ const CoinType = {
 };
 
 const UserType = {
-    name: String,
+    username: String,
     ELO: Number,
     games: Array.of.GameType,
     tradingBots: Array.of.TradingBotType

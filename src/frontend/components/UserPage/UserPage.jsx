@@ -33,10 +33,11 @@ class UserPage extends Component {
     
   	render() {
         const { user, hasMounted } = this.state;
+        const { username, games, tradingBots } = user;
 
         const YourGamesPane = (
             <Tab.Pane key='tab1'>
-                <YourGames />
+                <YourGames games={games} username={username} />
             </Tab.Pane>
         );
         const FindGamesPane = (
@@ -51,7 +52,7 @@ class UserPage extends Component {
         );
         const TradingBotsPane = (
             <Tab.Pane key='tab4'>
-                <UserTradingBots tradingBots={user.tradingBots} />
+                <UserTradingBots tradingBots={tradingBots} />
             </Tab.Pane>
         );
 
@@ -69,7 +70,7 @@ class UserPage extends Component {
 			<div>
 				<Navbar/>
                 <p className={styles.welcome}>Welcome back,</p>
-				<Header id={styles.username} as='h1'>Username</Header>
+				<Header id={styles.username} as='h1'>{username}</Header>
 				<Tab panes={panes} renderActiveOnly={false} defaultActiveIndex={propsState ? propsState.openTab : 0} />
 			</div>
 		);
