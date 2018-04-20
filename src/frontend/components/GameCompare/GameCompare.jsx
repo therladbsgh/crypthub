@@ -25,11 +25,11 @@ export default class GameCompare extends Component {
 		return (
 			<div>
                 <Header as='h2'>Compare Player Portfolios</Header>
-				<Dropdown placeholder='Players to compare' multiple search selection options={_.map(players, p => ({ text: p.name, value: p.id }))} value={playerIds} onChange={this.handleChange} />
+				<Dropdown placeholder='Players to compare' multiple search selection options={_.map(players, p => ({ text: p.username, value: p._id }))} value={playerIds} onChange={this.handleChange} />
                 {_.map(playerIds, _id => {
-                    const player = _.find(players, { _id });
+					const player = _.find(players, { _id });
                     return (
-                        <Portfolio key={_id} portfolio={player.portfolio} header={player.name} completed={completed} />
+                        <Portfolio key={_id} portfolio={player.portfolio} header={player.username} completed={completed} />
                     );
                 })}
 			</div>
