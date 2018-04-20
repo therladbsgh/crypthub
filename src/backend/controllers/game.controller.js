@@ -133,18 +133,17 @@ function getGame(req, res) {
       }
 
       let gameToReturn = {};
+      let player = {};
 
       if (game) {
         gameToReturn = game;
-      }
-
-      let player = {};
-      if (req.session.user) {
-        game.players.forEach((each) => {
-          if (each.username === req.session.user) {
-            player = each;
-          }
-        });
+        if (req.session.user) {
+          game.players.forEach((each) => {
+            if (each.username === req.session.user) {
+              player = each;
+            }
+          });
+        }
       }
 
       res.status(200).json({ game: gameToReturn, player });
@@ -238,17 +237,11 @@ function simpleBuy(username, symbol, size, cb) {
 
         return asset.save();
       }).then((newAsset) => {
-        console.log("ASSET GET");
-        console.log(newAsset);
         return Asset.findOne({ _id: usd._id }).exec();
       }).then((usdAsset) => {
-        console.log("USD GGET");
-        console.log(usdAsset);
         usdAsset.set({ amount: usdAsset.amount - (size * coinPrice) });
         return usdAsset.save();
       }).then((newUsdAsset) => {
-        console.log("NEW USD");
-        console.log(newUsdAsset);
         const trade = new Trade({
           _id: new Types.ObjectId(),
           type: 'market',
@@ -262,14 +255,11 @@ function simpleBuy(username, symbol, size, cb) {
         });
         return trade.save();
       }).then((newTrade) => {
-        console.log("TRADE GET");
-        console.log(newTrade);
         player.portfolio.push(assetId);
         player.transactionHistory.push(newTrade._id);
         return player.save();
-      }).then((newPlayer) => {
-        console.log("FINAL PLAYER");
-        console.log(newPlayer);
+      }).then(() => {
+        cb(null);
       });
     } else {
 
@@ -282,8 +272,9 @@ function simpleBuy(username, symbol, size, cb) {
 }
 
 function placeOrder(req, res) {
+  console.log(req.body);
   const {
-    type, side, size, symbol, date, GTC, id, playerid
+    type, side, size, symbol, date, GTC, id, playerId
   } = req.body;
 
   if (!['market', 'short', 'limit'].includes(type) ||
@@ -301,7 +292,7 @@ function placeOrder(req, res) {
 
       if (type === 'market' && side === 'buy') {
         // Regular buy
-        simpleBuy(playerid, symbol, size, (err, a) => {console.log(err)});
+        simpleBuy(playerId, symbol, size, (err, a) => {console.log(err)});
         res.status(200).json({ success: true });
       } else if (type === 'market' && side === 'sell') {
         // Regular sell

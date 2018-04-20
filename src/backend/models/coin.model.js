@@ -19,8 +19,7 @@ const CoinSchema = new Schema({
     required: true
   },
   todayReturn: {
-    type: Number,
-    required: true
+    type: Number
   }
 });
 
@@ -64,7 +63,7 @@ Model.findOne({ symbol: 'USD' }, (err, result) => {
         name: 'US Dollars',
         symbol: 'USD',
         currPrice: 1,
-        todayReturn: 0
+        todayReturn: undefined
       });
       usd.save();
     }
