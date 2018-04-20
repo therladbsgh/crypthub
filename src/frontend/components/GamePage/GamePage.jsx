@@ -12,6 +12,7 @@ class GamePage extends Component {
 		this.state = {
             game: {},
             thisPlayer: {},
+            usernameUser: '',
             hasMounted: false
         };
     }
@@ -22,11 +23,18 @@ class GamePage extends Component {
 		.then(resGame => {
             console.log('success! ', resGame);
             if (_.isEmpty(resGame.game)) return history.push('/gamenotfound');
-
-            this.setState({
-                game: resGame.game,
-                thisPlayer: resGame.player,
-                hasMounted: true
+            UserBackend.getUsername()
+            .then(resUser => {
+                console.log('success! ', resUser);
+                this.setState({
+                    game: resGame.game,
+                    thisPlayer: resGame.player,
+                    usernameUser: resUser.user ? resUser.user.username : '',
+                    hasMounted: true
+                });
+            }, ({ err }) => {
+                console.log('error! ', err);
+                alert(`Error: ${err}`);
             });
 		}, ({ err }) => {
 			console.log('error! ', err);
@@ -35,9 +43,8 @@ class GamePage extends Component {
 	}
 
   	render() {
-        const { game, thisPlayer, hasMounted } = this.state;
+        const { game, thisPlayer, usernameUser, hasMounted } = this.state;
         const { id, players, playerPortfolioPublic, isPrivate, completed } = game;
-        const { username } = thisPlayer;
 
         if (!hasMounted) return null;
 
@@ -87,7 +94,7 @@ class GamePage extends Component {
 
 		return (
 			<div>
-				<Navbar username={username} />
+				<Navbar username={usernameUser} />
                 {(completed || !inGame) ?
                 [<div key='1' className={styles.completedHeader}>
                     <Header className={sharedStyles.inline} as='h1'>Game Name</Header>
