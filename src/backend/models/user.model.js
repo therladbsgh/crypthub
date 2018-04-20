@@ -42,7 +42,7 @@ UserSchema.statics = {
    */
   get(username) {
     return this.findOne({ username })
-      .populate({ path: 'games', populate: { path: 'portfolio' } }).exec().then(user => user);
+      .populate({ path: 'games', populate: { path: 'players' } }).exec().then(user => user);
   }
 };
 
