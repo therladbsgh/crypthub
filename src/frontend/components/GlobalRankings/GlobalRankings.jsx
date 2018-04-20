@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Header, Table, Icon } from 'semantic-ui-react';
+import { UserBackend } from 'endpoints';
 import { Navbar, Searchbar } from 'components';
 import { UserMocks } from 'mocks';
 

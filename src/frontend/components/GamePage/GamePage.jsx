@@ -12,7 +12,6 @@ class GamePage extends Component {
 		this.state = {
             game: {},
             thisPlayer: {},
-            username: '',
             hasMounted: false
         };
     }
@@ -24,13 +23,10 @@ class GamePage extends Component {
             console.log('success! ', resGame);
             if (_.isEmpty(resGame.game)) return history.push('/gamenotfound');
 
-            UserBackend.getUser()
-            .then(resUser => {
-                console.log('success! ', resUser);
-                this.setState({ game: resGame.game, thisPlayer: resGame.player, username: resUser.name, hasMounted: true });
-            }, ({ err }) => {
-                console.log('error! ', err);
-                alert(`Error: ${err}`);
+            this.setState({
+                game: resGame.game,
+                thisPlayer: resGame.player,
+                hasMounted: true
             });
 		}, ({ err }) => {
 			console.log('error! ', err);
@@ -39,14 +35,15 @@ class GamePage extends Component {
 	}
 
   	render() {
-        const { game, thisPlayer, username, hasMounted } = this.state;
+        const { game, thisPlayer, hasMounted } = this.state;
         const { id, players, playerPortfolioPublic, isPrivate, completed } = game;
+        const { username } = thisPlayer;
 
         if (!hasMounted) return null;
 
         // TODO: logic for checking if player is in the game and if they are the host
         const inGame = !_.isEmpty(thisPlayer);
-        const isHost = game.host === thisPlayer.username;
+        const isHost = game.host === username;
 
         const GameOverviewPane = (
             <Tab.Pane key='tab1'>
