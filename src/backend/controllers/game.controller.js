@@ -260,12 +260,41 @@ function simpleBuy(username, symbol, size, cb) {
       }).then(() => {
         cb(null);
       }).catch((err) => {
-        console.log(err);
         cb(err);
       });
     } else {
+      if (usd.amount < size * sym.coin.currPrice) {
+        cb('Trying to buy more than amount of USD available');
+        return;
+      }
+
       Asset.findOne({ _id: sym._id }).exec().then((asset) => {
-        console.log(asset);
+        asset.set({ amount: asset.amount + size });
+        asset.save();
+      }).then(() => {
+        return Asset.findOne({ _id: usd._id }).exec();
+      }).then((usdAsset) => {
+        usdAsset.set({ amount: usdAsset.amount - (size * sym.coin.currPrice) });
+        usdAsset.save();
+      }).then(() => {
+        const trade = new Trade({
+          _id: new Types.ObjectId(),
+          type: 'market',
+          side: 'buy',
+          size,
+          price: sym.coin.currPrice,
+          coin: sym.coin._id,
+          date: Date.now(),
+          GTC: false,
+          filled: true,
+          filledDate: Date.now()
+        });
+        return trade.save();
+      }).then((newTrade) => {
+        player.transactionHistory.push(newTrade._id);
+        return player.save();
+      }).then(() => {
+        cb(null);
       });
     }
   });
@@ -290,24 +319,29 @@ function placeOrder(req, res) {
       return;
     }
 
-      if (type === 'market' && side === 'buy') {
-        // Regular buy
-        simpleBuy(playerId, symbol, size, (err, a) => {console.log(err)});
-        res.status(200).json({ success: true });
-      } else if (type === 'market' && side === 'sell') {
-        // Regular sell
-      } else if (type === 'short' && side === 'buy') {
-        // Short buying
-      } else if (type === 'short' && side === 'sell') {
-        // Short selling
-      } else if (type === 'limit' && side === 'buy') {
-        // Limit buying
-      } else if (type === 'limit' && side === 'sell') {
-        // Limit selling
-      } else {
-        // Wrong argument
-        res.status(400).json({ error: 'Wrong arguments' });
-      }
+    if (type === 'market' && side === 'buy') {
+      // Regular buy
+      simpleBuy(playerId, symbol, size, (err1) => {
+        if (err1) {
+          res.status(400).json({ err: err1 });
+        } else {
+          res.status(200).json({ success: true });
+        }
+      });
+    } else if (type === 'market' && side === 'sell') {
+      // Regular sell
+    } else if (type === 'short' && side === 'buy') {
+      // Short buying
+    } else if (type === 'short' && side === 'sell') {
+      // Short selling
+    } else if (type === 'limit' && side === 'buy') {
+      // Limit buying
+    } else if (type === 'limit' && side === 'sell') {
+      // Limit selling
+    } else {
+      // Wrong argument
+      res.status(400).json({ error: 'Wrong arguments' });
+    }
   });
 }
 
