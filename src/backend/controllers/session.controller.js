@@ -235,6 +235,19 @@ function authenticate(req, res, next) {
  *
  * @return user name if exists, null otherwise
  */
+function ensureAuthenticated(req, res) {
+  if (req.session.user) {
+    res.json({ username: req.session.user });
+  } else {
+    res.json({});
+  }
+}
+
+/**
+ * Gets user name from session.
+ *
+ * @return user name if exists, null otherwise
+ */
 function getUser(req, res) {
   if (req.session.user) {
     User.get(req.session.user).then((result) => {
@@ -253,5 +266,6 @@ module.exports = {
   login,
   logout,
   authenticate,
-  getUser
+  getUser,
+  ensureAuthenticated
 };

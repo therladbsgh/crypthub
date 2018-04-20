@@ -63,8 +63,8 @@ Model.findOne({ symbol: 'USD' }, (err, result) => {
         _id: new mongoose.Types.ObjectId(),
         name: 'US Dollars',
         symbol: 'USD',
-        currPrice: 1000,
-        todayReturn: 5.22
+        currPrice: 1,
+        todayReturn: 0
       });
       usd.save();
     }

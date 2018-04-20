@@ -35,5 +35,6 @@ router.route('/logout').get(SessionController.logout);
  * @return user name if exists, null otherwise
  */
 router.route('/user').get(SessionController.getUser);
+router.route('/username').get(SessionController.ensureAuthenticated);
 
 module.exports = router;
