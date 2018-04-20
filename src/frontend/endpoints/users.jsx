@@ -4,6 +4,10 @@ export function getUser() {
     return Backend.get('passport/user');
 }
 
+export function getUsername() {
+    return Backend.get('passport/username');
+}
+
 export function signup(signupObj) {
     return Backend.post('passport/signup', signupObj);
 }
