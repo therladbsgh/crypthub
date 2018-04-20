@@ -37,7 +37,7 @@ class UserPage extends Component {
 
         const YourGamesPane = (
             <Tab.Pane key='tab1'>
-                <YourGames games={games} />
+                <YourGames games={games} username={username} />
             </Tab.Pane>
         );
         const FindGamesPane = (

@@ -9,8 +9,8 @@ import { SharedStyle as sharedStyles } from 'styles';
 
 export default class YourGames extends Component {
     render() {
-        const { games } = this.props;
-        
+        const { games, username } = this.props;
+
         return (
 			<div>
 				<Header as='h2'>Your Games</Header>
@@ -28,15 +28,14 @@ export default class YourGames extends Component {
 
                     <Table.Body>
                         {_.map(games, (g, index) => {
-                                // TODO: get correct player
-                                const p = g.players[0];
+                                const p = _.find(g.players, { username });
                                 return (
                                 <Table.Row key={index}>
                                     <Table.Cell><Link to={`/game/${g.id}`}>{g.name}</Link></Table.Cell>
                                     <Table.Cell className={g.completed ? '' : p.todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{g.completed ? '-' : `${p.todayReturn >= 0 ? '+' : ''}${formatCurrency(p.todayReturn, { format: '%v%s', symbol: '%' })}`}</Table.Cell>
                                     <Table.Cell className={p.netReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{formatCurrency(Math.abs(p.netReturn), { format: '%s%v', symbol: `${p.netReturn >= 0 ? '+' : '-'}$` })}</Table.Cell>
                                     <Table.Cell>{p.currRank}</Table.Cell>
-                                    <Table.Cell>{date.format(g.end, 'MM/DD/YYYY')}</Table.Cell>
+                                    <Table.Cell>{date.format(new Date(g.end), 'MM/DD/YYYY')}</Table.Cell>
                                     <Table.Cell>{g.players.length}</Table.Cell>
                                 </Table.Row>);
                             }
