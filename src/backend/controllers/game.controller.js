@@ -194,14 +194,65 @@ function updatePrices(cb) {
   });
 }
 
-function simple_buy(username, cb) {
-  Player.findOne({ _id: username }).populate({ path: 'portfolio', populate: { path: 'coin' } }).exec((err, player) => {
+function simpleBuy(username, symbol, size, cb) {
+  const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
+  Player.findOne({ _id: username }).populate(populatePath).exec().then((err, player) => {
     if (err) {
+      console.log(err);
       cb('MongoDB error', null);
       return;
     }
+
+    let usd;
+    let sym;
+    player.portfolio.forEach((each) => {
+      if (each.coin.symbol === 'USD') {
+        usd = each;
+      }
+      if (each.coin.symbol === symbol) {
+        sym = each;
+      }
+    });
+
+    if (!sym) {
+      let coinPrice;
+      const getCoin = Coin.findOne({ symbol }).exec();
+      getCoin.then((err2, coin) => {
+        if (err2) {
+          return Promise.reject(new Error('MongoDB error'));
+        }
+
+        if (usd.amount < size * coin.currPrice) {
+          return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+        }
+
+        coinPrice = coin.currPrice;
+
+        const asset = new Asset({
+          _id: new Types.ObjectId(),
+          coin: coin._id,
+          amount: size
+        });
+
+        return asset.save();
+      }).then((err3, newAsset) => {
+        player.portfolio.push(newAsset._id);
+        return player.save();
+      }).then((err3, newPlayer) => {
+        return Asset.findOne({ _id: usd._id }).exec();
+      }).then((err3, usdAsset) => {
+        usdAsset.set({ amount: usdAsset.amount - (size * coinPrice) });
+        return usdAsset.save();
+      }).then((err3, newUsdAsset) => {
+
+      });
+    } else {
+
+    }
+
     console.log(player);
-    console.log(player.portfolio);
+    console.log(usd);
+    console.log(sym);
   });
 }
 
@@ -227,7 +278,7 @@ function placeOrder(req, res) {
 
       if (type === 'market' && side === 'buy') {
         // Regular buy
-        simple_buy(playerid);
+        simpleBuy(playerid);
         res.status(200).json({ success: true });
       } else if (type === 'market' && side === 'sell') {
         // Regular sell
