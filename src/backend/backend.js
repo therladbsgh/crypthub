@@ -29,7 +29,7 @@ const MongoStore = connectMongo(session);
 app.use(cookieParser('secret'));
 app.use(session({
   key: 'user_sid',
-  cookie: { maxAge: 60000 },
+  cookie: { maxAge: 600000 },
   store: new MongoStore({ mongooseConnection: db }),
   saveUninitialized: true,
   resave: true,

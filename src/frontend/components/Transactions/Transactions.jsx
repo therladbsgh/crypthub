@@ -49,7 +49,7 @@ export default class Transactions extends Component {
                         <Table.HeaderCell>Type</Table.HeaderCell>
                         <Table.HeaderCell>Placed</Table.HeaderCell>
                         <Table.HeaderCell>Coin</Table.HeaderCell>
-                        <Table.HeaderCell>Size</Table.HeaderCell>
+                        <Table.HeaderCell>Amount</Table.HeaderCell>
                         <Table.HeaderCell>Price</Table.HeaderCell>
                         <Table.HeaderCell>Status</Table.HeaderCell>
                     </Table.Row>
