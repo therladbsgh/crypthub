@@ -5,6 +5,7 @@ const Game = require('../models/game.model');
 const Player = require('../models/player.model');
 const Coin = require('../models/coin.model');
 const Asset = require('../models/asset.model');
+const User = require('../models/user.model');
 
 
 /**
@@ -102,12 +103,17 @@ function create(req, res) {
       player.save().then((newPlayer) => {
         game.players = [newPlayer._id];
         game.save().then((newGame) => {
-          Game.findOne({ _id: newGame._id })
-            .populate({ path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } })
-            .exec((err2, gameToReturn) => {
-              if (err2) res.status(500).json({ err: 'MongoDB query error' });
-              res.status(200).json({ data: gameToReturn });
+          User.findOne({ username: req.session.user }, (err2, user) => {
+            user.games.push(newGame._id);
+            user.save().then(() => {
+              Game.findOne({ _id: newGame._id })
+                .populate({ path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } })
+                .exec((err3, gameToReturn) => {
+                  if (err3) res.status(500).json({ err: 'MongoDB query error' });
+                  res.status(200).json({ data: gameToReturn });
+                });
             });
+          });
         });
       });
     });
@@ -122,6 +128,11 @@ function getGame(req, res) {
     .exec((err, game) => {
       if (err) {
         res.status(500).json({ err });
+        return;
+      }
+
+      if (!game) {
+        res.status(404).json({ err: 'Game not found' });
         return;
       }
 
@@ -144,20 +155,16 @@ function updateSinglePrice(li, cb) {
   } else if (li[0].name !== 'US Dollars') {
     axios.get(`https://api.coinmarketcap.com/v1/ticker/${li[0].name}`).then((res) => {
       const data = res.data[0];
-      console.log(data);
 
       Coin.findOne({ name: li[0].name }, (err, coin) => {
         if (err) {
           cb('MongoDB query error');
           return;
         }
-        console.log(parseFloat(data.price_usd));
         coin.set({ currPrice: parseFloat(data.price_usd) });
         coin.set({ todayReturn: parseFloat(data.percent_change_24h) });
-        console.log(coin);
         coin.save((err2) => {
           if (err2) {
-            console.log(err2);
             cb('MongoDB save error');
             return;
           }
@@ -176,7 +183,6 @@ function updateSinglePrice(li, cb) {
 
 function updatePrices(cb) {
   Coin.find({}, (err, coins) => {
-    console.log(coins);
     if (err) {
       cb('MongoDB query error');
       return;
@@ -188,9 +194,20 @@ function updatePrices(cb) {
   });
 }
 
+function simple_buy(username, cb) {
+  Player.findOne({ _id: username }).populate({ path: 'portfolio', populate: { path: 'coin' } }).exec((err, player) => {
+    if (err) {
+      cb('MongoDB error', null);
+      return;
+    }
+    console.log(player);
+    console.log(player.portfolio);
+  });
+}
+
 function placeOrder(req, res) {
   const {
-    type, side, size, price, symbol, date, GTC, filled
+    type, side, size, symbol, date, GTC, id, playerid
   } = req.body;
 
   console.log(req.body);
@@ -207,25 +224,26 @@ function placeOrder(req, res) {
       res.status(500).json({ error: err });
       return;
     }
-    res.status(200).json({ success: true });
-  });
 
-  if (type === 'market' && side === 'buy') {
-    // Regular buy
-  } else if (type === 'market' && side === 'sell') {
-    // Regular sell
-  } else if (type === 'short' && side === 'buy') {
-    // Short buying
-  } else if (type === 'short' && side === 'sell') {
-    // Short selling
-  } else if (type === 'limit' && side === 'buy') {
-    // Limit buying
-  } else if (type === 'limit' && side === 'sell') {
-    // Limit selling
-  } else {
-    // Wrong argument
-    res.status(400).json({ error: 'Wrong arguments' });
-  }
+      if (type === 'market' && side === 'buy') {
+        // Regular buy
+        simple_buy(playerid);
+        res.status(200).json({ success: true });
+      } else if (type === 'market' && side === 'sell') {
+        // Regular sell
+      } else if (type === 'short' && side === 'buy') {
+        // Short buying
+      } else if (type === 'short' && side === 'sell') {
+        // Short selling
+      } else if (type === 'limit' && side === 'buy') {
+        // Limit buying
+      } else if (type === 'limit' && side === 'sell') {
+        // Limit selling
+      } else {
+        // Wrong argument
+        res.status(400).json({ error: 'Wrong arguments' });
+      }
+  });
 }
 
 module.exports = {

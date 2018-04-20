@@ -8,6 +8,7 @@ const User = require('../models/user.model');
  */
 function get(req, res) {
   User.get(req.params.id).then((result) => {
+    result.password = undefined;
     res.json({ result });
   }).catch((err) => {
     res.json({ err });

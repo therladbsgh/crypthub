@@ -76,6 +76,4 @@ const GameSchema = new Schema({
 });
 
 const model = mongoose.model('Game', GameSchema);
-
-model.remove({}, () => {});
 module.exports = model;
