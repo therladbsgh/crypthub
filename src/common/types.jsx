@@ -49,7 +49,7 @@ const TradeType = {
     side: 'buy' | 'sell',
     size: Number,
     price: Number,
-    symbol: CoinType.symbol,
+    coin: CoinType,
     date: Date,
     GTC: Boolean,
     expiration: Date,
