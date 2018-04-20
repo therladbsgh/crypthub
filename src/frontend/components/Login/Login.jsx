@@ -32,7 +32,7 @@ class Login extends Component {
     
     componentWillMount() {
 		const { history } = this.props;
-		UserBackend.getUser()
+		UserBackend.getUsername()
 		.then(res => {
 			console.log('success! ', res);
             if (_.isEmpty(res)) {

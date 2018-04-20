@@ -29,7 +29,7 @@ class GamePage extends Component {
                 this.setState({
                     game: resGame.game,
                     thisPlayer: resGame.player,
-                    usernameUser: resUser.user ? resUser.user.username : '',
+                    usernameUser: resUser.username,
                     hasMounted: true
                 });
             }, ({ err }) => {
@@ -44,7 +44,8 @@ class GamePage extends Component {
 
   	render() {
         const { game, thisPlayer, usernameUser, hasMounted } = this.state;
-        const { id, players, playerPortfolioPublic, isPrivate, completed } = game;
+        const { id, name, players, playerPortfolioPublic, isPrivate, completed } = game;
+        const { username } = thisPlayer;
 
         if (!hasMounted) return null;
 
@@ -97,7 +98,7 @@ class GamePage extends Component {
 				<Navbar username={usernameUser} />
                 {(completed || !inGame) ?
                 [<div key='1' className={styles.completedHeader}>
-                    <Header className={sharedStyles.inline} as='h1'>Game Name</Header>
+                    <Header className={sharedStyles.inline} as='h1'>{name}</Header>
                     {completed ?
                     <span className={styles.completedTag}>Completed</span>
                     :

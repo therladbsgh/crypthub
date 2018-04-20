@@ -12,6 +12,10 @@ export function getGame(gameId) {
     return Backend.get(`game/get/${gameId}`);    
 }
 
+export function getAllGames() {
+    return Backend.get('game/getall');    
+}
+
 export function placeOrder(tradeObj) {
     return Backend.post('game/placeorder', tradeObj);
 }

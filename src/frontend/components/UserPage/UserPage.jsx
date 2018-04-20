@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Header, Tab } from 'semantic-ui-react';
-import { UserBackend } from 'endpoints';
+import { UserBackend, GameBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { YourGames, FindGames, CreateGame, UserTradingBots } from 'components';
 import { UserPageStyle as styles } from 'styles';
@@ -11,6 +11,7 @@ class UserPage extends Component {
         super(props);
         this.state = {
             user: {},
+            allGames: [],
             hasMounted: false
         };
     }
@@ -18,12 +19,19 @@ class UserPage extends Component {
     componentWillMount() {
 		const { history } = this.props;
 		UserBackend.getUser()
-		.then(res => {
-			console.log('success! ', res);
-            if (_.isEmpty(res)) {
+		.then(resUser => {
+			console.log('success! ', resUser);
+            if (_.isEmpty(resUser)) {
                 history.push('/login');
 			} else {
-				this.setState({ user: res.user, hasMounted: true });
+                GameBackend.getAllGames()
+                .then(resGames => {
+                    console.log('success! ', resGames);
+                    this.setState({ user: resUser.user, hasMounted: true });
+                }, ({ err }) => {
+                    console.log('error! ', err);
+                    alert(`Error: ${err}`);
+                });
 			}
 		}, ({ err }) => {
 			console.log('error! ', err);
@@ -32,7 +40,7 @@ class UserPage extends Component {
 	}
     
   	render() {
-        const { user, hasMounted } = this.state;
+        const { user, allGames, hasMounted } = this.state;
         const { username, games, tradingBots } = user;
 
         const YourGamesPane = (
@@ -42,7 +50,7 @@ class UserPage extends Component {
         );
         const FindGamesPane = (
             <Tab.Pane key='tab2'>
-                <FindGames />
+                <FindGames games={allGames} />
             </Tab.Pane>
         );
         const CreateGamePane = (

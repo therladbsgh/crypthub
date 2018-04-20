@@ -8,11 +8,11 @@ import { GameMocks } from 'mocks';
 import { FindGamesStyle as styles } from 'styles';
 
 // TODO: get games
-const games = [
-	GameMocks.game1,
-	GameMocks.game2,
-	GameMocks.game3
-];
+// const games = [
+// 	GameMocks.game1,
+// 	GameMocks.game2,
+// 	GameMocks.game3
+// ];
 
 const sortOptions = [
 	{
@@ -65,6 +65,8 @@ class FindGames extends Component {
 	}
 
 	render() {
+		const { games } = this.props;
+		
 		return (
 			<div>
 				<Header as='h2'>Search for a Game</Header>

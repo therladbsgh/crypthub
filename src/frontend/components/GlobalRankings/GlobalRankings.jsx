@@ -23,10 +23,10 @@ export default class GlobalRankings extends Component {
     }
     
     componentWillMount() {
-		UserBackend.getUser()
+		UserBackend.getUsername()
 		.then(res => {
 			console.log('success! ', res);
-            this.setState({ username: res.user ? res.user.username : '' });
+            this.setState({ username: res.username });
 		}, ({ err }) => {
 			console.log('error! ', err);
 			alert(`Error: ${err}`);

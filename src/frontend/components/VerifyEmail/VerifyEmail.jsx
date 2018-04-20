@@ -29,14 +29,14 @@ class VerifyEmail extends Component {
         if (!token || !email) return this.props.history.push('/pagenotfound');
 
 
-        UserBackend.getUser()
+        UserBackend.getUsername()
 		.then(resUser => {
 			console.log('success! ', resUser);
             UserBackend.verifyEmail(token)
             .then(resVerify => {
                 console.log('success! ', resVerify);
                 this.setState({
-                    username: resUser.user ? resUser.user.username : '',
+                    username: resUser.username,
                     hasMounted: true,
                     success: 'Your email has been verified!'
                 });

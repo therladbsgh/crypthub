@@ -12,6 +12,9 @@ export default class YourGames extends Component {
         const { games, username } = this.props;
 
         return (
+            _.isEmpty(games) ?
+            'You have no games, go join or create a game!'
+            :
 			<div>
 				<Header as='h2'>Your Games</Header>
 				<Table celled>

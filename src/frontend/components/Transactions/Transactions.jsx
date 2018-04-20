@@ -37,7 +37,10 @@ export default class Transactions extends Component {
 
         return (
             _.isEmpty(transactions) ?
-            current ? 'You have no current trade orders.' : 'None of your trades have completed yet.'
+            <div>
+                <br />
+                {current ? 'You have no current trade orders.' : 'None of your trades have completed yet.'}
+            </div>
             :
 			<Table celled definition={current}>
                 <Table.Header>
