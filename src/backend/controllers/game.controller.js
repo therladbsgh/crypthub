@@ -125,7 +125,10 @@ function getGame(req, res) {
   const { id } = req.params;
 
   Game.findOne({ id })
-    .populate({ path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } })
+    .populate({
+      path: 'players',
+      populate: { path: 'portfolio transactionHistory transactionCurrent', populate: { path: 'coin symbol' } }
+    })
     .exec((err, game) => {
       if (err) {
         res.status(500).json({ err });
@@ -211,15 +214,11 @@ function simpleBuy(username, symbol, size, cb) {
     });
 
     if (!sym) {
-      console.log("A");
       let coinPrice;
       let coinId;
       let assetId;
       const getCoin = Coin.findOne({ symbol }).exec();
       getCoin.then((coin) => {
-        console.log("COIN GET");
-        console.log(coin);
-
         if (usd.amount < size * coin.currPrice) {
           return Promise.reject(new Error('Trying to buy more than amount of USD available'));
         }
@@ -260,9 +259,12 @@ function simpleBuy(username, symbol, size, cb) {
         return player.save();
       }).then(() => {
         cb(null);
+      }).catch((err) => {
+        console.log(err);
+        cb(err);
       });
     } else {
-
+      Asset.findOne({ _id: sym._id });
     }
 
     console.log(player);

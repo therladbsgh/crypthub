@@ -37,6 +37,9 @@ const TradeSchema = new Schema({
   filled: {
     type: Boolean,
     required: true
+  },
+  filledDate: {
+    type: Date
   }
 });
 
