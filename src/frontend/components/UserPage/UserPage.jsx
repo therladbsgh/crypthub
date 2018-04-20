@@ -27,7 +27,7 @@ class UserPage extends Component {
                 GameBackend.getAllGames()
                 .then(resGames => {
                     console.log('success! ', resGames);
-                    this.setState({ user: resUser.user, hasMounted: true });
+                    this.setState({ user: resUser.user, allGames: resGames.games, hasMounted: true });
                 }, ({ err }) => {
                     console.log('error! ', err);
                     alert(`Error: ${err}`);
