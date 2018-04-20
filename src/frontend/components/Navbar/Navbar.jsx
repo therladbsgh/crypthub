@@ -20,7 +20,7 @@ class Navbar extends Component {
 		UserBackend.getUser()
 		.then(res => {
 			console.log('success! ', res);
-            this.setState({ username: res.user, hasMounted: true });
+            this.setState({ username: res.user ? res.user.username : '', hasMounted: true });
 		}, ({ err }) => {
 			console.log('error! ', err);
 			alert(`Error: ${err}`);

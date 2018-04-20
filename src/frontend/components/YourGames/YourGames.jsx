@@ -5,25 +5,12 @@ import formatCurrency from 'format-currency';
 import date from 'date-and-time';
 import { Header, Table, Icon } from 'semantic-ui-react';
 import { Searchbar, GameCard } from 'components';
-import { GameMocks } from 'mocks';
 import { SharedStyle as sharedStyles } from 'styles';
-
-// TODO: get games
-const games = [
-	GameMocks.game1,
-	GameMocks.game2,
-	GameMocks.game3
-];
-
-// TODO: get games
-const pastGames = [
-	GameMocks.game1,
-	GameMocks.game2,
-	GameMocks.game3
-];
 
 export default class YourGames extends Component {
     render() {
+        const { games } = this.props;
+        
         return (
 			<div>
 				<Header as='h2'>Your Games</Header>
