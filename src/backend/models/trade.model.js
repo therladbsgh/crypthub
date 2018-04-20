@@ -22,7 +22,7 @@ const TradeSchema = new Schema({
     type: Number,
     required: true
   },
-  symbol: {
+  coin: {
     type: Schema.Types.ObjectId,
     ref: 'Coin',
     required: true
