@@ -233,13 +233,16 @@ function authenticate(req, res, next) {
  */
 function getUser(req, res) {
   if (req.session.user) {
-    res.json({ user: req.session.user });
+    User.get(req.session.user).then((result) => {
+      result.password = undefined;
+      res.json({ result });
+    }).catch((err) => {
+      res.json({ err });
+    });
   } else {
     res.json({});
   }
 }
-
-
 
 module.exports = {
   signup,
