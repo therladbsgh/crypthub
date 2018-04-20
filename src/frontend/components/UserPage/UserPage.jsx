@@ -68,7 +68,7 @@ class UserPage extends Component {
 		return (
             hasMounted &&
 			<div>
-				<Navbar/>
+				<Navbar username={username} />
                 <p className={styles.welcome}>Welcome back,</p>
 				<Header id={styles.username} as='h1'>{username}</Header>
 				<Tab panes={panes} renderActiveOnly={false} defaultActiveIndex={propsState ? propsState.openTab : 0} />

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Header, Form, Button, Checkbox, Message, Icon } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { SignupStyle as styles } from 'styles';
 
-export default class Signup extends Component {
+class Signup extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -19,11 +19,28 @@ export default class Signup extends Component {
 			loading: false,
 			submitted: false,
 			errMsg: '',
-			errField: ''
+			errField: '',
+			hasMounted: false
 		};
 	
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	componentWillMount() {
+		const { history } = this.props;
+		UserBackend.getUser()
+		.then(res => {
+			console.log('success! ', res);
+            if (_.isEmpty(res)) {
+				this.setState({ hasMounted: true });
+			} else {
+				history.push('/games');
+			}
+		}, ({ err }) => {
+			console.log('error! ', err);
+			alert(`Error: ${err}`);
+        });
 	}
 
 	handleChange(event) {
@@ -101,13 +118,14 @@ export default class Signup extends Component {
 	}	
 
   	render() {
-		const { signupObj, passwordConfirm, agree, loading, submitted, errMsg, errField } = this.state;
+		const { signupObj, passwordConfirm, agree, loading, submitted, errMsg, errField, hasMounted } = this.state;
 		const { username, email, password } = signupObj;
 		const success = submitted && !errMsg;
 
 		return (
+			hasMounted &&
 			<div>
-				<Navbar />
+				<Navbar username={''} />
 				<Header as='h1'>Signup</Header>
 				<Form onSubmit={this.handleSubmit} loading={loading} success={success} error={!!errMsg}>
 					<Form.Field error={errField == 'username'} disabled={success}>
@@ -146,3 +164,5 @@ export default class Signup extends Component {
 		);
   	}
 }
+
+export default withRouter(Signup);

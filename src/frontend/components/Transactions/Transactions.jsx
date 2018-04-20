@@ -44,8 +44,8 @@ export default class Transactions extends Component {
                     <Table.Row>
                         {current && <Table.HeaderCell />}
                         <Table.HeaderCell>Type</Table.HeaderCell>
-                        <Table.HeaderCell>Placed</Table.HeaderCell>                        
-                        <Table.HeaderCell>Coin</Table.HeaderCell>                        
+                        <Table.HeaderCell>Placed</Table.HeaderCell>
+                        <Table.HeaderCell>Coin</Table.HeaderCell>
                         <Table.HeaderCell>Size</Table.HeaderCell>
                         <Table.HeaderCell>Price</Table.HeaderCell>
                         <Table.HeaderCell>Status</Table.HeaderCell>

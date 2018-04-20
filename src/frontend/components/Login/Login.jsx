@@ -146,7 +146,7 @@ class Login extends Component {
 		return (
             hasMounted &&
 			<div style={sharedStyles}>
-				<Navbar />
+				<Navbar username={''} />
                 {!forgot ?  
                 <div>
                     <Header as='h1'>Login</Header>

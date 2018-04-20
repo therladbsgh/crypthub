@@ -34,7 +34,7 @@ class Home extends Component {
 		return (
 			this.state.hasMounted &&
 			<div>
-				<Navbar />
+				<Navbar username={''} />
 				<Header as='h1'>CryptHub</Header>
 				<Button icon='add circle' positive as={Link} to='/login' content='Create Game' />
 				<Button icon='search' primary as={Link} to='/login' content='Find Game' />
