@@ -36,6 +36,9 @@ export default class Transactions extends Component {
         const now = new Date(); 
 
         return (
+            _.isEmpty(transactions) ?
+            current ? 'You have no current trade orders.' : 'None of your trades have completed yet.'
+            :
 			<Table celled definition={current}>
                 <Table.Header>
                     <Table.Row>
