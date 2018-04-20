@@ -1,7 +1,13 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Header, Dropdown, Form, Button, Message, TextArea, Icon } from 'semantic-ui-react';
+import brace from 'brace';
+import 'brace/mode/javascript';
+import 'brace/theme/textmate';
+import 'brace/ext/language_tools';
+import AceEditor from 'react-ace';
 import { UserBackend } from 'endpoints';
+import { TradingBotIDEStyle as styles } from 'styles';
 
 const tradingBots = [
     {
@@ -30,22 +36,24 @@ export default class UserTradingBots extends Component {
                 botId: '',
                 data: ''
             },
+            debugLog: '',
             loading: false,
             submitted: false,
             err: ''
         };
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleEditorChange = this.handleEditorChange.bind(this);
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.runBot = this.runBot.bind(this);
+        this.stopBot = this.stopBot.bind(this);
     }
 
-    handleChange(event) {
-        const { name, value } = event.target;
+    handleEditorChange(value) {
         this.setState({
             tradingBotObj: {
                 ...this.state.tradingBotObj,
-                [name]: value
+                data: value
             }
         });
     }
@@ -85,9 +93,21 @@ export default class UserTradingBots extends Component {
         });
     }
 
+    runBot() {
+        this.setState({
+            running: true
+        });
+    }
+
+    stopBot() {
+        this.setState({
+            running: false
+        });
+    }
+
     render() {
         // const { tradingBots } = this.props;
-        const { tradingBotObj, loading, submitted, err } = this.state;
+        const { tradingBotObj, debugLog, loading, submitted, running, err } = this.state;
         const { botId, data } = tradingBotObj;
 
         const name = _.get(_.find(tradingBots, { _id: botId }), 'name', '');
@@ -99,12 +119,38 @@ export default class UserTradingBots extends Component {
                         <label>Trading Bot</label>
                         <Dropdown placeholder='Trading bot to edit' name='botId' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleDropdownChange} />
                     </Form.Field>
-                    <Form.Field>
-                        <TextArea name='data' value={data} onChange={this.handleChange} />
-                    </Form.Field>
+                    <Form.Group>
+                        <Form.Field width={10}>
+                            <AceEditor
+                                mode='javascript'
+                                theme='textmate'
+                                name='data'
+                                width='100%'
+                                height='500px'
+                                onChange={this.handleEditorChange}
+                                fontSize={14}
+                                showPrintMargin={false}
+                                showGutter={true}
+                                highlightActiveLine={true}
+                                value={data}
+                                enableBasicAutocompletion={true}
+                                enableLiveAutocompletion={true}
+                                enableSnippets={false}
+                                showLineNumbers={true}
+                                tabSize={2}
+                                editorProps={{$blockScrolling: Infinity}}
+                            />
+                        </Form.Field>
+                        <Form.Field width={6}>
+                            <label>Debug Log</label>
+							<TextArea className={styles.debugLog} autoHeight name='debugLog' value={debugLog} />
+                        </Form.Field>
+                    </Form.Group>
                     <Message success header='Success!' content={`${name} has been saved.`} />
 					<Message error header='Error' content={err} />
                     <Button icon='save' type='submit' positive disabled={!name} content={`Save ${name}`} />
+                    <Button icon='play' type='button' primary disabled={!name || running} onClick={this.runBot} content={`Run ${name}`} />
+                    <Button icon='stop' type='button' negative disabled={!name || !running} onClick={this.stopBot} content={`Stop ${name}`} />
                 </Form>
             </div>
         );
