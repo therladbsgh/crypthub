@@ -46,7 +46,7 @@ class GamePage extends Component {
 
         // TODO: logic for checking if player is in the game and if they are the host
         const inGame = !_.isEmpty(thisPlayer);
-        const isHost = game.host === thisPlayer.name;
+        const isHost = game.host === thisPlayer.username;
 
         const GameOverviewPane = (
             <Tab.Pane key='tab1'>

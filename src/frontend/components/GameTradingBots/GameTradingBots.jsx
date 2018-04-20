@@ -81,21 +81,21 @@ export default class GameTradingBots extends Component {
 			<div>
 				<Header as='h2'>Trading Bot Settings</Header>
                 <Form loading={loading} error={!!err}>
-                    <Form.Group widths={4}>
-                        <Form.Field>
+                    <Form.Group>
+                        <Form.Field width={5}>
                             <label>Trading Bot Currently in Play</label>
                             { activeBotId ? _.find(tradingBots, { id: activeBotId }).name : 'You currently don\'t have an active trading bot.'}
                             <br /><br /><br />
                             <Button icon='stop' negative disabled={!activeBotId} onClick={this.handleStop} content='Stop Active Bot' />                            
                         </Form.Field>
-                        <Form.Field>
+                        <Form.Field width={5}>
                             <label>Trading Bot to Make Active</label>
                             <Dropdown placeholder='Trading bot to make active' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleChange} />  
                             <br /><br />
                             <Button icon='save' positive onClick={this.handleSave} content='Save Changes' />                            
                         </Form.Field>
                     </Form.Group>
-                    <Form.Field width={8}>
+                    <Form.Field width={10}>
                         <Message
                             error
                             header='Error'
