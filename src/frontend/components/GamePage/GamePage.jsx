@@ -103,8 +103,8 @@ class GamePage extends Component {
                     <span className={styles.completedTag}>Completed</span>
                     :
                     <div className={styles.joinButton}>
-                        {username ?
-                        <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} username={username} />
+                        {usernameUser ?
+                        <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} username={usernameUser} />
                         :
                         <Button icon='user add' size='tiny' compact primary onClick={() => this.props.history.push('/login')} content='Join Game' />}
                     </div>}
