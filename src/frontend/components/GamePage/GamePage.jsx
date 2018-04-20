@@ -90,7 +90,7 @@ class GamePage extends Component {
 
 		return (
 			<div>
-				<Navbar />
+				<Navbar username={username} />
                 {(completed || !inGame) ?
                 [<div key='1' className={styles.completedHeader}>
                     <Header className={sharedStyles.inline} as='h1'>Game Name</Header>
