@@ -6,6 +6,7 @@ const Player = require('../models/player.model');
 const Coin = require('../models/coin.model');
 const Asset = require('../models/asset.model');
 const User = require('../models/user.model');
+const Trade = require('../models/trade.model');
 
 
 /**
@@ -195,14 +196,9 @@ function updatePrices(cb) {
 }
 
 function simpleBuy(username, symbol, size, cb) {
+  console.log("ABC");
   const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
-  Player.findOne({ _id: username }).populate(populatePath).exec().then((err, player) => {
-    if (err) {
-      console.log(err);
-      cb('MongoDB error', null);
-      return;
-    }
-
+  Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
     let usd;
     let sym;
     player.portfolio.forEach((each) => {
@@ -215,18 +211,21 @@ function simpleBuy(username, symbol, size, cb) {
     });
 
     if (!sym) {
+      console.log("A");
       let coinPrice;
+      let coinId;
+      let assetId;
       const getCoin = Coin.findOne({ symbol }).exec();
-      getCoin.then((err2, coin) => {
-        if (err2) {
-          return Promise.reject(new Error('MongoDB error'));
-        }
+      getCoin.then((coin) => {
+        console.log("COIN GET");
+        console.log(coin);
 
         if (usd.amount < size * coin.currPrice) {
           return Promise.reject(new Error('Trying to buy more than amount of USD available'));
         }
 
         coinPrice = coin.currPrice;
+        coinId = coin._id;
 
         const asset = new Asset({
           _id: new Types.ObjectId(),
@@ -234,17 +233,42 @@ function simpleBuy(username, symbol, size, cb) {
           amount: size
         });
 
+        assetId = asset._id;
+
         return asset.save();
-      }).then((err3, newAsset) => {
-        player.portfolio.push(newAsset._id);
-        return player.save();
-      }).then((err3, newPlayer) => {
+      }).then((newAsset) => {
+        console.log("ASSET GET");
+        console.log(newAsset);
         return Asset.findOne({ _id: usd._id }).exec();
-      }).then((err3, usdAsset) => {
+      }).then((usdAsset) => {
+        console.log("USD GGET");
+        console.log(usdAsset);
         usdAsset.set({ amount: usdAsset.amount - (size * coinPrice) });
         return usdAsset.save();
-      }).then((err3, newUsdAsset) => {
-
+      }).then((newUsdAsset) => {
+        console.log("NEW USD");
+        console.log(newUsdAsset);
+        const trade = new Trade({
+          _id: new Types.ObjectId(),
+          type: 'market',
+          side: 'buy',
+          size,
+          price: size * coinPrice,
+          symbol: coinId,
+          date: Date.now(),
+          GTC: false,
+          filled: true
+        });
+        return trade.save();
+      }).then((newTrade) => {
+        console.log("TRADE GET");
+        console.log(newTrade);
+        player.portfolio.push(assetId);
+        player.transactionHistory.push(newTrade._id);
+        return player.save();
+      }).then((newPlayer) => {
+        console.log("FINAL PLAYER");
+        console.log(newPlayer);
       });
     } else {
 
@@ -261,8 +285,6 @@ function placeOrder(req, res) {
     type, side, size, symbol, date, GTC, id, playerid
   } = req.body;
 
-  console.log(req.body);
-
   if (!['market', 'short', 'limit'].includes(type) ||
       !['buy', 'sell'].includes(side)) {
     // Wrong arguments
@@ -278,7 +300,7 @@ function placeOrder(req, res) {
 
       if (type === 'market' && side === 'buy') {
         // Regular buy
-        simpleBuy(playerid);
+        simpleBuy(playerid, symbol, size, (err, a) => {console.log(err)});
         res.status(200).json({ success: true });
       } else if (type === 'market' && side === 'sell') {
         // Regular sell
@@ -297,9 +319,16 @@ function placeOrder(req, res) {
   });
 }
 
+function getAll(req, res) {
+  Game.find({}).populate('players').exec().then((games) => {
+    res.status(200).json({ games });
+  });
+}
+
 module.exports = {
   validate,
   create,
   getGame,
-  placeOrder
+  placeOrder,
+  getAll
 };
