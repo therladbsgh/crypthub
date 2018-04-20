@@ -132,9 +132,10 @@ function getGame(req, res) {
         return;
       }
 
-      if (!game) {
-        res.status(404).json({ err: 'Game not found' });
-        return;
+      let gameToReturn = {};
+
+      if (game) {
+        gameToReturn = game;
       }
 
       let player = {};
@@ -146,7 +147,7 @@ function getGame(req, res) {
         });
       }
 
-      res.status(200).json({ game, player });
+      res.status(200).json({ game: gameToReturn, player });
     });
 }
 

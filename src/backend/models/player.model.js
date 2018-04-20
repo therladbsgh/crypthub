@@ -53,5 +53,4 @@ const PlayerSchema = new Schema({
 });
 
 const model = mongoose.model('Player', PlayerSchema);
-
 module.exports = model;
