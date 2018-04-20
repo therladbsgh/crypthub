@@ -61,7 +61,7 @@ export default class Transactions extends Component {
                             {current && <Table.Cell id={styles.cancel}><CancelModal tradeId={t._id} /></Table.Cell>}
                             <Table.Cell>{_.capitalize(`${t.type} ${t.side}`)}</Table.Cell>
                             <Table.Cell>{date.format(new Date(t.date), 'MM/DD/YYYY HH:MM:SS')}</Table.Cell>
-                            <Table.Cell>{t.symbol}</Table.Cell>
+                            <Table.Cell>{t.coin.symbol}</Table.Cell>
                             <Table.Cell>{t.size}</Table.Cell>
                             <Table.Cell>{formatCurrency(t.price, { format: '%s%v', symbol: '$' })}</Table.Cell>
                             <Table.Cell>{current ? t.GTC ? 'GTC' : `Expires in ${date.subtractStr(new Date(t.expiration), now)}` : t.filled ? `Filled ${date.format(new Date(t.filledDate), 'MM/DD/YYYY HH:MM:SS')}` : `Expired ${date.format(new Date(t.expiration), 'MM/DD/YYYY HH:MM:SS')}`}</Table.Cell>
