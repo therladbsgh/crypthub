@@ -199,7 +199,6 @@ function updatePrices(cb) {
 }
 
 function simpleBuy(username, symbol, size, cb) {
-  console.log("ABC");
   const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
   Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
     let usd;

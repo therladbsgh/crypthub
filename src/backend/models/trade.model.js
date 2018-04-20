@@ -23,7 +23,8 @@ const TradeSchema = new Schema({
     required: true
   },
   symbol: {
-    type: [{ type: Schema.Types.ObjectId, ref: 'Coin' }],
+    type: Schema.Types.ObjectId,
+    ref: 'Coin',
     required: true
   },
   date: {
