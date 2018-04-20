@@ -235,7 +235,7 @@ function getUser(req, res) {
   if (req.session.user) {
     User.get(req.session.user).then((result) => {
       result.password = undefined;
-      res.json({ result });
+      res.json({ user: result });
     }).catch((err) => {
       res.json({ err });
     });
