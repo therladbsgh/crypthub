@@ -198,6 +198,36 @@ function updatePrices(cb) {
   });
 }
 
+function simpleTradeHelper(side, usd, size, coinPrice, coinId, player, assetId, cb) {
+  Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
+    if (side === 'buy') {
+      usdAsset.set({ amount: usdAsset.amount - (size * coinPrice) });
+    } else {
+      usdAsset.set({ amount: usdAsset.amount + (size * coinPrice) });
+    }
+    return usdAsset.save();
+  }).then(() => {
+    const trade = new Trade({
+      _id: new Types.ObjectId(),
+      type: 'market',
+      side,
+      size,
+      price: coinPrice,
+      coin: coinId,
+      date: Date.now(),
+      GTC: false,
+      filled: true,
+      filledDate: Date.now()
+    });
+    return trade.save();
+  }).then((newTrade) => {
+    player.transactionHistory.push(newTrade._id);
+    return player.save();
+  }).then(() => {
+    cb(null);
+  });
+}
+
 function simpleBuy(username, symbol, size, cb) {
   const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
   Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
@@ -213,17 +243,11 @@ function simpleBuy(username, symbol, size, cb) {
     });
 
     if (!sym) {
-      let coinPrice;
-      let coinId;
-      let assetId;
-      const getCoin = Coin.findOne({ symbol }).exec();
-      getCoin.then((coin) => {
+      Coin.findOne({ symbol }).exec().then((coin) => {
         if (usd.amount < size * coin.currPrice) {
-          return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+          cb('Trying to buy more than amount of USD available');
+          return;
         }
-
-        coinPrice = coin.currPrice;
-        coinId = coin._id;
 
         const asset = new Asset({
           _id: new Types.ObjectId(),
@@ -231,36 +255,10 @@ function simpleBuy(username, symbol, size, cb) {
           amount: size
         });
 
-        assetId = asset._id;
-
-        return asset.save();
-      }).then((newAsset) => {
-        return Asset.findOne({ _id: usd._id }).exec();
-      }).then((usdAsset) => {
-        usdAsset.set({ amount: usdAsset.amount - (size * coinPrice) });
-        return usdAsset.save();
-      }).then((newUsdAsset) => {
-        const trade = new Trade({
-          _id: new Types.ObjectId(),
-          type: 'market',
-          side: 'buy',
-          size,
-          price: coinPrice,
-          coin: coinId,
-          date: Date.now(),
-          GTC: false,
-          filled: true,
-          filledDate: Date.now()
+        asset.save((err) => {
+          player.portfolio.push(asset._id);
+          simpleTradeHelper('buy', usd, size, coin.currPrice, coin._id, player, asset._id, cb);
         });
-        return trade.save();
-      }).then((newTrade) => {
-        player.portfolio.push(assetId);
-        player.transactionHistory.push(newTrade._id);
-        return player.save();
-      }).then(() => {
-        cb(null);
-      }).catch((err) => {
-        cb(err);
       });
     } else {
       if (usd.amount < size * sym.coin.currPrice) {
@@ -270,33 +268,45 @@ function simpleBuy(username, symbol, size, cb) {
 
       Asset.findOne({ _id: sym._id }).exec().then((asset) => {
         asset.set({ amount: asset.amount + size });
-        asset.save();
-      }).then(() => {
-        return Asset.findOne({ _id: usd._id }).exec();
-      }).then((usdAsset) => {
-        usdAsset.set({ amount: usdAsset.amount - (size * sym.coin.currPrice) });
-        usdAsset.save();
-      }).then(() => {
-        const trade = new Trade({
-          _id: new Types.ObjectId(),
-          type: 'market',
-          side: 'buy',
-          size,
-          price: sym.coin.currPrice,
-          coin: sym.coin._id,
-          date: Date.now(),
-          GTC: false,
-          filled: true,
-          filledDate: Date.now()
-        });
-        return trade.save();
-      }).then((newTrade) => {
-        player.transactionHistory.push(newTrade._id);
-        return player.save();
-      }).then(() => {
-        cb(null);
+        return asset.save();
+      }).then((err) => {
+        simpleTradeHelper('buy', usd, size, sym.coin.currPrice, sym.coin._id, player, sym._id, cb);
       });
     }
+  });
+}
+
+function simpleSell(username, symbol, size, cb) {
+  const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
+  Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
+    let usd;
+    let sym;
+    player.portfolio.forEach((each) => {
+      if (each.coin.symbol === 'USD') {
+        usd = each;
+      }
+      if (each.coin.symbol === symbol) {
+        sym = each;
+      }
+    });
+
+    if (!sym || sym.amount < size) {
+      cb('Not enough coin to sell');
+      return;
+    }
+
+    Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+      if (asset.amount - size === 0) {
+        const index = player.portfolio.indexOf(asset._id);
+        player.portfolio.splice(index, 1);
+        return Asset.remove({ _id: asset._id });
+      }
+
+      asset.set({ amount: asset.amount - size });
+      return asset.save();
+    }).then((err) => {
+      simpleTradeHelper('sell', usd, size, sym.coin.currPrice, sym.coin._id, player, sym._id, cb);
+    });
   });
 }
 
@@ -330,6 +340,13 @@ function placeOrder(req, res) {
       });
     } else if (type === 'market' && side === 'sell') {
       // Regular sell
+      simpleSell(playerId, symbol, size, (err1) => {
+        if (err1) {
+          res.status(400).json({ err: err1 });
+        } else {
+          res.status(200).json({ success: true });
+        }
+      });
     } else if (type === 'short' && side === 'buy') {
       // Short buying
     } else if (type === 'short' && side === 'sell') {
