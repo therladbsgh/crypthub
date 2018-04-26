@@ -1,5 +1,5 @@
 const { Types } = require('mongoose');
-const axios = require("axios");
+const axios = require('axios');
 
 const Game = require('../models/game.model');
 const Player = require('../models/player.model');
@@ -198,6 +198,30 @@ function updatePrices(cb) {
   });
 }
 
+function dealWithCurrentTransactions(id, cb) {
+  Game.findOne({}).exec().then((game) => {
+    const from = game.lastUpdated.getTime();
+    const d = new Date();
+    const to = d.getTime();
+    console.log(from);
+    console.log(to);
+    cb();
+  });
+}
+
+function update(id, cb) {
+  console.log(id);
+  updatePrices((err) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    dealWithCurrentTransactions(id, (err1) => {
+      cb(err1);
+    });
+  });
+}
+
 function simpleTradeHelper(side, usd, size, coinPrice, coinId, player, assetId, cb) {
   Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
     if (side === 'buy') {
@@ -310,20 +334,87 @@ function simpleSell(username, symbol, size, cb) {
   });
 }
 
+function futureTrade(type, side, username, price, symbol, size, GTC, cb) {
+  const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
+  Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
+    let usd;
+    let sym;
+    player.portfolio.forEach((each) => {
+      if (each.coin.symbol === 'USD') {
+        usd = each;
+      }
+      if (each.coin.symbol === symbol) {
+        sym = each;
+      }
+    });
+
+    let coinId;
+    Coin.findOne({ symbol }).exec().then((coin) => {
+      coinId = coin._id;
+
+      if (side === 'sell' && (!sym || sym.amount < size)) {
+        cb('Not enough coin to sell');
+        return;
+      }
+
+      if (side === 'buy' && (usd.amount < size * price)) {
+        cb('Trying to buy more than amount of USD available');
+        return;
+      }
+
+      if (side === 'buy') {
+        return Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
+          usdAsset.set({ amount: usdAsset.amount - (size * price) });
+          return usdAsset.save();
+        });
+      } else {
+        return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+          if (asset.amount - size === 0) {
+            const index = player.portfolio.indexOf(asset._id);
+            player.portfolio.splice(index, 1);
+            return Asset.remove({ _id: asset._id });
+          }
+
+          asset.set({ amount: asset.amount - size });
+          return asset.save();
+        })
+      }
+    }).then((asset) => {
+      const trade = new Trade({
+        _id: new Types.ObjectId(),
+        type,
+        side,
+        size,
+        price,
+        coin: coinId,
+        date: Date.now(),
+        GTC,
+        filled: false
+      });
+      return trade.save();
+    }).then((newTrade) => {
+      player.transactionCurrent.push(newTrade._id);
+      return player.save();
+    }).then(() => {
+      cb(null);
+    });
+  });
+}
+
 function placeOrder(req, res) {
   console.log(req.body);
   const {
-    type, side, size, symbol, date, GTC, id, playerId
+    type, side, size, symbol, date, GTC, gameId, playerId, price
   } = req.body;
 
-  if (!['market', 'short', 'limit'].includes(type) ||
+  if (!['market', 'short', 'limit', 'stop'].includes(type) ||
       !['buy', 'sell'].includes(side)) {
     // Wrong arguments
     res.status(400).json({ error: 'Wrong arguments' });
     return;
   }
 
-  updatePrices((err) => {
+  update(gameId, (err) => {
     if (err) {
       res.status(500).json({ error: err });
       return;
@@ -351,15 +442,24 @@ function placeOrder(req, res) {
       // Short buying
     } else if (type === 'short' && side === 'sell') {
       // Short selling
-    } else if (type === 'limit' && side === 'buy') {
-      // Limit buying
-    } else if (type === 'limit' && side === 'sell') {
-      // Limit selling
+    } else if (type === 'limit' || type === 'stop') {
+      // Limit buy / sell or stop buy / sell
+      futureTrade(type, side, playerId, price, symbol, size, GTC, (err1 => {
+        if (err1) {
+          res.status(400).json({ err: err1 });
+        } else {
+          res.status(200).json({ success: true });
+        }
+      }));
     } else {
       // Wrong argument
       res.status(400).json({ error: 'Wrong arguments' });
     }
   });
+}
+
+function cancelOrder(req, res) {
+  const { id } = req.query;
 }
 
 function getAll(req, res) {
@@ -373,5 +473,6 @@ module.exports = {
   create,
   getGame,
   placeOrder,
+  cancelOrder,
   getAll
 };
