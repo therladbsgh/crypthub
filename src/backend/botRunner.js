@@ -39,6 +39,8 @@ function readTextFile(file)
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 var allText = rawFile.responseText;
+		//var allText = "console.log(\"hi\")";
+		//console.log(allText);
 
 		/*var script;
 
@@ -48,7 +50,6 @@ function readTextFile(file)
 		//console.log(allText);
 
 		eval(allText);
-		console.log(eval("1+1"));
             }
         }
     }
