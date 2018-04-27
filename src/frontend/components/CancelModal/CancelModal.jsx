@@ -32,12 +32,14 @@ export default class CancelModal extends Component {
     }
 
 	handleSubmit(event) {
+        const { gameId, playerId, tradeId } = this.props;
+
         this.setState({
             loading: true,
             err: ''
         });
 
-		GameBackend.cancelOrder(this.props.tradeId)
+		GameBackend.cancelOrder({ gameId, playerId, tradeId })
 		.then(res => {
 			console.log('success! ', res);
             this.close();
