@@ -221,15 +221,15 @@ function resendToken(req, res, next) {
   
  
     User.findOne({ email: req.body.email }, function (err, user) {
-        if (!user) return res.status(400).send({ msg: 'We were unable to find a user with that email.' });
-        if (user.isVerified) return res.status(400).send({ msg: 'This account has already been verified. Please log in.' });
+        if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.' });
+        if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.' });
  
         // Create a verification token, save it, and send email
         var token = new Token({ username: user.username, token: crypto.randomBytes(16).toString('hex') });
  
         // Save the token
         token.save(function (err) {
-            if (err) { return res.status(500).send({ msg: err.message }); }
+            if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save Token'  }); }
  
             // Send the email
               var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
