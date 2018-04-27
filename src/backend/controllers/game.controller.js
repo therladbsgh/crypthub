@@ -68,6 +68,8 @@ function create(req, res) {
     host: req.session.user,
     start,
     end,
+    created: Date.now(),
+    lastUpdated: Date.now(),
     playerPortfolioPublic,
     startingBalance,
     commissionValue,
@@ -157,16 +159,16 @@ function updateSinglePrice(li, cb) {
   if (li.length === 0) {
     cb(null);
   } else if (li[0].name !== 'US Dollars') {
-    axios.get(`https://api.coinmarketcap.com/v1/ticker/${li[0].name}`).then((res) => {
-      const data = res.data[0];
+    axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${li[0].symbol}&tsyms=USD`).then((res) => {
+      const data = res['data']["RAW"][li[0].symbol]["USD"];
 
       Coin.findOne({ name: li[0].name }, (err, coin) => {
         if (err) {
           cb('MongoDB query error');
           return;
         }
-        coin.set({ currPrice: parseFloat(data.price_usd) });
-        coin.set({ todayReturn: parseFloat(data.percent_change_24h) });
+        coin.set({ currPrice: parseFloat(data.PRICE) });
+        coin.set({ todayReturn: parseFloat(data.CHANGEPCT24HOUR) });
         coin.save((err2) => {
           if (err2) {
             cb('MongoDB save error');
@@ -200,17 +202,13 @@ function updatePrices(cb) {
 
 function dealWithCurrentTransactions(id, cb) {
   Game.findOne({}).exec().then((game) => {
-    const from = game.lastUpdated.getTime();
-    const d = new Date();
-    const to = d.getTime();
-    console.log(from);
-    console.log(to);
+    const minutes = Math.ceil((Date.now() - game.lastUpdated.getTime()) / 1000);
+    console.log(minutes);
     cb();
   });
 }
 
 function update(id, cb) {
-  console.log(id);
   updatePrices((err) => {
     if (err) {
       cb(err);
@@ -459,7 +457,16 @@ function placeOrder(req, res) {
 }
 
 function cancelOrder(req, res) {
-  const { id } = req.query;
+  const { gameId, playerId, tradeId } = req.body;
+  Player.findOne({ _id: playerId }).exec().then((player) => {
+    const index = player.transactionCurrent.indexOf(tradeId);
+    player.transactionCurrent.splice(index, 1);
+    return player.save();
+  }).then(() => {
+    return Trade.remove({ _id: tradeId });
+  }).then(() => {
+    res.status(200).json({ success: true });
+  });
 }
 
 function getAll(req, res) {
