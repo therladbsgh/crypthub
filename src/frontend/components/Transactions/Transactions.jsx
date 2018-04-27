@@ -33,17 +33,23 @@ date.subtractStr = (date1, date2) => {
 export default class Transactions extends Component {
     render() {
         const { transactions, current } = this.props;
-        const now = new Date();
+        const now = new Date(); 
 
         return (
+            _.isEmpty(transactions) ?
+            <div>
+                <br />
+                {current ? 'You have no current trade orders.' : 'None of your trades have completed yet.'}
+            </div>
+            :
 			<Table celled definition={current}>
                 <Table.Header>
                     <Table.Row>
                         {current && <Table.HeaderCell />}
                         <Table.HeaderCell>Type</Table.HeaderCell>
-                        <Table.HeaderCell>Placed</Table.HeaderCell>                        
-                        <Table.HeaderCell>Coin</Table.HeaderCell>                        
-                        <Table.HeaderCell>Size</Table.HeaderCell>
+                        <Table.HeaderCell>Placed</Table.HeaderCell>
+                        <Table.HeaderCell>Coin</Table.HeaderCell>
+                        <Table.HeaderCell>Amount</Table.HeaderCell>
                         <Table.HeaderCell>Price</Table.HeaderCell>
                         <Table.HeaderCell>Status</Table.HeaderCell>
                     </Table.Row>
@@ -52,13 +58,13 @@ export default class Transactions extends Component {
                 <Table.Body>
                     {_.map(transactions, (t, index) => 
                         <Table.Row key={index} positive={t.filled} error={!current && !t.filled && t.expiration <= now}>
-                            {current && <Table.Cell id={styles.cancel}><CancelModal tradeId={t.id} /></Table.Cell>}
+                            {current && <Table.Cell id={styles.cancel}><CancelModal tradeId={t._id} /></Table.Cell>}
                             <Table.Cell>{_.capitalize(`${t.type} ${t.side}`)}</Table.Cell>
-                            <Table.Cell>{date.format(t.date, 'MM/DD/YYYY')}</Table.Cell>
-                            <Table.Cell>{t.symbol}</Table.Cell>
+                            <Table.Cell>{date.format(new Date(t.date), 'MM/DD/YYYY HH:mm:ss')}</Table.Cell>
+                            <Table.Cell>{t.coin.symbol}</Table.Cell>
                             <Table.Cell>{t.size}</Table.Cell>
                             <Table.Cell>{formatCurrency(t.price, { format: '%s%v', symbol: '$' })}</Table.Cell>
-                            <Table.Cell>{current ? t.GTC ? 'GTC' : `Expires in ${date.subtractStr(t.expiration, now)}` : t.filled ? `Filled ${date.format(t.filledDate, 'MM/DD/YYYY')}` : `Expired ${date.format(t.expiration, 'MM/DD/YYYY')}`}</Table.Cell>
+                            <Table.Cell>{current ? t.GTC ? 'GTC' : `Expires in ${date.subtractStr(new Date(t.expiration), now)}` : t.filled ? `Filled ${date.format(new Date(t.filledDate), 'MM/DD/YYYY HH:mm:ss')}` : `Expired ${date.format(new Date(t.expiration), 'MM/DD/YYYY HH:mm:ss')}`}</Table.Cell>
                         </Table.Row>
                     )}
                 </Table.Body>

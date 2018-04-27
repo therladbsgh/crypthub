@@ -1,17 +1,22 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { Modal, Button, Message, Icon } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
 
-export default class VerifyEmail extends Component {
+class VerifyEmail extends Component {
     constructor(props) {
         super(props);
 
 		this.state = {
-			loading: false,
+            username: '',
+            loading: false,
+            submitted: false,
             err: '',
+            success: '',
+            email: '',
             hasMounted: false
 		};
 
@@ -19,42 +24,68 @@ export default class VerifyEmail extends Component {
     }
 
     componentWillMount() {
-        const token = queryString.parse(this.props.location.search).token;
-        UserBackend.verifyEmail(token)
-		.then(res => {
-			console.log('success! ', res);
-            this.setState({ hasMounted: true });
+        const params = queryString.parse(this.props.location.search);
+        const { token, email } = params;
+        if (!token || !email) return this.props.history.push('/pagenotfound');
+
+
+        UserBackend.getUsername()
+		.then(resUser => {
+			console.log('success! ', resUser);
+            UserBackend.verifyEmail(token)
+            .then(resVerify => {
+                console.log('success! ', resVerify);
+                this.setState({
+                    username: resUser.username,
+                    hasMounted: true,
+                    success: 'Your email has been verified!'
+                });
+            }, ({ err }) => {
+                console.log('error! ', err);
+                this.setState({ username: resUser.user ? resUser.user.username : '',
+                    hasMounted: true,
+                    err,
+                    email
+                });
+            });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			this.setState({ hasMounted: true, err });
+			alert(`Error: ${err}`);
         });
     }
 
 	handleSubmit(event) {
         this.setState({
             loading: true,
-            err: ''
+            submitted: false,
+            err: '',
+            success: ''
         });
 
-		// GameBackend.cancelOrder(this.props.tradeId)
-		// .then(res => {
-		// 	console.log('success! ', res);
-        //     this.close();
-		// }, ({ err }) => {
-		// 	console.log('error! ', err);
-		// 	this.setState({ loading: false, err });
-        // });
+		UserBackend.sendVerification(this.state.email)
+		.then(res => {
+			console.log('success! ', res);
+            this.setState({ loading: false, submitted: true, success: 'Verification email sent!' });
+		}, ({ err }) => {
+			console.log('error! ', err);
+            this.setState({ loading: false, submitted: true, err });
+        });
     }
     
     render() {
-        const { loading, err, hasMounted } = this.state;
+        const { username, loading, submitted, err, success, hasMounted } = this.state;
 
         return (
             hasMounted &&
             <div>
-                <Navbar />
-                <Message error={!!err} success={!err} header='Error' content={err || 'Your email has been verified!'} />
+                <Navbar username={username} />
+                {submitted &&
+                <Message error={!!err} success={!!success} header={err ? 'Error' : 'Success'} content={err || success} />}
+                {(err || submitted) &&
+                <Button icon='mail outline' loading={loading} primary onClick={this.handleSubmit} content='Resend Verification Email' />}
             </div>
         );
     }
 }
+
+export default withRouter(VerifyEmail);

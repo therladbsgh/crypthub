@@ -14,4 +14,7 @@ export { default as GameCardStyle } from './gamecard';
 export { default as LeaveModalStyle } from './leavemodal';
 export { default as JoinModalStyle } from './joinmodal';
 export { default as InviteModalStyle } from './invitemodal';
+export { default as UserTradingBotsStyle } from './usertradingbots';
+export { default as TradingBotIDEStyle } from './tradingbotide';
+export { default as GameTradingBotsStyle } from './gametradingbots';
 export { default as SharedStyle } from './shared';

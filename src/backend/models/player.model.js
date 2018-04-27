@@ -39,18 +39,15 @@ const PlayerSchema = new Schema({
     required: true
   },
   portfolio: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Asset',
-    default: []
+    type: [{ type: Schema.Types.ObjectId, ref: 'Asset' }],
+    required: true
   },
   transactionHistory: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Trade',
+    type: [{ type: Schema.Types.ObjectId, ref: 'Trade' }],
     default: []
   },
   transactionCurrent: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Trade',
+    type: [{ type: Schema.Types.ObjectId, ref: 'Trade' }],
     default: []
   }
 });

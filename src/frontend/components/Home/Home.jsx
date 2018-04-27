@@ -16,7 +16,7 @@ class Home extends Component {
 
 	componentWillMount() {
 		const { history } = this.props;
-		UserBackend.getUser()
+		UserBackend.getUsername()
 		.then(res => {
 			console.log('success! ', res);
             if (_.isEmpty(res)) {
@@ -34,7 +34,7 @@ class Home extends Component {
 		return (
 			this.state.hasMounted &&
 			<div>
-				<Navbar />
+				<Navbar username={''} />
 				<Header as='h1'>CryptHub</Header>
 				<Button icon='add circle' positive as={Link} to='/login' content='Create Game' />
 				<Button icon='search' primary as={Link} to='/login' content='Find Game' />

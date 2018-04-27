@@ -129,6 +129,7 @@ export default class TradeModal extends Component {
 	}
 
 	handleSubmit(event) {
+        const { gameId, playerId } = this.props;
 		const { tradeObj } = this.state;
 		const { size, price } = tradeObj;
 
@@ -155,10 +156,12 @@ export default class TradeModal extends Component {
             });
         }
 
-        const tradeObjSend = _.clone(tradeObjSend);
+        const tradeObjSend = _.clone(tradeObj);
         _.set(tradeObjSend, 'size', Number(size));
         _.set(tradeObjSend, 'price', Number(price));
         _.set(tradeObjSend, 'date', new Date());
+        _.set(tradeObjSend, 'gameId', gameId);
+        _.set(tradeObjSend, 'playerId', playerId);
 
 		GameBackend.placeOrder(tradeObjSend)
 		.then(res => {

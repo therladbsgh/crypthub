@@ -19,8 +19,8 @@ export default class TradeCard extends Component {
 	}
 
 	render() {
-		const { game } = this.props;
-		const { limitOrders, shortSelling, stopOrders } = game;
+		const { game, playerId } = this.props;
+		const { id, limitOrders, shortSelling, stopOrders } = game;
 		const { results } = this.state;
 
 		const orderTypes = [
@@ -54,7 +54,7 @@ export default class TradeCard extends Component {
 									(_.some(results, _.mapKeys(_.mapValues(c, v => String(v)), (v, k) => k.toLowerCase())) || results[0] === 'RESET') &&
 										<Table.Row key={index}>
 											<Table.Cell>{c.symbol}</Table.Cell>
-											<Table.Cell textAlign='right'><TradeModal coin={c} orderTypes={orderTypes} /></Table.Cell>
+											<Table.Cell textAlign='right'><TradeModal coin={c} orderTypes={orderTypes} gameId={id} playerId={playerId} /></Table.Cell>
 										</Table.Row>
 								)}
 							</Table.Body>

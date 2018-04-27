@@ -53,6 +53,7 @@ function signup(req, res) {
 
 
 
+
     const newUser = new User();
 
     newUser.username = username;
@@ -64,6 +65,7 @@ function signup(req, res) {
         res.status(500).send({ err: 'MongoDB Server Error: Cannot save' });
         return;
       }
+
       
 
       var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
@@ -85,6 +87,7 @@ function signup(req, res) {
         })
         
       });
+
       res.status(200).json({ result: newUser });
     });
   });
@@ -98,7 +101,6 @@ function signup(req, res) {
  * @return 500 on server error, 401 if user does not exist, 200 if success
  */
 function login(req, res) {
-  console.log(req.session);
   const loginObj = req.body.login;
   const { password } = req.body;
 
@@ -117,6 +119,7 @@ function login(req, res) {
       res.status(401).send({ err: 'Invalid password', field: 'password' });
       return;
     }
+
    
     if (!user.isVerified){
       res.status(401).send({ err: 'not-verified', field: 'email'});
@@ -125,10 +128,13 @@ function login(req, res) {
        
 
     req.session.user = user.username;
+    req.session.id = user._id;
     req.session.save();
+
     
     res.status(200).send({ success: true, user: user.username});
     
+
   });
 }
 
@@ -139,8 +145,12 @@ function login(req, res) {
  * @return 500 on server error, 200 if success
  */
 function logout(req, res) {
-  req.session = null;
-  res.status(200).json({ success: true });
+  req.session.destroy((err) => {
+    if (err) {
+      res.status(500).json({ err: 'Server error' });
+    }
+    res.status(200).json({ success: true });
+  });
 }
 
 
@@ -159,8 +169,9 @@ function authenticate(req, res, next) {
 /**
 * Token confirmation middleware
 *
-* @return 400 if confirmation failed, 200 otherwise with appropriate message 
+* @return 400 if confirmation failed, 200 otherwise with appropriate message
 */
+
 function confirmToken (req, res, next) {
   
    
@@ -193,11 +204,14 @@ function confirmToken (req, res, next) {
 };
 
 
+
+
 /**
-* Token resending middleware 
+* Token resending middleware
 *
-*@return 
+*@return
 */
+
 function resendToken(req, res, next) {
     
  
@@ -230,6 +244,20 @@ function resendToken(req, res, next) {
 };
 
 
+
+/**
+ * Gets user name from session.
+ *
+ * @return user name if exists, null otherwise
+ */
+function ensureAuthenticated(req, res) {
+  if (req.session.user) {
+    res.json({ username: req.session.user });
+  } else {
+    res.json({});
+  }
+}
+
 /**
  * Gets user name from session.
  *
@@ -237,13 +265,16 @@ function resendToken(req, res, next) {
  */
 function getUser(req, res) {
   if (req.session.user) {
-    res.json({ user: req.session.user });
+    User.get(req.session.user).then((result) => {
+      result.password = undefined;
+      res.json({ user: result });
+    }).catch((err) => {
+      res.json({ err });
+    });
   } else {
     res.json({});
   }
 }
-
-
 
 module.exports = {
   signup,
@@ -251,6 +282,10 @@ module.exports = {
   logout,
   authenticate,
   getUser,
+
   resendToken,
   confirmToken
+
+  ensureAuthenticated
+
 };

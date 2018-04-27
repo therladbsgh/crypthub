@@ -27,7 +27,7 @@ export default class GameRankings extends Component {
                         {_.map(players, (p, index) => 
                             <Table.Row key={index}>
                                 <Table.Cell>{index + 1}</Table.Cell>
-                                <Table.Cell>{p.name}</Table.Cell>
+                                <Table.Cell>{p.username}</Table.Cell>
                                 <Table.Cell>{formatCurrency(p.netWorth, { format: '%s%v', symbol: '$' })}</Table.Cell>
                                 <Table.Cell>{p.numTrades}</Table.Cell>
                                 <Table.Cell className={p.netReturn >= 0 ? styles.pos : styles.neg}>{formatCurrency(Math.abs(p.netReturn), { format: '%s%v', symbol: `${p.netReturn >= 0 ? '+' : '-'}$` })}</Table.Cell>

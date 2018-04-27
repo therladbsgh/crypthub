@@ -18,7 +18,7 @@ export default class InviteModal extends Component {
 		this.state = {
             inviteObj: {
                 gameId: this.props.gameId,
-                userIds: [],
+                usernames: [],
             },
             open: false,
 			loading: false,
@@ -39,7 +39,7 @@ export default class InviteModal extends Component {
         this.setState({
             inviteObj: {
                 ...this.state.inviteObj,
-                userIds: [],
+                usernames: [],
             },
             open: false,
 			loading: false,
@@ -51,7 +51,7 @@ export default class InviteModal extends Component {
 		this.setState({
             inviteObj: {
                 ...this.state.inviteObj,
-                userIds: value
+                usernames: value
             }
         });
 	}
@@ -76,13 +76,13 @@ export default class InviteModal extends Component {
     
     render() {
         const { inviteObj, open, loading, err } = this.state;
-        const { userIds } = inviteObj;
+        const { usernames } = inviteObj;
 
         return (
             <Modal trigger={<Button icon='mail outline' positive content='Invite Players' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
                 <Modal.Header id={styles.invite}>Invite Players</Modal.Header>
                     <Modal.Content>
-                        <Dropdown placeholder='Users to invite' multiple search selection options={_.map(users, u => ({ text: u.name, value: u.id }))} value={userIds} onChange={this.handleChange} />
+                        <Dropdown placeholder='Users to invite' multiple search selection options={_.map(users, u => ({ text: u.name, value: u.id }))} value={usernames} onChange={this.handleChange} />
                         {err && <Message error header='Error' content={err} />}
                     </Modal.Content>
                 <Modal.Actions>

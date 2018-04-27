@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Header, Table, Icon } from 'semantic-ui-react';
+import { UserBackend } from 'endpoints';
 import { Navbar, Searchbar } from 'components';
 import { UserMocks } from 'mocks';
 
@@ -14,10 +15,22 @@ export default class GlobalRankings extends Component {
     constructor(props) {
 		super(props);
 		this.state = {
+            username: '',
 			results: ['RESET']
 		};
 
 		this.handleResults = this.handleResults.bind(this);
+    }
+    
+    componentWillMount() {
+		UserBackend.getUsername()
+		.then(res => {
+			console.log('success! ', res);
+            this.setState({ username: res.username });
+		}, ({ err }) => {
+			console.log('error! ', err);
+			alert(`Error: ${err}`);
+        });
 	}
 
 	handleResults(results) {
@@ -25,12 +38,12 @@ export default class GlobalRankings extends Component {
     }
     
     render() {
-        const { results } = this.state;
+        const { username, results } = this.state;
 
         // User's keys need to be lowercase to work with searchbar results
         return (
             <div>
-                <Navbar />
+                <Navbar username={username} />
                 <Header as='h2'>Global Rankings</Header>
 				<Searchbar placeholder='Username' source={users} field='name' searchFields={['name']} handleResults={this.handleResults} open={false} />                
                 {!_.isEmpty(results) ?

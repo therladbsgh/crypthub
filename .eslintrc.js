@@ -12,6 +12,7 @@ module.exports = {
       "no-underscore-dangle": 0,
       "comma-dangle": ["error", {
         "functions": "ignore"
-      }]
+      }],
+      "newline-per-chained-call": 0
     }
 };
