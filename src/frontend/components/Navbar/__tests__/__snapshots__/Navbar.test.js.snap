@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  className="ui inverted menu"
+>
+  <a
+    className="item"
+    href="/"
+    onClick={[Function]}
+  >
+    Crypthub
+  </a>
+  <div
+    className="right menu"
+  >
+    <a
+      className="item"
+      href="/rankings"
+      onClick={[Function]}
+    >
+      <i
+        aria-hidden="true"
+        className="trophy icon"
+      />
+      Global Rankings
+    </a>
+    <a
+      className="item"
+      href="/signup"
+      onClick={[Function]}
+    >
+      <i
+        aria-hidden="true"
+        className="signup icon"
+      />
+      Signup
+    </a>
+    <a
+      className="item"
+      href="/login"
+      onClick={[Function]}
+    >
+      <i
+        aria-hidden="true"
+        className="sign in icon"
+      />
+      Login
+    </a>
+  </div>
+</div>
+`;

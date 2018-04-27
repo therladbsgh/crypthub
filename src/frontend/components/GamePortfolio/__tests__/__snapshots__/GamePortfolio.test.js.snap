@@ -1,0 +1,213 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <h2
+    className="ui header"
+  >
+    Your Portfolio
+  </h2>
+  <table
+    className="ui celled table"
+  >
+    <thead
+      className=""
+    >
+      <tr
+        className=""
+      >
+        <th
+          className=""
+        >
+          Symbol
+        </th>
+        <th
+          className=""
+        >
+          % of Holdings
+        </th>
+        <th
+          className=""
+        >
+          Amount
+        </th>
+        <th
+          className=""
+        >
+          Current Price (Today's Change)
+        </th>
+        <th
+          className=""
+        >
+          Current Value
+        </th>
+      </tr>
+    </thead>
+    <tbody
+      className=""
+    >
+      <tr
+        className="positive"
+      >
+        <td
+          className=""
+        >
+          BTC
+        </td>
+        <td
+          className=""
+        >
+          29.41%
+        </td>
+        <td
+          className=""
+        >
+          250.00000000
+        </td>
+        <td
+          className=""
+        >
+          $10,000.00 (+3.25%)
+        </td>
+        <td
+          className=""
+        >
+          $2,500,000.00
+        </td>
+      </tr>
+      <tr
+        className="error"
+      >
+        <td
+          className=""
+        >
+          ETH
+        </td>
+        <td
+          className=""
+        >
+          58.83%
+        </td>
+        <td
+          className=""
+        >
+          1,000.28373623
+        </td>
+        <td
+          className=""
+        >
+          $5,000.00 (-20.01%)
+        </td>
+        <td
+          className=""
+        >
+          $5,001,418.68
+        </td>
+      </tr>
+      <tr
+        className=""
+      >
+        <td
+          className=""
+        >
+          USD
+        </td>
+        <td
+          className=""
+        >
+          11.76%
+        </td>
+        <td
+          className=""
+        >
+          $1,000,000.00
+        </td>
+        <td
+          className=""
+        >
+          -
+        </td>
+        <td
+          className=""
+        >
+          $1,000,000.00
+        </td>
+      </tr>
+    </tbody>
+    <tfoot
+      className=""
+    >
+      <tr
+        className=""
+      >
+        <th
+          className=""
+        >
+          <strong>
+            TOTAL
+          </strong>
+        </th>
+        <th
+          className=""
+        >
+          <strong>
+            100.00%
+          </strong>
+        </th>
+        <th
+          className=""
+        >
+          <strong>
+            -
+          </strong>
+        </th>
+        <th
+          className=""
+        >
+          <strong>
+            -
+          </strong>
+        </th>
+        <th
+          className=""
+        >
+          <strong>
+            $8,501,418.68
+          </strong>
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+  <h2
+    className="ui header"
+  >
+    Transactions
+  </h2>
+  <div
+    className="ui buttons"
+  >
+    <button
+      className="ui active toggle button"
+      disabled={undefined}
+      onClick={[Function]}
+      role="button"
+      tabIndex={undefined}
+    >
+      Current Orders
+    </button>
+    <button
+      className="ui toggle button"
+      disabled={undefined}
+      onClick={[Function]}
+      role="button"
+      tabIndex={undefined}
+    >
+      History
+    </button>
+  </div>
+  <div>
+    <br />
+    You have no current trade orders.
+  </div>
+</div>
+`;

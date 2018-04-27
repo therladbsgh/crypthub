@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Card, Header, Table } from 'semantic-ui-react';
 import { TradeModal, Searchbar } from 'components';

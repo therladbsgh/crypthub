@@ -4,15 +4,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Tab, Header, Dropdown, Checkbox } from 'semantic-ui-react';
 import { Searchbar, GameCard } from 'components';
-import { GameMocks } from 'mocks';
 import { FindGamesStyle as styles } from 'styles';
-
-// TODO: get games
-// const games = [
-// 	GameMocks.game1,
-// 	GameMocks.game2,
-// 	GameMocks.game3
-// ];
 
 const sortOptions = [
 	{

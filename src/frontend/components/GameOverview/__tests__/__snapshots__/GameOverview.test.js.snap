@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <h2
+    className="ui header"
+  >
+    About This Game
+  </h2>
+  <div
+    className="ui card"
+    href={undefined}
+    id={undefined}
+    onClick={[Function]}
+  >
+    <div
+      className="content"
+    >
+      <div
+        className="header"
+      >
+        <a
+          href="/game/1"
+          onClick={[Function]}
+        >
+          game1
+        </a>
+        <span
+          className="false undefined"
+        >
+          
+        </span>
+      </div>
+      <div
+        className="meta"
+      >
+        desc1
+      </div>
+      <div
+        className="description"
+      >
+        Created 
+        <strong>
+          26 days
+           ago
+        </strong>
+         by 
+        <strong>
+          user1
+        </strong>
+         to start on 
+        <strong>
+          04/02/2018
+        </strong>
+         and end 
+        in
+         
+        <strong>
+          9 days
+        </strong>
+      </div>
+    </div>
+    <div
+      className="extra content"
+    >
+      2
+       players
+    </div>
+  </div>
+</div>
+`;

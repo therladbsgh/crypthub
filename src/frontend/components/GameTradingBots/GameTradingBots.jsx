@@ -85,7 +85,7 @@ export default class GameTradingBots extends Component {
                     <Form.Group>
                         <Form.Field width={5}>
                             <label>Trading Bot Currently in Play</label>
-                            { activeBotId ? _.find(tradingBots, { id: activeBotId }).name : 'You currently don\'t have an active trading bot.'}
+                            { activeBotId ? _.find(tradingBots, { _id: activeBotId }).name : 'You currently don\'t have an active trading bot.'}
                             <br /><br /><br />
                             <Button icon='stop' negative disabled={!activeBotId} onClick={this.handleStop} content='Stop Active Bot' />                            
                         </Form.Field>

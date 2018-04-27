@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <h2
+    className="ui header"
+  >
+    Rankings
+  </h2>
+  <table
+    className="ui celled table"
+  >
+    <thead
+      className=""
+    >
+      <tr
+        className=""
+      >
+        <th
+          className=""
+        >
+          <i
+            aria-hidden="true"
+            className="trophy icon"
+          />
+        </th>
+        <th
+          className=""
+        >
+          Name
+        </th>
+        <th
+          className=""
+        >
+          Net Worth
+        </th>
+        <th
+          className=""
+        >
+          Trades
+        </th>
+        <th
+          className=""
+        >
+          Net Return
+        </th>
+      </tr>
+    </thead>
+    <tbody
+      className=""
+    />
+  </table>
+</div>
+`;

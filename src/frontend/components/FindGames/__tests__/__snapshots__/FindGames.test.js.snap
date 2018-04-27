@@ -1,0 +1,230 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <h2
+    className="ui header"
+  >
+    Search for a Game
+  </h2>
+  <div
+    className="ui fluid search"
+    field="name"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseDown={[Function]}
+    source={undefined}
+  >
+    <div
+      className="ui icon input"
+    >
+      <input
+        autoComplete="off"
+        className="prompt"
+        disabled={undefined}
+        onChange={[Function]}
+        onClick={[Function]}
+        placeholder="Game name"
+        tabIndex="0"
+        type="text"
+        value=""
+      />
+      <i
+        aria-hidden="true"
+        className="search icon"
+      />
+    </div>
+    <div
+      className="results transition"
+    >
+      <div
+        className="message empty"
+      >
+        <div
+          className="header"
+        >
+          No results found.
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2
+    className="ui header"
+  >
+    Current Games
+  </h2>
+  <label
+    id={undefined}
+  >
+    Sort By
+  </label>
+  <div
+    aria-busy={undefined}
+    aria-disabled={undefined}
+    aria-expanded={false}
+    aria-multiselectable={undefined}
+    className="ui selection dropdown"
+    onBlur={[Function]}
+    onChange={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onMouseDown={[Function]}
+    role="listbox"
+    tabIndex={0}
+  >
+    <div
+      aria-live="polite"
+      className="text"
+      role="alert"
+    >
+      Recently Created
+    </div>
+    <i
+      aria-hidden="true"
+      className="dropdown icon"
+      onClick={[Function]}
+    />
+    <div
+      className="menu transition"
+    >
+      <div
+        aria-checked={true}
+        aria-disabled={undefined}
+        aria-selected={true}
+        className="active selected item"
+        onClick={[Function]}
+        role="option"
+        style={
+          Object {
+            "pointerEvents": "all",
+          }
+        }
+      >
+        <span
+          className="text"
+        >
+          Recently Created
+        </span>
+      </div>
+      <div
+        aria-checked={false}
+        aria-disabled={undefined}
+        aria-selected={false}
+        className="item"
+        onClick={[Function]}
+        role="option"
+        style={
+          Object {
+            "pointerEvents": "all",
+          }
+        }
+      >
+        <span
+          className="text"
+        >
+          Most Days Remaining
+        </span>
+      </div>
+      <div
+        aria-checked={false}
+        aria-disabled={undefined}
+        aria-selected={false}
+        className="item"
+        onClick={[Function]}
+        role="option"
+        style={
+          Object {
+            "pointerEvents": "all",
+          }
+        }
+      >
+        <span
+          className="text"
+        >
+          Least Days Remaining
+        </span>
+      </div>
+      <div
+        aria-checked={false}
+        aria-disabled={undefined}
+        aria-selected={false}
+        className="item"
+        onClick={[Function]}
+        role="option"
+        style={
+          Object {
+            "pointerEvents": "all",
+          }
+        }
+      >
+        <span
+          className="text"
+        >
+          Start Date
+        </span>
+      </div>
+      <div
+        aria-checked={false}
+        aria-disabled={undefined}
+        aria-selected={false}
+        className="item"
+        onClick={[Function]}
+        role="option"
+        style={
+          Object {
+            "pointerEvents": "all",
+          }
+        }
+      >
+        <span
+          className="text"
+        >
+          Most Players
+        </span>
+      </div>
+      <div
+        aria-checked={false}
+        aria-disabled={undefined}
+        aria-selected={false}
+        className="item"
+        onClick={[Function]}
+        role="option"
+        style={
+          Object {
+            "pointerEvents": "all",
+          }
+        }
+      >
+        <span
+          className="text"
+        >
+          Fewest Players
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    className="ui checkbox"
+    onChange={[Function]}
+    onClick={[Function]}
+    onMouseDown={[Function]}
+  >
+    <input
+      checked={false}
+      className="hidden"
+      id={undefined}
+      name={undefined}
+      onClick={[Function]}
+      readOnly={true}
+      tabIndex={0}
+      type="checkbox"
+      value={undefined}
+    />
+    <label
+      htmlFor={undefined}
+    >
+      Only show public games
+    </label>
+  </div>
+</div>
+`;

@@ -2,10 +2,10 @@ import date from 'date-and-time';
 
 export const player1 = {
     name: 'player1',
-    id: '1',
+    _id: '1',
     portfolio: [
         {
-            type: {
+            coin: {
                 name: 'Bitcoin',
                 symbol: 'BTC',
                 currPrice: 10000,
@@ -14,7 +14,7 @@ export const player1 = {
             amount: 250
         },
         {
-            type: {
+            coin: {
                 name: 'Ethereum',
                 symbol: 'ETH',
                 currPrice: 5000,
@@ -23,7 +23,7 @@ export const player1 = {
             amount: 1000.28373623
         },
         {
-            type: {
+            coin: {
                 name: 'US Dollars',
                 symbol: 'USD',
                 currPrice: null,
@@ -35,7 +35,7 @@ export const player1 = {
     transactions: {
         history: [
             {
-                id: '1',
+                _id: '1',
                 type: 'market',
                 side: 'buy',
                 size: 25,
@@ -48,7 +48,7 @@ export const player1 = {
                 filledDate: date.parse('Apr 3 2018', 'MMM D YYYY')
             },
             {
-                id: '2',
+                _id: '2',
                 type: 'limit',
                 side: 'buy',
                 size: 35.000006,
@@ -63,7 +63,7 @@ export const player1 = {
         ],
         current: [
             {
-                id: '3',
+                _id: '3',
                 type: 'short',
                 side: 'sell',
                 size: 80,
@@ -76,7 +76,7 @@ export const player1 = {
                 filledDate: null
             },
             {
-                id: '4',
+                _id: '4',
                 type: 'limit',
                 side: 'buy',
                 size: 2,
@@ -99,11 +99,11 @@ export const player1 = {
     shortReserve: 50,
     tradingBots: [
         {
-            id: 'bot1',
+            _id: 'bot1',
             name: 'tradingbot1'
         },
         {
-            id: 'bot2',
+            _id: 'bot2',
             name: 'tradingbot2'
         }
     ],
@@ -112,10 +112,10 @@ export const player1 = {
 
 export const player2 = {
     name: 'player2',
-    id: '2',
+    _id: '2',
     portfolio: [
         {
-            type: {
+            coin: {
                 name: 'Bitcoin',
                 symbol: 'BTC',
                 currPrice: 10000,
@@ -124,7 +124,7 @@ export const player2 = {
             amount: 200.425
         },
         {
-            type: {
+            coin: {
                 name: 'Ethereum',
                 symbol: 'ETH',
                 currPrice: 5000,
@@ -133,7 +133,7 @@ export const player2 = {
             amount: 780.00000002
         },
         {
-            type: {
+            coin: {
                 name: 'US Dollars',
                 symbol: 'USD',
                 currPrice: null,
@@ -145,14 +145,14 @@ export const player2 = {
     transactions: {
         history: [
             {
-                id: '5',
+                _id: '5',
                 side: 'buy',
                 size: 1,
                 price: 10,
                 symbol: 'ETH'
             },
             {
-                id: '6',
+                _id: '6',
                 side: 'sell',
                 size: 3500,
                 price: 202220,
@@ -161,14 +161,14 @@ export const player2 = {
         ],
         current: [
             {
-                id: '7',
+                _id: '7',
                 side: 'sell',
                 size: 23230,
                 price: 232,
                 symbol: 'BTC'
             },
             {
-                id: '8',
+                _id: '8',
                 side: 'buy',
                 size: 6000,
                 price: 50,

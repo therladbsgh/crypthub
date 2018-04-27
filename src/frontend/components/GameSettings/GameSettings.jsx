@@ -101,7 +101,7 @@ export default class GameSettings extends Component {
     }
 
     render() {
-        const { inGame, isHost, username } = this.props;
+        const { inGame, isHost, username, game } = this.props;
         const { gameObj, submitted, loading, errMsg, errField } = this.state;
         const { id, host, playerPortfolioPublic, startingBalance, commissionValue, shortSelling, limitOrders, stopOrders, isPrivate, password, passwordConfirm, completed } = gameObj;
 
@@ -115,7 +115,7 @@ export default class GameSettings extends Component {
                 :
                 <JoinModal key='3' size='medium' isPrivate={isPrivate} gameId={id} username={username} />]}
 				<Header as='h2'>About This Game</Header>
-                <GameCard game={this.props.game} />
+                <GameCard game={game} />
                 {isHost && !completed &&
                 [<Header key='header' as='h2'>Game Options</Header>,
                 <Form key='form' loading={loading} success={submitted && !errMsg} error={!!errMsg}>

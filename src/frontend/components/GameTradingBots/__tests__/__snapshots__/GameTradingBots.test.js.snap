@@ -1,0 +1,199 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <h2
+    className="ui header"
+  >
+    Trading Bot Settings
+  </h2>
+  <form
+    action={undefined}
+    className="ui form"
+    onSubmit={[Function]}
+  >
+    <div
+      className="fields"
+    >
+      <div
+        className="five wide field"
+      >
+        <label>
+          Trading Bot Currently in Play
+        </label>
+        tradingbot1
+        <br />
+        <br />
+        <br />
+        <button
+          className="ui negative button"
+          disabled={undefined}
+          onClick={[Function]}
+          role="button"
+          tabIndex={undefined}
+        >
+          <i
+            aria-hidden="true"
+            className="stop icon"
+          />
+          Stop Active Bot
+        </button>
+      </div>
+      <div
+        className="five wide field"
+      >
+        <label>
+          Trading Bot to Make Active
+        </label>
+        <div
+          aria-busy={undefined}
+          aria-disabled={undefined}
+          aria-expanded={false}
+          className="ui search selection dropdown"
+          onBlur={[Function]}
+          onChange={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onMouseDown={[Function]}
+          role="combobox"
+          tabIndex={undefined}
+        >
+          <input
+            aria-autocomplete="list"
+            autoComplete="off"
+            className="search"
+            onChange={[Function]}
+            style={
+              Object {
+                "width": undefined,
+              }
+            }
+            tabIndex={0}
+            type="text"
+            value=""
+          />
+          <div
+            aria-live="polite"
+            className="default text"
+            role="alert"
+          >
+            Trading bot to make active
+          </div>
+          <i
+            aria-hidden="true"
+            className="dropdown icon"
+            onClick={[Function]}
+          />
+          <div
+            aria-multiselectable={undefined}
+            className="menu transition"
+            role="listbox"
+          >
+            <div
+              aria-checked={false}
+              aria-disabled={undefined}
+              aria-selected={true}
+              className="selected item"
+              onClick={[Function]}
+              role="option"
+              style={
+                Object {
+                  "pointerEvents": "all",
+                }
+              }
+            >
+              <span
+                className="text"
+              >
+                tradingbot1
+              </span>
+            </div>
+            <div
+              aria-checked={false}
+              aria-disabled={undefined}
+              aria-selected={false}
+              className="item"
+              onClick={[Function]}
+              role="option"
+              style={
+                Object {
+                  "pointerEvents": "all",
+                }
+              }
+            >
+              <span
+                className="text"
+              >
+                tradingbot2
+              </span>
+            </div>
+          </div>
+        </div>
+        <br />
+        <br />
+        <button
+          className="ui positive button"
+          disabled={undefined}
+          onClick={[Function]}
+          role="button"
+          tabIndex={undefined}
+        >
+          <i
+            aria-hidden="true"
+            className="save icon"
+          />
+          Save Changes
+        </button>
+      </div>
+    </div>
+    <div
+      className="ten wide field"
+    >
+      <div
+        className="ui error message"
+      >
+        <div
+          className="content"
+        >
+          <div
+            className="header"
+          >
+            Error
+          </div>
+          <p>
+            
+          </p>
+        </div>
+      </div>
+    </div>
+  </form>
+  <h2
+    className="ui header"
+  >
+    Debug Log
+  </h2>
+  <form
+    action={undefined}
+    className="ui form"
+    onSubmit={[Function]}
+  >
+    <div
+      className="field"
+    >
+      <textarea
+        className={undefined}
+        name="debugLog"
+        onChange={[Function]}
+        onInput={[Function]}
+        rows={3}
+        style={
+          Object {
+            "resize": "",
+          }
+        }
+        value="debug log here"
+      />
+    </div>
+  </form>
+</div>
+`;

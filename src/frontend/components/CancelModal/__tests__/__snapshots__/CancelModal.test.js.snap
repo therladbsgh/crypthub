@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<button
+  className="ui tiny compact negative button"
+  disabled={undefined}
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  role="button"
+  tabIndex={undefined}
+>
+  <i
+    aria-hidden="true"
+    className="cancel icon"
+  />
+  Cancel
+</button>
+`;
