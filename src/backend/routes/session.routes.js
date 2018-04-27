@@ -54,5 +54,12 @@ router.route('/verifyEmail').get(SessionController.confirmToken);
 
 router.route('/sendVerification').get(SessionController.resendToken);
 
+/**
+*
+* forgot password method 
+*@return 400 on error, 200 on success
+*/
+//router.route('/forgot').get(SessionController.forgot);
+
 
 module.exports = router;

@@ -38,7 +38,83 @@ function isValidPassword(user, password) {
 function signup(req, res) {
   const { username, password, email } = req.body;
 
-  User.findOne({ username }, (err, user) => {
+
+  // User.findOne({email}, (err,user)=>{
+  //     if (err) {
+  //     res.status(500).json({ err: 'MongoDB Server Error: Cannot query' });
+  //     return;
+  //   }
+  //     console.log(user);
+  //     if (user) {
+  //       console.log('User already exists with this email', email);
+  //       res.status(401).send({err: 'User with this email already exists', field: 'email'});
+  //       return;
+  //     } 
+
+  // User.findOne({ username }, (err, user) => {
+  //   if (err) {
+  //     res.status(500).json({ err: 'MongoDB Server Error: Cannot query' });
+  //     return;
+  //   }
+
+  //   if (user) {
+  //     console.log('User already exists with username: ', username);
+  //     res.status(401).send({ err: 'Username already exists', field: 'username' });
+  //     return;
+  //   }
+    
+
+
+
+
+
+  //   const newUser = new User();
+
+  //   newUser.username = username;
+  //   newUser.password = createHash(password);
+  //   newUser.email = email;
+
+  //   newUser.save((err2) => {
+  //     if (err2) {
+  //       res.status(500).send({ err: 'MongoDB Server Error: Cannot save' });
+  //       return;
+  //     }
+
+      
+  //     var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
+      
+      
+  //     token.save(function (err){
+  //       if (err){
+  //         res.status(500).send({err: 'MongoDB Server Error: Cannot save token'});
+  //       }
+
+  //       var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
+  //         });
+  //       var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
+  //       text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=' + newUser.email + '\n'};
+  //       transporter.sendMail(mailoptions, function(err){
+
+  //         if (err){
+  //           res.status(500).send({err: 'Cannot send email'});
+
+  //         }
+          
+  //       })
+        
+  //     });
+
+  //     res.status(200).json({ result: newUser });
+  //   });
+  // });
+
+
+
+
+  //   });
+
+
+    User.findOne({ username }, (err, user) => {
     if (err) {
       res.status(500).json({ err: 'MongoDB Server Error: Cannot query' });
       return;
@@ -49,12 +125,9 @@ function signup(req, res) {
       res.status(401).send({ err: 'Username already exists', field: 'username' });
       return;
     }
+    
 
-    // User.findOne({email: email}, ()=>{
-    //   console.log('User already exists with this email', email);
-    //   res.status(401).send({err: 'User with this email already exists', field: 'email'});
 
-    // });
 
 
 
@@ -97,6 +170,10 @@ function signup(req, res) {
       res.status(200).json({ result: newUser });
     });
   });
+
+
+
+ 
 }
 
 /**
@@ -252,6 +329,12 @@ function resendToken(req, res, next) {
  
     });
 };
+
+function forgot(req, res){
+// query database by email 
+// change password of user
+// send email back to user with their new password
+}
 
 
 
