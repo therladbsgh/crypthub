@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Card, Header, Table } from 'semantic-ui-react';
 import { TradeModal, Searchbar } from 'components';
-import { CoinMocks } from 'mocks';
 import { SharedStyle as styles } from 'styles';
 
 export default class TradeCard extends Component {
@@ -19,7 +18,7 @@ export default class TradeCard extends Component {
 	}
 
 	render() {
-		const { game, playerId } = this.props;
+		const { game, playerId, coins } = this.props;
 		const { id, limitOrders, shortSelling, stopOrders } = game;
 		const { results } = this.state;
 
@@ -46,11 +45,11 @@ export default class TradeCard extends Component {
 			<Card>
 				<Card.Content className={styles.center}>
 					<Header as='h2'>Search/Trade a Coin</Header>
-					<Searchbar input={{ fluid: true }} placeholder='Coin name or symbol' source={CoinMocks.coins} field='name' searchFields={['name', 'symbol']} handleResults={this.handleResults} open={false} />
+					<Searchbar input={{ fluid: true }} placeholder='Coin name or symbol' source={coins} field='name' searchFields={['name', 'symbol']} handleResults={this.handleResults} open={false} />
 					{!_.isEmpty(results) ?
 						<Table striped>
 							<Table.Body>
-								{_.map(CoinMocks.coins, (c, index) => 
+								{_.map(coins, (c, index) => 
 									(_.some(results, _.mapKeys(_.mapValues(c, v => String(v)), (v, k) => k.toLowerCase())) || results[0] === 'RESET') &&
 										<Table.Row key={index}>
 											<Table.Cell>{c.symbol}</Table.Cell>

@@ -16,6 +16,10 @@ export function getAllGames() {
     return Backend.get('game/getall');
 }
 
+export function getCoins() {
+    return Backend.get('coin/getall');
+}
+
 export function placeOrder(tradeObj) {
     return Backend.post('game/placeorder', tradeObj);
 }
