@@ -36,4 +36,22 @@ router.route('/logout').get(SessionController.logout);
  */
 router.route('/user').get(SessionController.getUser);
 
+/**
+* confirm token method.
+* @param token
+*
+* @return 400 on error, 200 on success
+*/
+
+router.route('/verifyEmail').get(SessionController.confirmToken);
+
+/**
+* resend token method
+* @param token
+* @return 400 on error, 200 on success
+*/
+
+router.route('/sendVerification').get(SessionController.resendToken);
+
+
 module.exports = router;
