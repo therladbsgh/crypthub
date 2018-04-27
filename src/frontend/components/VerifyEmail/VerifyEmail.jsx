@@ -41,7 +41,7 @@ class VerifyEmail extends Component {
                     success: 'Your email has been verified!'
                 });
             }, ({ err }) => {
-                console.log('error! ', err);
+                console.log('errorverify! ', err);
                 this.setState({ username: resUser.user ? resUser.user.username : '',
                     hasMounted: true,
                     err,
@@ -79,9 +79,9 @@ class VerifyEmail extends Component {
             hasMounted &&
             <div>
                 <Navbar username={username} />
-                {submitted &&
+                {(err || success) &&
                 <Message error={!!err} success={!!success} header={err ? 'Error' : 'Success'} content={err || success} />}
-                {(err || submitted) &&
+                {!success &&
                 <Button icon='mail outline' loading={loading} primary onClick={this.handleSubmit} content='Resend Verification Email' />}
             </div>
         );
