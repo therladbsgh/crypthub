@@ -62,7 +62,7 @@ export default class Transactions extends Component {
                             <Table.Cell>{_.capitalize(`${t.type} ${t.side}`)}</Table.Cell>
                             <Table.Cell>{date.format(new Date(t.date), 'MM/DD/YYYY HH:mm:ss')}</Table.Cell>
                             <Table.Cell>{t.coin.symbol}</Table.Cell>
-                            <Table.Cell>{t.size}</Table.Cell>
+                            <Table.Cell>{formatCurrency(t.size, { format: '%v', maxFraction: 8,  minFraction: 8 })}</Table.Cell>
                             <Table.Cell>{formatCurrency(t.price, { format: '%s%v', symbol: '$' })}</Table.Cell>
                             <Table.Cell>{current ? t.GTC ? 'GTC' : `Expires in ${date.subtractStr(new Date(t.expiration), now)}` : t.filled ? `Filled ${date.format(new Date(t.filledDate), 'MM/DD/YYYY HH:mm:ss')}` : `Expired ${date.format(new Date(t.expiration), 'MM/DD/YYYY HH:mm:ss')}`}</Table.Cell>
                         </Table.Row>
