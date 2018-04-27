@@ -14,6 +14,7 @@ class VerifyEmail extends Component {
             username: '',
             loading: false,
             submitted: false,
+            alreadyVerified: false,
             err: '',
             success: '',
             email: '',
@@ -66,14 +67,14 @@ class VerifyEmail extends Component {
 		.then(res => {
 			console.log('success! ', res);
             this.setState({ loading: false, submitted: true, success: 'Verification email sent!' });
-		}, ({ err }) => {
+		}, ({ err, field }) => {
 			console.log('error! ', err);
-            this.setState({ loading: false, submitted: true, err });
+            this.setState({ loading: false, submitted: true, err, alreadyVerified: field === 'already-verified' });
         });
     }
     
     render() {
-        const { username, loading, submitted, err, success, hasMounted } = this.state;
+        const { username, loading, submitted, alreadyVerified, err, success, hasMounted } = this.state;
 
         return (
             hasMounted &&
@@ -81,7 +82,7 @@ class VerifyEmail extends Component {
                 <Navbar username={username} />
                 {(err || success) &&
                 <Message error={!!err} success={!!success} header={err ? 'Error' : 'Success'} content={err || success} />}
-                {!success &&
+                {!success && !alreadyVerified &&
                 <Button icon='mail outline' loading={loading} primary onClick={this.handleSubmit} content='Resend Verification Email' />}
             </div>
         );

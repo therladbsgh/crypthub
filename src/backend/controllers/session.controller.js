@@ -50,6 +50,12 @@ function signup(req, res) {
       return;
     }
 
+    // User.findOne({email: email}, ()=>{
+    //   console.log('User already exists with this email', email);
+    //   res.status(401).send({err: 'User with this email already exists', field: 'email'});
+
+    // });
+
 
 
     const newUser = new User();
@@ -65,7 +71,6 @@ function signup(req, res) {
       }
 
       
-
       var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
       
       
@@ -79,9 +84,12 @@ function signup(req, res) {
         var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
         text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=' + newUser.email + '\n'};
         transporter.sendMail(mailoptions, function(err){
+
           if (err){
             res.status(500).send({err: 'Cannot send email'});
+
           }
+          
         })
         
       });
@@ -120,7 +128,7 @@ function login(req, res) {
 
    
     if (!user.isVerified){
-      res.status(401).send({ err: 'This user is not verified, please verify your account', field: 'email'});
+      res.status(401).send({ err: 'Your email is not verified, please verify your account.', field: 'email'});
       return;
     } 
        
@@ -178,7 +186,6 @@ function confirmToken (req, res, next) {
     var newToken = tokened.substring(1,33);
     
     
-    
     Token.findOne({ token: newToken}, function (err, token) {
 
       
@@ -186,16 +193,21 @@ function confirmToken (req, res, next) {
         
         
         User.findOne({ username: token.username }, function (err, user) {
-            if (!user) return res.status(400).send({ err: 'Token not found', field: 'Token' });
-            if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified, please log in', field: 'User' });
+
+            if (!user) return res.status(400).send({ err: 'Verification token not found.', field: 'Token' });
+            if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified, please log in.', field: 'already-verified' });
  
+
       
             user.isVerified = true;
            
 
             user.save(function (err) {
+                
                 if (err) { return res.status(500).send({ err: 'MongoDB Server could not save user' }); }
-                res.status(200).send("The account has been verified. Please log in.");
+                
+                res.status(200).send({msg: "The account has been verified. Please log in."});
+              
             });
         });
     });
@@ -217,8 +229,8 @@ function resendToken(req, res, next) {
   
  
     User.findOne({ email: email }, function (err, user) {
-        if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.' });
-        if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.' });
+        if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.', field: 'invalid-username' });
+        if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.', field: 'already-verified' });
  
         // Create a verification token, save it, and send email
         var token = new Token({ username: user.username, token: crypto.randomBytes(16).toString('hex') });

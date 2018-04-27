@@ -17,7 +17,7 @@ export function login(loginObj) {
 }
 
 export function forgot(forgotObj) {
-    return Backend.post('forgot', forgotObj);
+    return Backend.post('passport/forgot', forgotObj);
 }
 
 export function logout() {
