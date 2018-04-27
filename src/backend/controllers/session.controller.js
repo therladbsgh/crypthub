@@ -191,7 +191,7 @@ function confirmToken (req, res, next) {
         
         User.findOne({ username: token.username }, function (err, user) {
             if (!user) return res.status(400).send({ err: 'Token not found', field: 'Token' });
-            if (user.isVerified) return res.status(400).send({ err: 'already-verified', field: 'User' });
+            if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified, please log in', field: 'User' });
  
       
             user.isVerified = true;
@@ -217,10 +217,10 @@ function confirmToken (req, res, next) {
 function resendToken(req, res, next) {
     
  
-      
+    var email = req.query.email;
   
  
-    User.findOne({ email: req.body.email }, function (err, user) {
+    User.findOne({ email: req.query.email }, function (err, user) {
         if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.' });
         if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.' });
  
@@ -235,7 +235,7 @@ function resendToken(req, res, next) {
               var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
           });
         var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
-        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=email\n'};
+        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email='+ email + '\n'};
             transporter.sendMail(mailOptions, function (err) {
                 if (err) { return res.status(500).send({ msg: err.message }); }
                 res.status(200).send('A verification email has been sent to ' + user.email + '.');
