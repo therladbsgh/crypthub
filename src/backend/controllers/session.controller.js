@@ -50,6 +50,12 @@ function signup(req, res) {
       return;
     }
 
+    // User.findOne({email: email}, ()=>{
+    //   console.log('User already exists with this email', email);
+    //   res.status(401).send({err: 'User with this email already exists', field: 'email'});
+
+    // });
+
 
 
     const newUser = new User();
@@ -65,7 +71,6 @@ function signup(req, res) {
       }
 
       
-
       var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
       
       
@@ -79,9 +84,12 @@ function signup(req, res) {
         var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
         text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=' + newUser.email + '\n'};
         transporter.sendMail(mailoptions, function(err){
+
           if (err){
             res.status(500).send({err: 'Cannot send email'});
+
           }
+          
         })
         
       });
@@ -178,7 +186,6 @@ function confirmToken (req, res, next) {
     var newToken = tokened.substring(1,33);
     
     
-    
     Token.findOne({ token: newToken}, function (err, token) {
 
       
@@ -187,15 +194,19 @@ function confirmToken (req, res, next) {
         
         User.findOne({ username: token.username }, function (err, user) {
             if (!user) return res.status(400).send({ err: 'Token not found', field: 'Token' });
+            
             if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified, please log in', field: 'User' });
- 
+            
       
             user.isVerified = true;
            
 
             user.save(function (err) {
+                
                 if (err) { return res.status(500).send({ err: 'MongoDB Server could not save user' }); }
-                res.status(200).send("The account has been verified. Please log in.");
+                
+                res.status(200).send({msg: "The account has been verified. Please log in."});
+              
             });
         });
     });
