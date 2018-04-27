@@ -120,7 +120,7 @@ function login(req, res) {
 
    
     if (!user.isVerified){
-      res.status(401).send({ err: 'This user is not verified, please verify your account', field: 'email'});
+      res.status(401).send({ err: 'Your email is not verified, please verify your account.', field: 'email'});
       return;
     } 
        
@@ -186,8 +186,8 @@ function confirmToken (req, res, next) {
         
         
         User.findOne({ username: token.username }, function (err, user) {
-            if (!user) return res.status(400).send({ err: 'Token not found', field: 'Token' });
-            if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified, please log in', field: 'User' });
+            if (!user) return res.status(400).send({ err: 'Verification token not found.', field: 'Token' });
+            if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified, please log in.', field: 'already-verified' });
  
       
             user.isVerified = true;
@@ -217,8 +217,8 @@ function resendToken(req, res, next) {
   
  
     User.findOne({ email: email }, function (err, user) {
-        if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.' });
-        if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.' });
+        if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.', field: 'invalid-username' });
+        if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.', field: 'already-verified' });
  
         // Create a verification token, save it, and send email
         var token = new Token({ username: user.username, token: crypto.randomBytes(16).toString('hex') });
