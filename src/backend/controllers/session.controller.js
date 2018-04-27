@@ -2,6 +2,8 @@ const bCrypt = require('bcrypt-nodejs');
 const User = require('../models/user.model');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const Token = require('../models/token.model');
+const url = 'localhost:8080';
 
 
 /**
@@ -48,8 +50,6 @@ function signup(req, res) {
       return;
     }
 
-    // check if email already is taken
-
 
 
     const newUser = new User();
@@ -63,24 +63,29 @@ function signup(req, res) {
         res.status(500).send({ err: 'MongoDB Server Error: Cannot save' });
         return;
       }
-      // create user token
-      // var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
-      // // save user token
-      // token.save(function (err){
-      //   if (err){
-      //     res.status(500).send({err: 'MongoDB Server Error: Cannot save token'});
-      //   }
-      //   var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
-      //     });
-      //   var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token',
-      //   text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n'};
-      //   transporter.sendMail(mailoptions, function(err){
-      //     if (err){
-      //       res.status(500).send({err: 'Cannot send email'});
-      //     }
-      //   })
-      //   res.status(200).send('A verification email has been sent to ' + user.email + '.');
-      // });
+
+      
+
+      var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
+      
+      
+      token.save(function (err){
+        if (err){
+          res.status(500).send({err: 'MongoDB Server Error: Cannot save token'});
+        }
+
+        var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
+          });
+        var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
+        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=' + newUser.email + '\n'};
+        transporter.sendMail(mailoptions, function(err){
+          if (err){
+            res.status(500).send({err: 'Cannot send email'});
+          }
+        })
+        
+      });
+
       res.status(200).json({ result: newUser });
     });
   });
@@ -112,18 +117,22 @@ function login(req, res) {
       res.status(401).send({ err: 'Invalid password', field: 'password' });
       return;
     }
-    // check if user has validated their email
-    // if (!user.isVerified){
-    //   res.status(401).send({ err: 'not-verified', field: 'email'});
-    //   return;
-    // }
+
+   
+    if (!user.isVerified){
+      res.status(401).send({ err: 'This user is not verified, please verify your account', field: 'email'});
+      return;
+    } 
+       
 
     req.session.user = user.username;
     req.session.id = user._id;
     req.session.save();
-    // possible code
-    //res.status(200).send({ success: true, user: user.username, token: generateToken(user)})
-    res.status(200).send({ success: true, user: user.username });
+
+    
+    res.status(200).send({ success: true, user: user.username});
+    
+
   });
 }
 
@@ -134,8 +143,12 @@ function login(req, res) {
  * @return 500 on server error, 200 if success
  */
 function logout(req, res) {
-  req.session = null;
-  res.status(200).json({ success: true });
+  req.session.destroy((err) => {
+    if (err) {
+      res.status(500).json({ err: 'Server error' });
+    }
+    res.status(200).json({ success: true });
+  });
 }
 
 
@@ -156,34 +169,39 @@ function authenticate(req, res, next) {
 *
 * @return 400 if confirmation failed, 200 otherwise with appropriate message
 */
-// function confirmToken (req, res, next) {
-//     req.assert('email', 'Email is not valid').isEmail();
-//     req.assert('email', 'Email cannot be blank').notEmpty();
-//     req.assert('token', 'Token cannot be blank').notEmpty();
-//     req.sanitize('email').normalizeEmail({ remove_dots: false });
 
-//     // Check for validation errors
-//     var errors = req.validationErrors();
-//     if (errors) return res.status(400).send(errors);
+function confirmToken (req, res, next) {
+  
+   
+    var tokened = req.query.token;
+    
+    var newToken = tokened.substring(1,33);
+    
+    
+    
+    Token.findOne({ token: newToken}, function (err, token) {
 
-//     // Find a matching token
-//     Token.findOne({ token: req.body.token }, function (err, token) {
-//         if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token my have expired.' });
+      
+        if (!token) return res.status(400).send({ err: 'We were unable to find a valid token. Your token my have expired.', field: 'not-verified' });
+        
+        
+        User.findOne({ username: token.username }, function (err, user) {
+            if (!user) return res.status(400).send({ err: 'Token not found', field: 'Token' });
+            if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified, please log in', field: 'User' });
+ 
+      
+            user.isVerified = true;
+           
 
-//         // If we found a token, find a matching user
-//         User.findOne({ username: token.username }, function (err, user) {
-//             if (!user) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
-//             if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
+            user.save(function (err) {
+                if (err) { return res.status(500).send({ err: 'MongoDB Server could not save user' }); }
+                res.status(200).send("The account has been verified. Please log in.");
+            });
+        });
+    });
+};
 
-//             // Verify and save the user
-//             user.isVerified = true;
-//             user.save(function (err) {
-//                 if (err) { return res.status(500).send({ err: 'MongoDB Server could not save user' }); }
-//                 res.status(200).send("The account has been verified. Please log in.");
-//             });
-//         });
-//     });
-// };
+
 
 
 /**
@@ -191,40 +209,52 @@ function authenticate(req, res, next) {
 *
 *@return
 */
-// function resendToken(req, res, next) {
-//     req.assert('email', 'Email is not valid').isEmail();
-//     req.assert('email', 'Email cannot be blank').notEmpty();
-//     req.sanitize('email').normalizeEmail({ remove_dots: false });
 
-//     // Check for validation errors
-//     var errors = req.validationErrors();
-//     if (errors) return res.status(400).send(errors);
+function resendToken(req, res, next) {
+    
+ 
+    var email = req.query.email;
+  
+ 
+    User.findOne({ email: email }, function (err, user) {
+        if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.' });
+        if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.' });
+ 
+        // Create a verification token, save it, and send email
+        var token = new Token({ username: user.username, token: crypto.randomBytes(16).toString('hex') });
+ 
+        // Save the token
+        token.save(function (err) {
+            if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save Token'  }); }
+ 
+            // Send the email
+              var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
+          });
+        var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
+        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email='+ email + '\n'};
+            transporter.sendMail(mailOptions, function (err) {
+                if (err) { return res.status(500).send({ msg: err.message }); }
+                res.status(200).send('A verification email has been sent to ' + user.email + '.');
+            });
+        });
+ 
+    });
+};
 
-//     User.findOne({ email: req.body.email }, function (err, user) {
-//         if (!user) return res.status(400).send({ msg: 'We were unable to find a user with that email.' });
-//         if (user.isVerified) return res.status(400).send({ msg: 'This account has already been verified. Please log in.' });
 
-//         // Create a verification token, save it, and send email
-//         var token = new Token({ username: user.username, token: crypto.randomBytes(16).toString('hex') });
 
-//         // Save the token
-//         token.save(function (err) {
-//             if (err) { return res.status(500).send({ msg: err.message }); }
-
-//             // Send the email
-//               var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
-//           });
-//         var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token',
-//         text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n'};
-//             transporter.sendMail(mailOptions, function (err) {
-//                 if (err) { return res.status(500).send({ msg: err.message }); }
-//                 res.status(200).send('A verification email has been sent to ' + user.email + '.');
-//             });
-//         });
-
-//     });
-// };
-
+/**
+ * Gets user name from session.
+ *
+ * @return user name if exists, null otherwise
+ */
+function ensureAuthenticated(req, res) {
+  if (req.session.user) {
+    res.json({ username: req.session.user });
+  } else {
+    res.json({});
+  }
+}
 
 /**
  * Gets user name from session.
@@ -233,18 +263,25 @@ function authenticate(req, res, next) {
  */
 function getUser(req, res) {
   if (req.session.user) {
-    res.json({ user: req.session.user });
+    User.get(req.session.user).then((result) => {
+      result.password = undefined;
+      res.json({ user: result });
+    }).catch((err) => {
+      res.json({ err });
+    });
   } else {
     res.json({});
   }
 }
-
-
 
 module.exports = {
   signup,
   login,
   logout,
   authenticate,
-  getUser
+  getUser,
+  resendToken,
+  confirmToken,
+  ensureAuthenticated
+
 };

@@ -11,6 +11,7 @@ class VerifyEmail extends Component {
         super(props);
 
 		this.state = {
+            username: '',
             loading: false,
             submitted: false,
             err: '',
@@ -25,24 +26,38 @@ class VerifyEmail extends Component {
     componentWillMount() {
         const params = queryString.parse(this.props.location.search);
         const { token, email } = params;
-        if (!token || !email) {
-            this.props.history.push('/pagenotfound');
-        }
+        if (!token || !email) return this.props.history.push('/pagenotfound');
 
-        UserBackend.verifyEmail(token)
-		.then(res => {
-			console.log('success! ', res);
-            this.setState({ hasMounted: true, success: 'Your email has been verified!' });
+
+        UserBackend.getUsername()
+		.then(resUser => {
+			console.log('success! ', resUser);
+            UserBackend.verifyEmail(token)
+            .then(resVerify => {
+                console.log('success! ', resVerify);
+                this.setState({
+                    username: resUser.username,
+                    hasMounted: true,
+                    success: 'Your email has been verified!'
+                });
+            }, ({ err }) => {
+                console.log('error! ', err);
+                this.setState({ username: resUser.user ? resUser.user.username : '',
+                    hasMounted: true,
+                    err,
+                    email
+                });
+            });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			this.setState({ hasMounted: true, err, email });
+			alert(`Error: ${err}`);
         });
     }
 
 	handleSubmit(event) {
         this.setState({
             loading: true,
-            submitted: true,
+            submitted: false,
             err: '',
             success: ''
         });
@@ -50,21 +65,21 @@ class VerifyEmail extends Component {
 		UserBackend.sendVerification(this.state.email)
 		.then(res => {
 			console.log('success! ', res);
-            this.setState({ loading: false, submitted: false, success: 'Verification email sent!' });
+            this.setState({ loading: false, submitted: true, success: 'Verification email sent!' });
 		}, ({ err }) => {
 			console.log('error! ', err);
-            this.setState({ loading: false, submitted: false, err });
+            this.setState({ loading: false, submitted: true, err });
         });
     }
     
     render() {
-        const { loading, submitted, err, success, hasMounted } = this.state;
+        const { username, loading, submitted, err, success, hasMounted } = this.state;
 
         return (
             hasMounted &&
             <div>
-                <Navbar />
-                {!submitted &&
+                <Navbar username={username} />
+                {submitted &&
                 <Message error={!!err} success={!!success} header={err ? 'Error' : 'Success'} content={err || success} />}
                 {(err || submitted) &&
                 <Button icon='mail outline' loading={loading} primary onClick={this.handleSubmit} content='Resend Verification Email' />}

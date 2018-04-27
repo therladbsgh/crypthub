@@ -9,7 +9,11 @@ export function createGame(gameObj) {
 }
 
 export function getGame(gameId) {
-    return Backend.get(`game/get/${gameId}`);    
+    return Backend.get(`game/get/${gameId}`);
+}
+
+export function getAllGames() {
+    return Backend.get('game/getall');
 }
 
 export function placeOrder(tradeObj) {
@@ -17,7 +21,7 @@ export function placeOrder(tradeObj) {
 }
 
 export function cancelOrder(tradeId) {
-    return Backend.get(`game/cancelOrder?id=${tradeId}`);
+    return Backend.get(`game/cancelorder?id=${tradeId}`);
 }
 
 export function saveGame(gameObj) {

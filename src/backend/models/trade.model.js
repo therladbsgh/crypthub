@@ -22,8 +22,9 @@ const TradeSchema = new Schema({
     type: Number,
     required: true
   },
-  symbol: {
+  coin: {
     type: Schema.Types.ObjectId,
+    ref: 'Coin',
     required: true
   },
   date: {
@@ -37,8 +38,12 @@ const TradeSchema = new Schema({
   filled: {
     type: Boolean,
     required: true
+  },
+  filledDate: {
+    type: Date
   }
 });
 
 const model = mongoose.model('Trade', TradeSchema);
+
 module.exports = model;

@@ -101,7 +101,7 @@ export default class GameSettings extends Component {
     }
 
     render() {
-        const { inGame, isHost, userId } = this.props;
+        const { inGame, isHost, username } = this.props;
         const { gameObj, submitted, loading, errMsg, errField } = this.state;
         const { id, host, playerPortfolioPublic, startingBalance, commissionValue, shortSelling, limitOrders, stopOrders, isPrivate, password, passwordConfirm, completed } = gameObj;
 
@@ -111,9 +111,9 @@ export default class GameSettings extends Component {
                 [<Header key='1' as='h2'>Game Actions</Header>,
                 isHost && <InviteModal key='2' gameId={id} />,
                 inGame ?
-                <LeaveModal key='3' gameId={id} userId={userId} />
+                <LeaveModal key='3' gameId={id} username={username} />
                 :
-                <JoinModal key='3' size='medium' isPrivate={isPrivate} gameId={id} userId={userId} />]}
+                <JoinModal key='3' size='medium' isPrivate={isPrivate} gameId={id} username={username} />]}
 				<Header as='h2'>About This Game</Header>
                 <GameCard game={this.props.game} />
                 {isHost && !completed &&

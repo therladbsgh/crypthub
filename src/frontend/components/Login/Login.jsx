@@ -32,7 +32,7 @@ class Login extends Component {
     
     componentWillMount() {
 		const { history } = this.props;
-		UserBackend.getUser()
+		UserBackend.getUsername()
 		.then(res => {
 			console.log('success! ', res);
             if (_.isEmpty(res)) {
@@ -146,7 +146,7 @@ class Login extends Component {
 		return (
             hasMounted &&
 			<div style={sharedStyles}>
-				<Navbar />
+				<Navbar username={''} />
                 {!forgot ?  
                 <div>
                     <Header as='h1'>Login</Header>

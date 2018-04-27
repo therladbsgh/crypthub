@@ -8,24 +8,8 @@ class Navbar extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            username: '',
-            hasMounted: false
-        };
-
         this.logout = this.logout.bind(this);
     }
-
-    componentWillMount() {
-		UserBackend.getUser()
-		.then(res => {
-			console.log('success! ', res);
-            this.setState({ username: res.user, hasMounted: true });
-		}, ({ err }) => {
-			console.log('error! ', err);
-			alert(`Error: ${err}`);
-        });
-	}
 
     logout() {
         const { history } = this.props;
@@ -41,10 +25,9 @@ class Navbar extends Component {
     }
 
   	render() {
-        const { username, hasMounted } = this.state;
+        const { username } = this.props;
         
 		return (
-            hasMounted &&
             <Menu inverted>
                 <Menu.Item name='crypthub' as={Link} to={username ? '/games' : '/'} />
 

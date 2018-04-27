@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Header, Tab, Button } from 'semantic-ui-react';
-import { GameBackend } from 'endpoints';
+import { GameBackend, UserBackend } from 'endpoints';
 import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard, JoinModal, GameTradingBots } from 'components';
 import { GamePageStyle as styles, SharedStyle as sharedStyles } from 'styles'; 
 
@@ -12,7 +12,7 @@ class GamePage extends Component {
 		this.state = {
             game: {},
             thisPlayer: {},
-            userId: '',
+            usernameUser: '',
             hasMounted: false
         };
     }
@@ -21,11 +21,17 @@ class GamePage extends Component {
         const { match, history } = this.props;
         GameBackend.getGame(match.params.id)
 		.then(resGame => {
-			console.log('success! ', resGame);
-            UserBackend.getUser()
+            console.log('success! ', resGame);
+            if (_.isEmpty(resGame.game)) return history.push('/gamenotfound');
+            UserBackend.getUsername()
             .then(resUser => {
                 console.log('success! ', resUser);
-                this.setState({ game: resGame.game, thisPlayer: resGame.player, userId: resUser.id, hasMounted: true });
+                this.setState({
+                    game: resGame.game,
+                    thisPlayer: resGame.player,
+                    usernameUser: resUser.username,
+                    hasMounted: true
+                });
             }, ({ err }) => {
                 console.log('error! ', err);
                 alert(`Error: ${err}`);
@@ -37,12 +43,15 @@ class GamePage extends Component {
 	}
 
   	render() {
-        const { game, thisPlayer, userId } = this.state;
-        const { id, players, playerPortfolioPublic, isPrivate, completed } = game;
+        const { game, thisPlayer, usernameUser, hasMounted } = this.state;
+        const { id, name, players, playerPortfolioPublic, isPrivate, completed } = game;
+        const { username } = thisPlayer;
+
+        if (!hasMounted) return null;
 
         // TODO: logic for checking if player is in the game and if they are the host
         const inGame = !_.isEmpty(thisPlayer);
-        const isHost = game.host === thisPlayer.name;
+        const isHost = game.host === username;
 
         const GameOverviewPane = (
             <Tab.Pane key='tab1'>
@@ -71,7 +80,7 @@ class GamePage extends Component {
         );
         const GameSettingsPane = (
             <Tab.Pane key='tab6'>
-                <GameSettings game={game} inGame={inGame} isHost={isHost} userId={userId} />
+                <GameSettings game={game} inGame={inGame} isHost={isHost} username={username} />
             </Tab.Pane>
         );
 
@@ -86,16 +95,16 @@ class GamePage extends Component {
 
 		return (
 			<div>
-				<Navbar />
+				<Navbar username={usernameUser} />
                 {(completed || !inGame) ?
                 [<div key='1' className={styles.completedHeader}>
-                    <Header className={sharedStyles.inline} as='h1'>Game Name</Header>
+                    <Header className={sharedStyles.inline} as='h1'>{name}</Header>
                     {completed ?
                     <span className={styles.completedTag}>Completed</span>
                     :
                     <div className={styles.joinButton}>
-                        {userId ?
-                        <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} userId={userId} />
+                        {usernameUser ?
+                        <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} username={usernameUser} />
                         :
                         <Button icon='user add' size='tiny' compact primary onClick={() => this.props.history.push('/login')} content='Join Game' />}
                     </div>}
@@ -105,7 +114,7 @@ class GamePage extends Component {
                 [<Header key='1' as='h1'>Game Name</Header>,
                 <div key='3' className='ui grid'>
                     <div className='three wide column'>
-                        <TradeCard game={game} playerId={thisPlayer.id} />
+                        <TradeCard game={game} playerId={thisPlayer._id} />
                     </div>
                     <Tab className='thirteen wide column' panes={panes} renderActiveOnly={false} />
                 </div>]}

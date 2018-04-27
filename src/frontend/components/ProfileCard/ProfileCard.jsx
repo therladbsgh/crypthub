@@ -6,7 +6,7 @@ import { ProfileCardStyle as styles, SharedStyle as sharedStyles } from 'styles'
 export default class ProfileCard extends Component {
     render() {
 		const { player, completed } = this.props;
-		const { name, netWorth, todayReturn, netReturn, currRank, portfolio, buyingPower, shortReserve, transactions, tradingBots, activeBotId } = player;
+		const { name, netWorth, todayReturn, netReturn, currRank, portfolio, buyingPower, shortReserve, transactionCurrent, tradingBots, activeBotId } = player;
         
         return (
 			<Card id={sharedStyles.card}>
@@ -36,7 +36,7 @@ export default class ProfileCard extends Component {
 						<Grid.Row>
 							<Grid.Column>
 								<label>Current Cash</label>
-								<p>{formatCurrency(_.find(portfolio, a => a.type.symbol === 'USD').amount, { format: '%s%v', symbol: '$' })}</p>
+								<p>{formatCurrency(_.find(portfolio, a => a.coin.symbol === 'USD').amount, { format: '%s%v', symbol: '$' })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>Buying Power</label>
@@ -48,7 +48,7 @@ export default class ProfileCard extends Component {
 							</Grid.Column>
 							<Grid.Column>
 								<label>Open Trades</label>
-								<p>{transactions.current.length}</p>
+								<p>{transactionCurrent.length}</p>
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>

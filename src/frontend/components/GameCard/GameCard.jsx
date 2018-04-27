@@ -33,6 +33,7 @@ export default class GameCard extends Component {
 		const { game } = this.props;
 		const { id, name, description, created, host, start, end, players, isPrivate, completed } = game;
 		const now = new Date();
+		const endDate = new Date(end);
 
         return (
 			<Card id={sharedStyles.card}>
@@ -46,7 +47,7 @@ export default class GameCard extends Component {
 						{description}
 					</Card.Meta>
 					<Card.Description>
-						Created <strong>{date.subtractStr(now, created)} ago</strong> by <strong>{host}</strong> to start on <strong>{date.format(start, 'MM/DD/YYYY')}</strong> and end {end > now ? 'in' : 'on'} <strong>{end > now ? date.subtractStr(end, now) : date.format(end, 'MM/DD/YYYY')}</strong>
+						Created <strong>{date.subtractStr(now, new Date(created))} ago</strong> by <strong>{host}</strong> to start on <strong>{date.format(new Date(start), 'MM/DD/YYYY')}</strong> and end {endDate > now ? 'in' : 'on'} <strong>{endDate > now ? date.subtractStr(endDate, now) : date.format(endDate, 'MM/DD/YYYY')}</strong>
 					</Card.Description>
 				</Card.Content>
 				<Card.Content extra>

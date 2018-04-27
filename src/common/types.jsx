@@ -22,9 +22,8 @@ const GameType = {
 };
 
 const PlayerType = {
-    id: String,
-    userId: String,
-    name: String,
+    _id: String,
+    username: String,
     netWorth: Number,
     numTrades: Number,
     netReturn: Number,
@@ -33,26 +32,24 @@ const PlayerType = {
     buyingPower: Number,
     shortReserve: Number,
     portfolio: Array.of.AssetType,
-    transactions: {
-        history: Array.of.TradeType,
-        current: Array.of.TradeType
-    },
+    transactionCurrent: Array.of.TradeType,
+    transactionHistory: Array.of.TradeType,
     tradingBots: Array.of.TradingBotType,
     activeBotId: String
 };
 
 const AssetType = {
-    type: CoinType,
+    coin: CoinType,
     amount: Number
 };
 
 const TradeType = {
-    id: String,
+    _id: String,
     type: 'market' | 'limit' | 'short' | 'stop',
     side: 'buy' | 'sell',
     size: Number,
     price: Number,
-    symbol: CoinType.symbol,
+    coin: CoinType,
     date: Date,
     GTC: Boolean,
     expiration: Date,
@@ -68,14 +65,14 @@ const CoinType = {
 };
 
 const UserType = {
-    id: String,
-    name: String,
+    username: String,
     ELO: Number,
     games: Array.of.GameType,
     tradingBots: Array.of.TradingBotType
 };
 
 const TradingBotType = {
-    id: String,
-    name: String
+    _id: String,
+    name: String,
+    data: String
 };

@@ -1,8 +1,12 @@
 const { Types } = require('mongoose');
+const axios = require('axios');
 
 const Game = require('../models/game.model');
 const Player = require('../models/player.model');
 const Coin = require('../models/coin.model');
+const Asset = require('../models/asset.model');
+const User = require('../models/user.model');
+const Trade = require('../models/trade.model');
 
 
 /**
@@ -13,12 +17,9 @@ const Coin = require('../models/coin.model');
  * @return User object
  */
 function validate(req, res) {
-  console.log(req.body);
   const { id } = req.body;
 
-  Game.findOne({ gameid: id }, (err, game) => {
-    console.log(err);
-    console.log(game);
+  Game.findOne({ id }, (err, game) => {
     if (err) {
       res.status(500).json({ err: 'MongoDB query error' });
       return;
@@ -54,15 +55,14 @@ function validate(req, res) {
  */
 function create(req, res) {
   const {
-    name, description, start, end,
+    id, name, description, start, end,
     playerPortfolioPublic, startingBalance, commissionValue,
     shortSelling, limitOrders, stopOrders,
     isPrivate, password
   } = req.body;
-  const gameid = req.body.id;
 
   const game = new Game({
-    gameid,
+    id,
     name,
     description,
     host: req.session.user,
@@ -78,50 +78,111 @@ function create(req, res) {
     password
   });
 
-  const player = new Player({
-    _id: new Types.ObjectId(),
-    username: req.session.user,
-    netWorth: startingBalance,
-    numTrades: 0,
-    netReturn: 0,
-    todayReturn: 0,
-    currRank: 1,
-    buyingPower: startingBalance,
-    shortReserve: 0
-  });
+  Coin.findOne({ symbol: 'USD' }, (err, usdCoin) => {
+    if (err) res.status(500).json({ err: 'MongoDB query error' });
 
-  player.save().then((newPlayer) => {
-    game.players = [newPlayer._id];
-    game.save().then((newGame) => {
-      Game.findOne({ _id: newGame._id })
-        .populate('players')
-        .exec((err, gameToReturn) => {
-          res.status(200).json({ data: gameToReturn });
+    const usdAsset = new Asset({
+      _id: new Types.ObjectId(),
+      coin: usdCoin._id,
+      amount: startingBalance
+    });
+
+    usdAsset.save().then((newAsset) => {
+      const player = new Player({
+        _id: new Types.ObjectId(),
+        username: req.session.user,
+        netWorth: startingBalance,
+        numTrades: 0,
+        netReturn: 0,
+        todayReturn: 0,
+        currRank: 1,
+        buyingPower: startingBalance,
+        shortReserve: 0,
+        portfolio: [newAsset._id]
+      });
+
+      player.save().then((newPlayer) => {
+        game.players = [newPlayer._id];
+        game.save().then((newGame) => {
+          User.findOne({ username: req.session.user }, (err2, user) => {
+            user.games.push(newGame._id);
+            user.save().then(() => {
+              Game.findOne({ _id: newGame._id })
+                .populate({ path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } })
+                .exec((err3, gameToReturn) => {
+                  if (err3) res.status(500).json({ err: 'MongoDB query error' });
+                  res.status(200).json({ data: gameToReturn });
+                });
+            });
+          });
         });
+      });
     });
   });
 }
 
 function getGame(req, res) {
-  const gameid = req.params.id;
+  const { id } = req.params;
 
-  Game.findOne({ gameid }).populate('players').exec((err, game) => {
-    if (err) {
-      res.status(500).json({ err });
-      return;
-    }
+  Game.findOne({ id })
+    .populate({
+      path: 'players',
+      populate: { path: 'portfolio transactionHistory transactionCurrent', populate: { path: 'coin symbol' } }
+    })
+    .exec((err, game) => {
+      if (err) {
+        res.status(500).json({ err });
+        return;
+      }
 
-    let player = {};
-    if (req.session.user) {
-      game.players.forEach((each) => {
-        if (each.username === req.session.user) {
-          player = each;
+      let gameToReturn = {};
+      let player = {};
+
+      if (game) {
+        gameToReturn = game;
+        if (req.session.user) {
+          game.players.forEach((each) => {
+            if (each.username === req.session.user) {
+              player = each;
+            }
+          });
         }
-      });
-    }
+      }
 
-    res.status(200).json({ game, player });
-  });
+      res.status(200).json({ game: gameToReturn, player });
+    });
+}
+
+function updateSinglePrice(li, cb) {
+  if (li.length === 0) {
+    cb(null);
+  } else if (li[0].name !== 'US Dollars') {
+    axios.get(`https://api.coinmarketcap.com/v1/ticker/${li[0].name}`).then((res) => {
+      const data = res.data[0];
+
+      Coin.findOne({ name: li[0].name }, (err, coin) => {
+        if (err) {
+          cb('MongoDB query error');
+          return;
+        }
+        coin.set({ currPrice: parseFloat(data.price_usd) });
+        coin.set({ todayReturn: parseFloat(data.percent_change_24h) });
+        coin.save((err2) => {
+          if (err2) {
+            cb('MongoDB save error');
+            return;
+          }
+          const newList = li.slice();
+          newList.shift(0);
+          updateSinglePrice(newList, cb);
+        });
+      });
+    });
+  } else {
+    const newList = li.slice();
+    newList.shift(0);
+    updateSinglePrice(newList, cb);
+  }
 }
 
 function updatePrices(cb) {
@@ -131,54 +192,287 @@ function updatePrices(cb) {
       return;
     }
 
-    coins.forEach((each) => {
-      // TODO: UPDATE PRICES
+    updateSinglePrice(coins, (err2) => {
+      cb(err2);
     });
+  });
+}
+
+function dealWithCurrentTransactions(id, cb) {
+  Game.findOne({}).exec().then((game) => {
+    const from = game.lastUpdated.getTime();
+    const d = new Date();
+    const to = d.getTime();
+    console.log(from);
+    console.log(to);
+    cb();
+  });
+}
+
+function update(id, cb) {
+  console.log(id);
+  updatePrices((err) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    dealWithCurrentTransactions(id, (err1) => {
+      cb(err1);
+    });
+  });
+}
+
+function simpleTradeHelper(side, usd, size, coinPrice, coinId, player, assetId, cb) {
+  Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
+    if (side === 'buy') {
+      usdAsset.set({ amount: usdAsset.amount - (size * coinPrice) });
+    } else {
+      usdAsset.set({ amount: usdAsset.amount + (size * coinPrice) });
+    }
+    return usdAsset.save();
+  }).then(() => {
+    const trade = new Trade({
+      _id: new Types.ObjectId(),
+      type: 'market',
+      side,
+      size,
+      price: coinPrice,
+      coin: coinId,
+      date: Date.now(),
+      GTC: false,
+      filled: true,
+      filledDate: Date.now()
+    });
+    return trade.save();
+  }).then((newTrade) => {
+    player.transactionHistory.push(newTrade._id);
+    return player.save();
+  }).then(() => {
     cb(null);
   });
 }
 
+function simpleBuy(username, symbol, size, cb) {
+  const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
+  Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
+    let usd;
+    let sym;
+    player.portfolio.forEach((each) => {
+      if (each.coin.symbol === 'USD') {
+        usd = each;
+      }
+      if (each.coin.symbol === symbol) {
+        sym = each;
+      }
+    });
+
+    if (!sym) {
+      Coin.findOne({ symbol }).exec().then((coin) => {
+        if (usd.amount < size * coin.currPrice) {
+          cb('Trying to buy more than amount of USD available');
+          return;
+        }
+
+        const asset = new Asset({
+          _id: new Types.ObjectId(),
+          coin: coin._id,
+          amount: size
+        });
+
+        asset.save((err) => {
+          player.portfolio.push(asset._id);
+          simpleTradeHelper('buy', usd, size, coin.currPrice, coin._id, player, asset._id, cb);
+        });
+      });
+    } else {
+      if (usd.amount < size * sym.coin.currPrice) {
+        cb('Trying to buy more than amount of USD available');
+        return;
+      }
+
+      Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+        asset.set({ amount: asset.amount + size });
+        return asset.save();
+      }).then((err) => {
+        simpleTradeHelper('buy', usd, size, sym.coin.currPrice, sym.coin._id, player, sym._id, cb);
+      });
+    }
+  });
+}
+
+function simpleSell(username, symbol, size, cb) {
+  const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
+  Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
+    let usd;
+    let sym;
+    player.portfolio.forEach((each) => {
+      if (each.coin.symbol === 'USD') {
+        usd = each;
+      }
+      if (each.coin.symbol === symbol) {
+        sym = each;
+      }
+    });
+
+    if (!sym || sym.amount < size) {
+      cb('Not enough coin to sell');
+      return;
+    }
+
+    Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+      if (asset.amount - size === 0) {
+        const index = player.portfolio.indexOf(asset._id);
+        player.portfolio.splice(index, 1);
+        return Asset.remove({ _id: asset._id });
+      }
+
+      asset.set({ amount: asset.amount - size });
+      return asset.save();
+    }).then((err) => {
+      simpleTradeHelper('sell', usd, size, sym.coin.currPrice, sym.coin._id, player, sym._id, cb);
+    });
+  });
+}
+
+function futureTrade(type, side, username, price, symbol, size, GTC, cb) {
+  const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
+  Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
+    let usd;
+    let sym;
+    player.portfolio.forEach((each) => {
+      if (each.coin.symbol === 'USD') {
+        usd = each;
+      }
+      if (each.coin.symbol === symbol) {
+        sym = each;
+      }
+    });
+
+    let coinId;
+    Coin.findOne({ symbol }).exec().then((coin) => {
+      coinId = coin._id;
+
+      if (side === 'sell' && (!sym || sym.amount < size)) {
+        cb('Not enough coin to sell');
+        return;
+      }
+
+      if (side === 'buy' && (usd.amount < size * price)) {
+        cb('Trying to buy more than amount of USD available');
+        return;
+      }
+
+      if (side === 'buy') {
+        return Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
+          usdAsset.set({ amount: usdAsset.amount - (size * price) });
+          return usdAsset.save();
+        });
+      } else {
+        return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+          if (asset.amount - size === 0) {
+            const index = player.portfolio.indexOf(asset._id);
+            player.portfolio.splice(index, 1);
+            return Asset.remove({ _id: asset._id });
+          }
+
+          asset.set({ amount: asset.amount - size });
+          return asset.save();
+        })
+      }
+    }).then((asset) => {
+      const trade = new Trade({
+        _id: new Types.ObjectId(),
+        type,
+        side,
+        size,
+        price,
+        coin: coinId,
+        date: Date.now(),
+        GTC,
+        filled: false
+      });
+      return trade.save();
+    }).then((newTrade) => {
+      player.transactionCurrent.push(newTrade._id);
+      return player.save();
+    }).then(() => {
+      cb(null);
+    });
+  });
+}
+
 function placeOrder(req, res) {
+  console.log(req.body);
   const {
-    type, side, size, price, symbol, date, GTC, filled
+    type, side, size, symbol, date, GTC, gameId, playerId, price
   } = req.body;
 
-  if (!['market', 'short', 'limit'].includes(type) ||
+  if (!['market', 'short', 'limit', 'stop'].includes(type) ||
       !['buy', 'sell'].includes(side)) {
     // Wrong arguments
     res.status(400).json({ error: 'Wrong arguments' });
     return;
   }
 
-  updatePrices((err) => {
+  update(gameId, (err) => {
     if (err) {
       res.status(500).json({ error: err });
       return;
     }
 
+    if (type === 'market' && side === 'buy') {
+      // Regular buy
+      simpleBuy(playerId, symbol, size, (err1) => {
+        if (err1) {
+          res.status(400).json({ err: err1 });
+        } else {
+          res.status(200).json({ success: true });
+        }
+      });
+    } else if (type === 'market' && side === 'sell') {
+      // Regular sell
+      simpleSell(playerId, symbol, size, (err1) => {
+        if (err1) {
+          res.status(400).json({ err: err1 });
+        } else {
+          res.status(200).json({ success: true });
+        }
+      });
+    } else if (type === 'short' && side === 'buy') {
+      // Short buying
+    } else if (type === 'short' && side === 'sell') {
+      // Short selling
+    } else if (type === 'limit' || type === 'stop') {
+      // Limit buy / sell or stop buy / sell
+      futureTrade(type, side, playerId, price, symbol, size, GTC, (err1 => {
+        if (err1) {
+          res.status(400).json({ err: err1 });
+        } else {
+          res.status(200).json({ success: true });
+        }
+      }));
+    } else {
+      // Wrong argument
+      res.status(400).json({ error: 'Wrong arguments' });
+    }
   });
+}
 
-  if (type === 'market' && side === 'buy') {
-    // Regular buy
-  } else if (type === 'market' && side === 'sell') {
-    // Regular sell
-  } else if (type === 'short' && side === 'buy') {
-    // Short buying
-  } else if (type === 'short' && side === 'sell') {
-    // Short selling
-  } else if (type === 'limit' && side === 'buy') {
-    // Limit buying
-  } else if (type === 'limit' && side === 'sell') {
-    // Limit selling
-  } else {
-    // Wrong argument
-    res.status(400).json({ error: 'Wrong arguments' });
-  }
+function cancelOrder(req, res) {
+  const { id } = req.query;
+}
+
+function getAll(req, res) {
+  Game.find({}).populate('players').exec().then((games) => {
+    res.status(200).json({ games });
+  });
 }
 
 module.exports = {
   validate,
   create,
   getGame,
-  placeOrder
+  placeOrder,
+  cancelOrder,
+  getAll
 };

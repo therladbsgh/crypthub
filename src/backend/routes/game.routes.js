@@ -37,4 +37,8 @@ router.route('/get/:id').get(GameController.getGame);
 
 router.route('/placeorder').post(GameController.placeOrder);
 
+router.route('/cancelorder').get(GameController.cancelOrder);
+
+router.route('/getall').get(GameController.getAll);
+
 module.exports = router;
