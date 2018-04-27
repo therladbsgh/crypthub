@@ -282,10 +282,8 @@ module.exports = {
   logout,
   authenticate,
   getUser,
-
   resendToken,
-  confirmToken
-
+  confirmToken,
   ensureAuthenticated
 
 };
