@@ -13,6 +13,7 @@ class GamePage extends Component {
             game: {},
             thisPlayer: {},
             usernameUser: '',
+            coins: [],
             hasMounted: false
         };
     }
@@ -26,11 +27,19 @@ class GamePage extends Component {
             UserBackend.getUsername()
             .then(resUser => {
                 console.log('success! ', resUser);
-                this.setState({
-                    game: resGame.game,
-                    thisPlayer: resGame.player,
-                    usernameUser: resUser.username,
-                    hasMounted: true
+                GameBackend.getCoins()
+                .then(resCoins => {
+                    console.log('success! ', resCoins);
+                    this.setState({
+                        game: resGame.game,
+                        thisPlayer: resGame.player,
+                        usernameUser: resUser.username,
+                        coins: resCoins.coins,
+                        hasMounted: true
+                    });
+                }, ({ err }) => {
+                    console.log('error! ', err);
+                    alert(`Error: ${err}`);
                 });
             }, ({ err }) => {
                 console.log('error! ', err);
@@ -43,7 +52,7 @@ class GamePage extends Component {
 	}
 
   	render() {
-        const { game, thisPlayer, usernameUser, hasMounted } = this.state;
+        const { game, thisPlayer, usernameUser, coins, hasMounted } = this.state;
         const { id, name, players, playerPortfolioPublic, isPrivate, completed } = game;
         const { username } = thisPlayer;
 
@@ -114,7 +123,7 @@ class GamePage extends Component {
                 [<Header key='1' as='h1'>Game Name</Header>,
                 <div key='3' className='ui grid'>
                     <div className='three wide column'>
-                        <TradeCard game={game} playerId={thisPlayer._id} />
+                        <TradeCard game={game} playerId={thisPlayer._id} coins={coins} />
                     </div>
                     <Tab className='thirteen wide column' panes={panes} renderActiveOnly={false} />
                 </div>]}
