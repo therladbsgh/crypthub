@@ -20,7 +20,7 @@ const GameSchema = new Schema({
   },
   created: {
     type: Date,
-    default: Date.now
+    required: true
   },
   start: {
     type: Date,
@@ -56,7 +56,7 @@ const GameSchema = new Schema({
   },
   lastUpdated: {
     type: Date,
-    default: Date.now
+    required: true
   },
   completed: {
     type: Boolean,

@@ -19,7 +19,7 @@ export default class GamePortfolio extends Component {
 	}
 	
 	render() {
-		const { player, completed } = this.props;
+		const { gameId, player, completed } = this.props;
 		const { history } = this.state;
 
 		return (
@@ -31,7 +31,7 @@ export default class GamePortfolio extends Component {
 					<Button toggle active={!history} onClick={() => this.setHistory(false)}>Current Orders</Button>
 					<Button toggle active={history} onClick={() => this.setHistory(true)}>History</Button>					
 				</Button.Group>
-				<Transactions transactions={history ? player.transactionHistory : player.transactionCurrent} current={!history} />
+				<Transactions gameId={gameId} playerId={player._id} transactions={history ? player.transactionHistory : player.transactionCurrent} current={!history} />
 			</div>
 		);
 	}

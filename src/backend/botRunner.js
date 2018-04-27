@@ -21,9 +21,14 @@ var wrap = function(someFunction){
     //var args = [...arguments].splice(0)
     //console.log(`You're about to run a function with these arguments: \n     ${args}`)
     var time = "some time";
+    console.log("We wrapped something");
     return someFunction(...arguments, time)
   }
   return wrappedFunction
+}
+
+function getPrice(){
+	console.log("get price test");
 }
 
 function readTextFile(file)
@@ -39,6 +44,8 @@ function readTextFile(file)
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 var allText = rawFile.responseText;
+		//var allText = "console.log(\"hi\")";
+		//console.log(allText);
 
 		/*var script;
 
@@ -48,7 +55,6 @@ function readTextFile(file)
 		//console.log(allText);
 
 		eval(allText);
-		console.log(eval("1+1"));
             }
         }
     }
@@ -63,7 +69,8 @@ function readTextFile(file)
 // getMemoryIndex
 // setMemoryIndex
 
-doThing = wrap(doThing)
+doThing = wrap(doThing);
+getPrice = wrap(getPrice);
 
 //doThing('one', {two:'two'}, 3)
 

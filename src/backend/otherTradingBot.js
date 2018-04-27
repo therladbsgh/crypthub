@@ -1,5 +1,5 @@
 
-console.log("hi);
+console.log("hi");
 //This is what a bot would look like
 
 if (getPrice('BTC') > 10) {
