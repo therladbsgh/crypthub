@@ -463,28 +463,43 @@ function cancelOrder(req, res) {
   let usdAsset;
   let symAsset;
   Player.findOne({ _id: playerId }).populate(populatePath).exec().then((player) => {
-    const index = player.transactionCurrent.indexOf(tradeId);
-    player.transactionCurrent.splice(index, 1);
-
     let sym;
+    let coinId;
+    let size;
     player.transactionCurrent.forEach((trade) => {
       if (trade._id.toString() === tradeId) {
         sym = trade.coin.symbol;
+        coinId = trade.coin._id;
+        size = trade.size;
       }
     });
 
+    const index = player.transactionCurrent.indexOf(tradeId);
+    player.transactionCurrent.splice(index, 1);
+
     player.portfolio.forEach((each) => {
       if (each.coin.symbol === 'USD') {
-        console.log(each);
         usdAsset = each._id;
       }
       if (each.coin.symbol === sym) {
-        console.log(each);
         symAsset = each._id;
       }
     });
 
+    let asset;
+    if (!symAsset) {
 
+      asset = new Asset({
+        _id: new Types.ObjectId(),
+        coin: coinId,
+        amount: 0
+      });
+      symAsset = asset._id;
+      player.portfolio.push(asset._id);
+      return asset.save().then(() => {
+        player.save();
+      });
+    }
     return player.save();
   }).then(() => {
     return Trade.findOne({ _id: tradeId }).populate('coin');
