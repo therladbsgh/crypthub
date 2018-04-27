@@ -180,7 +180,7 @@ class Login extends Component {
                         <Message
                             success
                             header='Email Sent'
-                            content='An email with instructions on resetting your password should appear in your inbox shortly.'
+                            content='An email with details on your password should appear in your inbox shortly.'
                         />
                         <Message
                             error
