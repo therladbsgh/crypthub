@@ -50,7 +50,9 @@ function signup(req, res) {
       return;
     }
 
+    User.findOne({email}, ()=>{
 
+    });
 
 
 
@@ -69,7 +71,7 @@ function signup(req, res) {
       
 
       var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
-      console.log(token);
+      
       
       token.save(function (err){
         if (err){
@@ -122,7 +124,7 @@ function login(req, res) {
 
    
     if (!user.isVerified){
-      res.status(401).send({ err: 'not-verified', field: 'email'});
+      res.status(401).send({ err: 'This user is not verified, please verify your account', field: 'email'});
       return;
     } 
        
@@ -184,16 +186,16 @@ function confirmToken (req, res, next) {
     Token.findOne({ token: newToken}, function (err, token) {
 
       
-        if (!token) return res.status(400).send({ err: 'not-verified', field: 'We were unable to find a valid token. Your token my have expired.' });
-        console.log('made it');
-        // If we found a token, find a matching user
+        if (!token) return res.status(400).send({ err: 'We were unable to find a valid token. Your token my have expired.', field: 'not-verified' });
+        
+        
         User.findOne({ username: token.username }, function (err, user) {
             if (!user) return res.status(400).send({ err: 'Token not found', field: 'Token' });
             if (user.isVerified) return res.status(400).send({ err: 'already-verified', field: 'User' });
  
-            // Verify and save the user
+      
             user.isVerified = true;
-            console.log(user.isVerified);
+           
 
             user.save(function (err) {
                 if (err) { return res.status(500).send({ err: 'MongoDB Server could not save user' }); }
