@@ -1,5 +1,6 @@
 // Responds to API calls
 module.exports = api
+var tixPrice = require('./tixPrice');
 
 // Requests have the following things
 // 'uid'
@@ -32,6 +33,7 @@ function api(request, response) {
   } else if (request.body.action == 'get info') {
     console.log('informing stuff');
     //send user what stocks they own
+    tixPrice(request.body.ticker, function() { console.log("Hello") } );
     reply = 'informed you\n';
   } 
 
