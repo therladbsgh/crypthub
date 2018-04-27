@@ -50,10 +50,6 @@ function signup(req, res) {
       return;
     }
 
-    User.findOne({email}, ()=>{
-
-    });
-
 
 
     const newUser = new User();
@@ -220,7 +216,7 @@ function resendToken(req, res, next) {
     var email = req.query.email;
   
  
-    User.findOne({ email: req.query.email }, function (err, user) {
+    User.findOne({ email: email }, function (err, user) {
         if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.' });
         if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.' });
  
