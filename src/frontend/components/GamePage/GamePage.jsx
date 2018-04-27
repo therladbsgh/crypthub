@@ -34,7 +34,7 @@ class GamePage extends Component {
                         game: resGame.game,
                         thisPlayer: resGame.player,
                         usernameUser: resUser.username,
-                        coins: resCoins.coins,
+                        coins: resCoins.data,
                         hasMounted: true
                     });
                 }, ({ err }) => {
@@ -58,7 +58,6 @@ class GamePage extends Component {
 
         if (!hasMounted) return null;
 
-        // TODO: logic for checking if player is in the game and if they are the host
         const inGame = !_.isEmpty(thisPlayer);
         const isHost = game.host === username;
 
@@ -103,6 +102,7 @@ class GamePage extends Component {
         ];
 
 		return (
+            hasMounted &&
 			<div>
 				<Navbar username={usernameUser} />
                 {(completed || !inGame) ?
