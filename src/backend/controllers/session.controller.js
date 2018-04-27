@@ -52,8 +52,6 @@ function signup(req, res) {
 
 
 
-
-
     const newUser = new User();
 
     newUser.username = username;
@@ -69,7 +67,7 @@ function signup(req, res) {
       
 
       var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
-      console.log(token);
+      
       
       token.save(function (err){
         if (err){
@@ -122,7 +120,7 @@ function login(req, res) {
 
    
     if (!user.isVerified){
-      res.status(401).send({ err: 'not-verified', field: 'email'});
+      res.status(401).send({ err: 'This user is not verified, please verify your account', field: 'email'});
       return;
     } 
        
@@ -184,16 +182,16 @@ function confirmToken (req, res, next) {
     Token.findOne({ token: newToken}, function (err, token) {
 
       
-        if (!token) return res.status(400).send({ err: 'not-verified', field: 'We were unable to find a valid token. Your token my have expired.' });
-        console.log('made it');
-        // If we found a token, find a matching user
+        if (!token) return res.status(400).send({ err: 'We were unable to find a valid token. Your token my have expired.', field: 'not-verified' });
+        
+        
         User.findOne({ username: token.username }, function (err, user) {
             if (!user) return res.status(400).send({ err: 'Token not found', field: 'Token' });
-            if (user.isVerified) return res.status(400).send({ err: 'already-verified', field: 'User' });
+            if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified, please log in', field: 'User' });
  
-            // Verify and save the user
+      
             user.isVerified = true;
-            console.log(user.isVerified);
+           
 
             user.save(function (err) {
                 if (err) { return res.status(500).send({ err: 'MongoDB Server could not save user' }); }
@@ -215,25 +213,25 @@ function confirmToken (req, res, next) {
 function resendToken(req, res, next) {
     
  
-      
+    var email = req.query.email;
   
  
-    User.findOne({ email: req.body.email }, function (err, user) {
-        if (!user) return res.status(400).send({ msg: 'We were unable to find a user with that email.' });
-        if (user.isVerified) return res.status(400).send({ msg: 'This account has already been verified. Please log in.' });
+    User.findOne({ email: email }, function (err, user) {
+        if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.' });
+        if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.' });
  
         // Create a verification token, save it, and send email
         var token = new Token({ username: user.username, token: crypto.randomBytes(16).toString('hex') });
  
         // Save the token
         token.save(function (err) {
-            if (err) { return res.status(500).send({ msg: err.message }); }
+            if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save Token'  }); }
  
             // Send the email
               var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
           });
         var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
-        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=email\n'};
+        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email='+ email + '\n'};
             transporter.sendMail(mailOptions, function (err) {
                 if (err) { return res.status(500).send({ msg: err.message }); }
                 res.status(200).send('A verification email has been sent to ' + user.email + '.');
