@@ -458,12 +458,48 @@ function placeOrder(req, res) {
 
 function cancelOrder(req, res) {
   const { gameId, playerId, tradeId } = req.body;
-  Player.findOne({ _id: playerId }).exec().then((player) => {
+  const populatePath = { path: 'portfolio transactionCurrent', populate: { path: 'coin' } };
+
+  let usdAsset;
+  let symAsset;
+  Player.findOne({ _id: playerId }).populate(populatePath).exec().then((player) => {
     const index = player.transactionCurrent.indexOf(tradeId);
     player.transactionCurrent.splice(index, 1);
+
+    let sym;
+    player.transactionCurrent.forEach((trade) => {
+      if (trade._id.toString() === tradeId) {
+        sym = trade.coin.symbol;
+      }
+    });
+
+    player.portfolio.forEach((each) => {
+      if (each.coin.symbol === 'USD') {
+        console.log(each);
+        usdAsset = each._id;
+      }
+      if (each.coin.symbol === sym) {
+        console.log(each);
+        symAsset = each._id;
+      }
+    });
+
+
     return player.save();
   }).then(() => {
-    return Trade.remove({ _id: tradeId });
+    return Trade.findOne({ _id: tradeId }).populate('coin');
+  }).then((trade) => {
+    if (trade.side === 'buy') {
+      return Asset.findOne({ _id: usdAsset }).exec().then((asset) => {
+        asset.set({ amount: asset.amount + (trade.size * trade.price) });
+        return asset.save();
+      });
+    } else {
+      return Asset.findOne({ _id: symAsset }).exec().then((asset) => {
+        asset.set({ amount: asset.amount + trade.size });
+        return asset.save();
+      });
+    }
   }).then(() => {
     res.status(200).json({ success: true });
   });
