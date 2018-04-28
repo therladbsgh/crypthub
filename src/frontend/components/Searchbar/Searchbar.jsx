@@ -23,7 +23,7 @@ export default class Searchbar extends Component {
 
   	componentWillMount() {
 		this.resetComponent();
-  	}
+	}
 
 	resetComponent() {
 		const { handleResults } = this.props;
