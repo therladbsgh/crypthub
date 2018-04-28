@@ -23,7 +23,7 @@ class CreateGame extends Component {
 				playerPortfolioPublic: true,
 				startingBalance: '',
 				commissionValue: '',
-				shortSelling: true,
+				shortSelling: false,
 				limitOrders: true,
 				stopOrders: true,
 				lastUpdated: null,

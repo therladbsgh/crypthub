@@ -28,4 +28,5 @@ export { default as GameTradingBots } from './GameTradingBots';
 export { default as VerifyEmail } from './VerifyEmail';
 export { default as UserTradingBots } from './UserTradingBots';
 export { default as TradingBotIDE } from './TradingBotIDE';
+export { default as DeleteBotModal } from './DeleteBotModal';
 export { default as PageNotFound } from './PageNotFound';

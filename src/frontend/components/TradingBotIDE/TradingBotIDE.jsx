@@ -7,6 +7,7 @@ import 'brace/theme/textmate';
 import 'brace/ext/language_tools';
 import AceEditor from 'react-ace';
 import { UserBackend } from 'endpoints';
+import { DeleteBotModal } from 'components';
 import { TradingBotIDEStyle as styles } from 'styles';
 
 const tradingBots = [
@@ -148,7 +149,8 @@ export default class UserTradingBots extends Component {
                     </Form.Group>
                     <Message success header='Success!' content={`${name} has been saved.`} />
 					<Message error header='Error' content={err} />
-                    <Button icon='save' type='submit' positive disabled={!name} content={`Save ${name}`} />
+                    <Button icon='save' type='submit' positive disabled={!name || running} content={`Save ${name}`} />
+                    <DeleteBotModal botId={botId} botName={name} disabled={!name || running} />
                     <Button icon='play' type='button' primary disabled={!name || running} onClick={this.runBot} content={`Run ${name}`} />
                     <Button icon='stop' type='button' negative disabled={!name || !running} onClick={this.stopBot} content={`Stop ${name}`} />
                 </Form>

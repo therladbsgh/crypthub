@@ -17,4 +17,5 @@ export { default as InviteModalStyle } from './invitemodal';
 export { default as UserTradingBotsStyle } from './usertradingbots';
 export { default as TradingBotIDEStyle } from './tradingbotide';
 export { default as GameTradingBotsStyle } from './gametradingbots';
+export { default as DeleteBotModalStyle } from './deletebotmodal';
 export { default as SharedStyle } from './shared';
