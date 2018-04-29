@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { Card, Header, Table } from 'semantic-ui-react';
+import { Card, Header, Table, Form } from 'semantic-ui-react';
 import { TradeModal, Searchbar } from 'components';
 import { SharedStyle as styles } from 'styles';
 
@@ -45,8 +45,13 @@ export default class TradeCard extends Component {
 		return (
 			<Card>
 				<Card.Content className={styles.center}>
-					<Header as='h2'>Search/Trade a Coin</Header>
-					<Searchbar input={{ fluid: true }} placeholder='Coin name or symbol' source={coins} field='name' searchFields={['name', 'symbol']} handleResults={this.handleResults} open={false} />
+					<Header as='h2'>Trade a Coin</Header>
+					<Form>
+						<Form.Field>
+							<label className={styles.left}>Search for a Coin</label>
+							<Searchbar input={{ fluid: true }} placeholder='Coin name or symbol' source={coins} field='name' searchFields={['name', 'symbol']} handleResults={this.handleResults} open={false} />
+						</Form.Field>
+					</Form>
 					{!_.isEmpty(results) ?
 						<Table striped>
 							<Table.Body>

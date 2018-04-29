@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { Modal, Button, Message, Dropdown } from 'semantic-ui-react';
+import { Modal, Button, Message, Dropdown, Form } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { InviteModalStyle as styles } from 'styles';
 import { UserMocks } from 'mocks';
@@ -82,7 +82,12 @@ export default class InviteModal extends Component {
             <Modal trigger={<Button icon='mail outline' positive content='Invite Players' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
                 <Modal.Header id={styles.invite}>Invite Players</Modal.Header>
                     <Modal.Content>
-                        <Dropdown placeholder='Users to invite' multiple search selection options={_.map(users, u => ({ text: u.name, value: u.id }))} value={usernames} onChange={this.handleChange} />
+                        <Form>
+                            <Form.Field>
+                                <label>Users to Invite</label>
+                                <Dropdown placeholder='Usernames' multiple search selection options={_.map(users, u => ({ text: u.name, value: u.id }))} value={usernames} onChange={this.handleChange} />
+                            </Form.Field>
+                        </Form>
                         {err && <Message error header='Error' content={err} />}
                     </Modal.Content>
                 <Modal.Actions>
