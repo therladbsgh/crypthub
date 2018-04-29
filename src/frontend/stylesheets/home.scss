@@ -1,5 +1,40 @@
-$clr: red;
+.container {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #F4F4F4;
+    background: url("img/home-background.jpg") no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
 
-#homeid {
-    color: $clr;
+.main {
+    width: 50%;
+    margin-top: 50px;
+    margin-left: 10%;
+}
+
+#preText {
+    font-size: 1em;
+    text-transform: uppercase;
+    color: #D79529;
+}
+
+#headerText {
+    margin: 10px 0 10px 0;
+    font-size: 3em;
+    color: white;
+}
+
+#blurbText {
+    display: inline-block;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    line-height: 25px;
+    color: #C3C4C9;
 }

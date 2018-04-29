@@ -8,7 +8,7 @@
 		"frontend": "webpack-dev-server --mode development --config webpack/dev.config.js --hot --open",
 		"dev": "npm run backend & npm run frontend",
 		"test": "jest",
-		"build": "webpack --mode production --config webpack/prod.config.js --display-error-details",
+		"build": "webpack --mode production --config webpack/prod.config.js --display-error-details && cp -rf img/ dist/img/",
 		"prod": "npm run build && (npm run backend & node server.js)"
 	},
 	"main": "./src/frontend/index.jsx",
