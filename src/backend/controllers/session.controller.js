@@ -155,7 +155,7 @@ function signup(req, res) {
         var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
           });
         var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
-        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=' + newUser.email + '\n'};
+        text: 'Hello,\n\n' + 'Please verify your CryptHub account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=' + newUser.email + '\n'};
         transporter.sendMail(mailoptions, function(err){
 
           if (err){
@@ -266,13 +266,13 @@ function confirmToken (req, res, next) {
     Token.findOne({ token: newToken}, function (err, token) {
 
       
-        if (!token) return res.status(400).send({ err: 'We were unable to find a valid token. Your token my have expired.', field: 'not-verified' });
+        if (!token) return res.status(400).send({ err: 'This token is invalid. Your token may have expired.', field: 'not-verified' });
         
         
         User.findOne({ username: token.username }, function (err, user) {
 
             if (!user) return res.status(400).send({ err: 'Verification token not found.', field: 'Token' });
-            if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified, please log in.', field: 'already-verified' });
+            if (user.isVerified) return res.status(400).send({ err: 'This user has already been verified. You can log in normally.', field: 'already-verified' });
  
 
       
@@ -283,7 +283,7 @@ function confirmToken (req, res, next) {
                 
                 if (err) { return res.status(500).send({ err: 'MongoDB Server could not save user' }); }
                 
-                res.status(200).send({msg: "The account has been verified. Please log in."});
+                res.status(200).send({msg: "Your account has been verified! You may now log in."});
               
             });
         });
@@ -320,7 +320,7 @@ function resendToken(req, res, next) {
               var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
           });
         var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
-        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email='+ email + '\n'};
+        text: 'Hello,\n\n' + 'Please verify your CryptHub account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email='+ email + '\n'};
             transporter.sendMail(mailOptions, function (err) {
                 if (err) { return res.status(500).send({ msg: err.message }); }
                 res.status(200).send('A verification email has been sent to ' + user.email + '.');

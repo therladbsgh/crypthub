@@ -51,7 +51,7 @@ export default class GameCard extends Component {
 					</Card.Description>
 				</Card.Content>
 				<Card.Content extra>
-					{players.length} players
+					{players.length} player{players.length > 1 && 's'}
 				</Card.Content>
 			</Card>
 		);
