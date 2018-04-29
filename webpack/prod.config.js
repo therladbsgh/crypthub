@@ -33,6 +33,7 @@ module.exports = merge(baseConfig, {
 						{
 							loader: "css-loader",
 							options: {
+								url: false,
 								modules: true,
 								importLoaders: 1,
 								localIdentName: "[name]_[local]_[hash:base64]",
