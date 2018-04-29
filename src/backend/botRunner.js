@@ -54,7 +54,20 @@ function readTextFile(file)
 		scriptFile.close();*/
 		//console.log(allText);
 
-		eval(allText);
+		var UserReturn = "Not run"
+
+		try {
+		  UserReturn = eval(allText);
+		} catch(err) {
+		  	// User code had error
+			// handle
+			console.log("error in user code");
+			UserReturn = err;
+			// We want to give this error to the user
+			// We want to disable the bot until the user resubmits it
+			// Might want to roll back trades?
+		}
+
             }
         }
     }
@@ -68,6 +81,10 @@ function readTextFile(file)
 // own
 // getMemoryIndex
 // setMemoryIndex
+
+
+// These things should return things
+// We might want to wrap these returns correctly
 
 doThing = wrap(doThing);
 getPrice = wrap(getPrice);
