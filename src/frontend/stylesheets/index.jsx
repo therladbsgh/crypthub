@@ -18,4 +18,7 @@ export { default as UserTradingBotsStyle } from './usertradingbots';
 export { default as TradingBotIDEStyle } from './tradingbotide';
 export { default as GameTradingBotsStyle } from './gametradingbots';
 export { default as DeleteBotModalStyle } from './deletebotmodal';
+export { default as LoginStyle } from './login';
+export { default as GlobalRankingsStyle } from './globalrankings';
+export { default as VerifyEmailStyle } from './verifyemail';
 export { default as SharedStyle } from './shared';

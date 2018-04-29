@@ -16,6 +16,19 @@
 .joinButton {
     display: inline;
     position: relative;
-    bottom: 3px;
+    bottom: 4px;
     left: 5px;
+}
+
+.header {
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+
+#tab {
+    margin: 0;
+}
+
+#gridPadding {
+    padding-bottom: 0;
 }

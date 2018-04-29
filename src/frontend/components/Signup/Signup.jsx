@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Header, Form, Button, Checkbox, Message, Icon } from 'semantic-ui-react';
+import { Container, Header, Form, Button, Checkbox, Message, Icon } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
-import { SignupStyle as styles } from 'styles';
+import { SignupStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
 class Signup extends Component {
 	constructor(props) {
@@ -124,42 +124,47 @@ class Signup extends Component {
 
 		return (
 			hasMounted &&
-			<div>
+			<div className={sharedStyles.container}>
 				<Navbar username={''} />
-				<Header as='h1'>Signup</Header>
-				<Form onSubmit={this.handleSubmit} loading={loading} success={success} error={!!errMsg}>
-					<Form.Field error={errField == 'username'} disabled={success}>
-						<label>Username</label>
-						<input placeholder='Username' name='username' value={username} onChange={this.handleChange} />
-					</Form.Field>
-					<Form.Field error={errField == 'email'} disabled={success}>
-						<label>Email</label>
-						<input placeholder='Email' name='email' value={email} onChange={this.handleChange} />
-					</Form.Field>
-					<Form.Field error={errField == 'password'} disabled={success}>
-						<label>Password</label>
-						<input type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
-					</Form.Field>
-					<Form.Field error={errField == 'password'} disabled={success}>
-						<label>Confirm Password</label>
-						<input type='password' placeholder='Confirm Password' name='passwordConfirm' value={passwordConfirm} onChange={this.handleChange} />
-					</Form.Field>
-					<Form.Field error={errField == 'agree'} disabled={success}>
-						<Checkbox label='I agree to the Terms and Conditions' name='agree' checked={agree} onChange={(e, data) => this.handleChange({ target: data })} />
-					</Form.Field>
-					<Message
-						success
-						header='Signup Successful!'
-						content="Check your email for a verification link."
-					/>
-					<Message
-						error
-						header='Error'
-						content={errMsg}
-					/>
-					<Button icon='signup' primary type='submit' disabled={success} content='Submit' />
-				</Form>
-				<Link to='/login'>Already have an account?</Link>
+				<Container id={styles.container}>
+					<Header as='h1' textAlign='center'>Signup</Header>
+					<Form onSubmit={this.handleSubmit} loading={loading} success={success} error={!!errMsg}>
+						<Form.Field error={errField == 'username'} disabled={success}>
+							<label>Username</label>
+							<input placeholder='Username' name='username' value={username} onChange={this.handleChange} />
+						</Form.Field>
+						<Form.Field error={errField == 'email'} disabled={success}>
+							<label>Email</label>
+							<input placeholder='Email' name='email' value={email} onChange={this.handleChange} />
+						</Form.Field>
+						<Form.Field error={errField == 'password'} disabled={success}>
+							<label>Password</label>
+							<input type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
+						</Form.Field>
+						<Form.Field error={errField == 'password'} disabled={success}>
+							<label>Confirm Password</label>
+							<input type='password' placeholder='Confirm Password' name='passwordConfirm' value={passwordConfirm} onChange={this.handleChange} />
+						</Form.Field>
+						<Form.Field error={errField == 'agree'} disabled={success}>
+							<Checkbox label='I agree to the Terms and Conditions' name='agree' checked={agree} onChange={(e, data) => this.handleChange({ target: data })} />
+						</Form.Field>
+						<Message
+							success
+							header='Signup Successful!'
+							content="Check your email for a verification link."
+						/>
+						<Message
+							error
+							header='Error'
+							content={errMsg}
+						/>
+						<Button icon='signup' primary type='submit' fluid disabled={success} content='Submit' />
+					</Form>
+					<br />
+					<div className={sharedStyles.center}>
+						<Link to='/login'>Already have an account?</Link>
+					</div>
+				</Container>
 			</div>
 		);
   	}

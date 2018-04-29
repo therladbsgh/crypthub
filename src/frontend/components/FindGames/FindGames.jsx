@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import date from 'date-and-time';
-import { Tab, Header, Dropdown, Checkbox } from 'semantic-ui-react';
+import { Tab, Header, Dropdown, Checkbox, Form } from 'semantic-ui-react';
 import { Searchbar, GameCard } from 'components';
 import { FindGamesStyle as styles } from 'styles';
 
@@ -100,8 +100,13 @@ class FindGames extends Component {
 		
 		return (
 			<div>
-				<Header as='h2'>Search for a Game</Header>
-				<Searchbar placeholder='Game name' source={this.props.games} field='name' searchFields={['name']} resultRenderer={({ name }) => name} onResultSelect={(e, d) => this.props.history.push(`/game/${d.result.id}`)} />
+				<Header as='h2'>Find a Game</Header>
+				<Form>
+					<Form.Field className={styles.search}>
+						<label>Search for a Game</label>
+						<Searchbar placeholder='Game name' source={this.props.games} field='name' searchFields={['name']} resultRenderer={({ name }) => name} onResultSelect={(e, d) => this.props.history.push(`/game/${d.result.id}`)} />
+					</Form.Field>
+				</Form>
 				<Header as='h2'>Current Games</Header>
 				<label id={styles.sortLabel}>Sort By</label>
 				<Dropdown placeholder='Sort By' selection options={sortOptions} value={this.state.sortValue} onChange={this.handleSortChange} />

@@ -2,9 +2,10 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
-import { Modal, Button, Message, Icon } from 'semantic-ui-react';
+import { Container, Modal, Button, Message, Icon } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
+import { VerifyEmailStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
 class VerifyEmail extends Component {
     constructor(props) {
@@ -78,12 +79,14 @@ class VerifyEmail extends Component {
 
         return (
             hasMounted &&
-            <div>
+            <div className={sharedStyles.container}>
                 <Navbar username={username} />
-                {(err || success) &&
-                <Message error={!!err} success={!!success} header={err ? 'Error' : 'Success'} content={err || success} />}
-                {!success && !alreadyVerified &&
-                <Button icon='mail outline' loading={loading} primary onClick={this.handleSubmit} content='Resend Verification Email' />}
+                <Container id={styles.container}>
+                    {(err || success) &&
+                    <Message error={!!err} success={!!success} header={err ? 'Error' : 'Success'} content={err || success} />}
+                    {!success && !alreadyVerified &&
+                    <Button icon='mail outline' loading={loading} primary onClick={this.handleSubmit} fluid content='Resend Verification Email' />}
+                </Container>
             </div>
         );
     }

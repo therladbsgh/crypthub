@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Header, Tab, Button } from 'semantic-ui-react';
+import { Header, Tab, Button, Grid } from 'semantic-ui-react';
 import { GameBackend, UserBackend } from 'endpoints';
 import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard, JoinModal, GameTradingBots } from 'components';
 import { GamePageStyle as styles, SharedStyle as sharedStyles } from 'styles'; 
@@ -62,32 +62,32 @@ class GamePage extends Component {
         const isHost = game.host === username;
 
         const GameOverviewPane = (
-            <Tab.Pane key='tab1'>
+            <Tab.Pane id={styles.tab} key='tab1'>
                 <GameOverview game={game} thisPlayer={thisPlayer} completed={completed} inGame={inGame} />
             </Tab.Pane>
         );
         const GameTradingBotsPane = !completed && inGame && (
-            <Tab.Pane key='tab2'>
+            <Tab.Pane id={styles.tab} key='tab2'>
                 <GameTradingBots gameId={id} player={thisPlayer} />
             </Tab.Pane>
         );
         const GamePortfolioPane = inGame && (
-            <Tab.Pane key='tab3'>
+            <Tab.Pane id={styles.tab} key='tab3'>
                 <GamePortfolio gameId={id} player={thisPlayer} completed={completed} />
             </Tab.Pane>
         );
         const GameComparePane = playerPortfolioPublic && (
-            <Tab.Pane key='tab4'>
+            <Tab.Pane id={styles.tab} key='tab4'>
                 <GameCompare players={players} completed={completed} />
             </Tab.Pane>
         );
         const GameRankingsPane = (
-            <Tab.Pane key='tab5'>
+            <Tab.Pane id={styles.tab} key='tab5'>
                 <GameRankings players={players} />
             </Tab.Pane>
         );
         const GameSettingsPane = (
-            <Tab.Pane key='tab6'>
+            <Tab.Pane id={styles.tab} key='tab6'>
                 <GameSettings game={game} inGame={inGame} isHost={isHost} username={username} />
             </Tab.Pane>
         );
@@ -103,10 +103,10 @@ class GamePage extends Component {
 
 		return (
             hasMounted &&
-			<div>
+			<div className={sharedStyles.containerNoMargin}>
 				<Navbar username={usernameUser} />
                 {(completed || !inGame) ?
-                [<div key='1' className={styles.completedHeader}>
+                [<div key='1' className={`${styles.completedHeader} ${styles.header}`}>
                     <Header className={sharedStyles.inline} as='h1'>{name}</Header>
                     {completed ?
                     <span className={styles.completedTag}>Completed</span>
@@ -120,13 +120,17 @@ class GamePage extends Component {
                 </div>,
                 <Tab key='2' className='thirteen wide column' panes={panes} renderActiveOnly={false} />]
                 :
-                [<Header key='1' as='h1'>Game Name</Header>,
-                <div key='3' className='ui grid'>
-                    <div className='three wide column'>
+                [<div key='1' className={styles.header}>
+                    <Header as='h1'>{name}</Header>
+                </div>,
+                <Grid key='3'>
+                    <Grid.Column width={3} id={styles.gridPadding}>
                         <TradeCard game={game} playerId={thisPlayer._id} coins={coins} />
-                    </div>
-                    <Tab className='thirteen wide column' panes={panes} renderActiveOnly={false} />
-                </div>]}
+                    </Grid.Column>
+                    <Grid.Column width={13} id={styles.gridPadding}>
+                        <Tab className='thirteen wide column' panes={panes} renderActiveOnly={false} />
+                    </Grid.Column>
+                </Grid>]}
 			</div>
 		);
   	}

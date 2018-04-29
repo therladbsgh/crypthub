@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Header, Form, Button, Message, Icon } from 'semantic-ui-react';
+import { Container, Header, Form, Button, Message, Icon } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar } from 'components';
-import { SharedStyles as sharedStyles } from 'styles';
+import { LoginStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
 class Login extends Component {
 	constructor(props) {
@@ -145,11 +145,11 @@ class Login extends Component {
         
 		return (
             hasMounted &&
-			<div style={sharedStyles}>
+			<div className={sharedStyles.container}>
 				<Navbar username={''} />
                 {!forgot ?  
-                <div>
-                    <Header as='h1'>Login</Header>
+                <Container id={styles.container}>
+                    <Header as='h1' textAlign='center'>Login</Header>
                     <Form onSubmit={this.handleSubmitLogin} loading={loading} error={!!errMsg}>
                         <Form.Field error={errField == 'username' || errField == 'email'}>
                             <label>Email or Username</label>
@@ -164,14 +164,17 @@ class Login extends Component {
                             header='Error'
                             content={errMsg}
                         />
-                        <Button icon='sign in' primary type='submit' content='Log In' />
+                        <Button icon='sign in' primary fluid type='submit' content='Log In' />
                     </Form>
-                    <Link to='/signup'>Don't have an account?</Link><br />
-                    <a onClick={this.toggleForgot}>Forgot your password?</a>
-                </div>
+                    <br />
+                    <div className={sharedStyles.center}>
+                        <Link to='/signup'>Don't have an account?</Link><br />
+                        <a onClick={this.toggleForgot}>Forgot your password?</a>
+                    </div>
+                </Container>
                 :
-                <div>
-                    <Header as='h1'>Request Password Reset</Header>
+                <Container id={styles.container}>
+                    <Header as='h1' textAlign='center'>Request Password Reset</Header>
                     <Form onSubmit={this.handleSubmitForgot} loading={loading} success={success} error={!!errMsg}>
                         <Form.Field disabled={success} error={errField == 'email'}>
                             <label>Email</label>
@@ -187,10 +190,13 @@ class Login extends Component {
                             header='Error'
                             content={errMsg}
                         />
-                        <Button icon='mail outline' primary type='submit' disabled={success} content='Request Reset' />
+                        <Button icon='mail outline' primary fluid type='submit' disabled={success} content='Request Reset' />
                     </Form>
-                    <a onClick={this.toggleForgot}>Back to Login</a>
-                </div>}
+                    <br />
+                    <div className={sharedStyles.center}>
+                        <a onClick={this.toggleForgot}>Back to Login</a>
+                    </div>
+                </Container>}
 			</div>
 		);
   	}

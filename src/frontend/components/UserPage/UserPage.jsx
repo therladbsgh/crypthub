@@ -4,7 +4,7 @@ import { Header, Tab } from 'semantic-ui-react';
 import { UserBackend, GameBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { YourGames, FindGames, CreateGame, UserTradingBots } from 'components';
-import { UserPageStyle as styles } from 'styles';
+import { UserPageStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
 class UserPage extends Component {
     constructor(props) {
@@ -44,22 +44,22 @@ class UserPage extends Component {
         const { username, games, tradingBots } = user;
 
         const YourGamesPane = (
-            <Tab.Pane key='tab1'>
+            <Tab.Pane id={styles.tab} key='tab1'>
                 <YourGames games={games} username={username} />
             </Tab.Pane>
         );
         const FindGamesPane = (
-            <Tab.Pane key='tab2'>
+            <Tab.Pane id={styles.tab} key='tab2'>
                 <FindGames games={allGames} />
             </Tab.Pane>
         );
         const CreateGamePane = (
-            <Tab.Pane key='tab3'>
+            <Tab.Pane id={styles.tab} key='tab3'>
                 <CreateGame />
             </Tab.Pane>
         );
         const TradingBotsPane = (
-            <Tab.Pane key='tab4'>
+            <Tab.Pane id={styles.tab} key='tab4'>
                 <UserTradingBots tradingBots={tradingBots} />
             </Tab.Pane>
         );
@@ -75,10 +75,12 @@ class UserPage extends Component {
 
 		return (
             hasMounted &&
-			<div>
+			<div className={sharedStyles.containerNoMargin}>
 				<Navbar username={username} />
-                <p className={styles.welcome}>Welcome back,</p>
-				<Header id={styles.username} as='h1'>{username}</Header>
+                <div className={styles.header}>
+                    <p className={styles.welcome}>Welcome back</p>
+                    <Header id={styles.username} as='h1'>{username}</Header>
+                </div>
 				<Tab panes={panes} renderActiveOnly={false} defaultActiveIndex={propsState ? propsState.openTab : 0} />
 			</div>
 		);

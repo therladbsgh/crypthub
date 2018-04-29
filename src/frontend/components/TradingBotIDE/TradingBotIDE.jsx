@@ -116,7 +116,7 @@ export default class UserTradingBots extends Component {
         return (
 			<div>
                 <Form onSubmit={this.handleSave} loading={loading} error={!!err} success={submitted && !err}>
-                    <Form.Field>
+                    <Form.Field width={10}>
                         <label>Trading Bot</label>
                         <Dropdown placeholder='Trading bot to edit' name='botId' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleDropdownChange} />
                     </Form.Field>
