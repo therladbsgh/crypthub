@@ -204,10 +204,44 @@ function updatePrices(cb) {
 }
 
 function dealWithCurrentTransactions(id, cb) {
-  Game.findOne({}).exec().then((game) => {
-    const minutes = Math.ceil((Date.now() - game.lastUpdated.getTime()) / 1000);
-    console.log(minutes);
-    cb();
+  const populatePath = { path: 'players', populate: { path: 'transactionCurrent', populate: { path: 'coin' } } };
+  Game.findOne({ id }).populate(populatePath).exec().then((game) => {
+    const minutes = Math.ceil((Date.now() - game.lastUpdated.getTime()) / 60000);
+
+    Coin.get().then((coins) => {
+      const promiseLog = [];
+
+      coins.forEach((coin) => {
+        axios.get('https://min-api.cryptocompare.com/data/histominute?' +
+                  `fsym=${coin}&tsym=USD&e=CCCAGG&limit=${minutes}`).then((res) => {
+          if (res.data.Response !== 'Success') {
+            cb('History API fetch error');
+            return;
+          }
+          const data = res.data.Data.map(x => x.close);
+          data.forEach((price) => {
+            console.log(`---------${price}-----------`);
+            game.players.forEach((player) => {
+              player.transactionCurrent.forEach((trade) => {
+                if (((trade.type === 'limit' && trade.side === 'buy') ||
+                     (trade.type === 'stop' && trade.side === 'sell')) &&
+                     price <= trade.price) {
+                  console.log(`FILLED TRADE: Price ${price}, Transaction: ${trade}`);
+                  player.transactionCurrent = player.transactionCurrent.filter(each => each !== trade);
+                } else if (((trade.type === 'limit' && trade.side === 'sell') ||
+                            (trade.type === 'stop' && trade.side === 'buy')) &&
+                           price >= trade.price) {
+                  console.log(`FILLED TRADE: Price ${price}, Transaction: ${trade}`);
+                  player.transactionCurrent = player.transactionCurrent.filter(each => each !== trade);
+                }
+              });
+            });
+          });
+        });
+      });
+
+      cb();
+    });
   });
 }
 
@@ -335,9 +369,9 @@ function simpleSell(username, symbol, size, cb) {
   });
 }
 
-function futureTrade(type, side, username, price, symbol, size, GTC, cb) {
+function futureTrade(type, side, username, price, symbol, size, GTC) {
   const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
-  Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
+  return Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
     let usd;
     let sym;
     player.portfolio.forEach((each) => {
@@ -354,13 +388,11 @@ function futureTrade(type, side, username, price, symbol, size, GTC, cb) {
       coinId = coin._id;
 
       if (side === 'sell' && (!sym || sym.amount < size)) {
-        cb('Not enough coin to sell');
-        return;
+        return Promise.reject(new Error('Not enough coin to sell'));
       }
 
       if (side === 'buy' && (usd.amount < size * price)) {
-        cb('Trying to buy more than amount of USD available');
-        return;
+        return Promise.reject(new Error('Trying to buy more than amount of USD available'));
       }
 
       if (side === 'buy') {
@@ -368,19 +400,19 @@ function futureTrade(type, side, username, price, symbol, size, GTC, cb) {
           usdAsset.set({ amount: usdAsset.amount - (size * price) });
           return usdAsset.save();
         });
-      } else {
-        return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
-          if (asset.amount - size === 0) {
-            const index = player.portfolio.indexOf(asset._id);
-            player.portfolio.splice(index, 1);
-            return Asset.remove({ _id: asset._id });
-          }
-
-          asset.set({ amount: asset.amount - size });
-          return asset.save();
-        })
       }
-    }).then((asset) => {
+
+      return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+        if (asset.amount - size === 0) {
+          const index = player.portfolio.indexOf(asset._id);
+          player.portfolio.splice(index, 1);
+          return Asset.remove({ _id: asset._id });
+        }
+
+        asset.set({ amount: asset.amount - size });
+        return asset.save();
+      });
+    }).then(() => {
       const trade = new Trade({
         _id: new Types.ObjectId(),
         type,
@@ -396,8 +428,6 @@ function futureTrade(type, side, username, price, symbol, size, GTC, cb) {
     }).then((newTrade) => {
       player.transactionCurrent.push(newTrade._id);
       return player.save();
-    }).then(() => {
-      cb(null);
     });
   });
 }
@@ -405,7 +435,7 @@ function futureTrade(type, side, username, price, symbol, size, GTC, cb) {
 function placeOrder(req, res) {
   console.log(req.body);
   const {
-    type, side, size, symbol, date, GTC, gameId, playerId, price
+    type, side, size, symbol, GTC, gameId, playerId, price
   } = req.body;
 
   if (!['market', 'short', 'limit', 'stop'].includes(type) ||
@@ -445,13 +475,11 @@ function placeOrder(req, res) {
       // Short selling
     } else if (type === 'limit' || type === 'stop') {
       // Limit buy / sell or stop buy / sell
-      futureTrade(type, side, playerId, price, symbol, size, GTC, (err1 => {
-        if (err1) {
-          res.status(400).json({ err: err1 });
-        } else {
-          res.status(200).json({ success: true });
-        }
-      }));
+      futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
+        res.status(200).json({ success: true });
+      }, (err1) => {
+        res.status(400).json({ err: err1 });
+      });
     } else {
       // Wrong argument
       res.status(400).json({ error: 'Wrong arguments' });
