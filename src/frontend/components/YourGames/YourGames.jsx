@@ -3,13 +3,32 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import formatCurrency from 'format-currency';
 import date from 'date-and-time';
-import { Header, Table, Icon, Statistic } from 'semantic-ui-react';
+import { Header, Table, Icon, Statistic, Pagination } from 'semantic-ui-react';
 import { Searchbar, GameCard } from 'components';
 import { SharedStyle as sharedStyles } from 'styles';
 
+const numPerPage = 10;
+
 export default class YourGames extends Component {
+    constructor(props) {
+		super(props);
+		this.state = {
+			activePage: 1
+		};
+
+		this.handlePageChange = this.handlePageChange.bind(this);
+    }
+
+    handlePageChange(event, { activePage }) {
+		this.setState({ activePage });
+	}
+
     render() {
         const { games, username, ELO } = this.props;
+        const { activePage } = this.state;
+
+        const upper = activePage * numPerPage;
+		const gamesShown = _.slice(games, (activePage - 1) * numPerPage, upper > games.length ? games.length : upper);
 
         return (
             _.isEmpty(games) ?
@@ -36,7 +55,7 @@ export default class YourGames extends Component {
                     </Table.Header>
 
                     <Table.Body>
-                        {_.map(games, (g, index) => {
+                        {_.map(gamesShown, (g, index) => {
                                 const p = _.find(g.players, { username });
                                 return (
                                 <Table.Row key={index}>
@@ -51,6 +70,9 @@ export default class YourGames extends Component {
                         )}
                     </Table.Body>
                 </Table>
+                <div className={sharedStyles.center}>
+					<Pagination totalPages={Math.ceil(games.length / numPerPage)} activePage={activePage} onPageChange={this.handlePageChange} />
+				</div>
 			</div>
         );
     }
