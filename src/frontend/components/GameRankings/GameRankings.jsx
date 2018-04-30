@@ -1,13 +1,34 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
-import { Header, Table, Icon } from 'semantic-ui-react';
+import { Header, Table, Icon, Pagination } from 'semantic-ui-react';
 import { Searchbar, GameCard } from 'components';
 import { SharedStyle as styles } from 'styles';
 
+const numPerPage = 10;
+
 export default class GameRankings extends Component {
+    constructor(props) {
+		super(props);
+		this.state = {
+			activePage: 1
+		};
+
+		this.handlePageChange = this.handlePageChange.bind(this);
+    }
+
+    handlePageChange(event, { activePage }) {
+		this.setState({ activePage });
+    }
+
     render() {
-        const players = _.sortBy(this.props.players, ({ netWorth }) => -netWorth);
+        const { activePage } = this.state;
+
+        const players = _.sortBy(this.props.players, ({ netWorth }) => -netWorth); // sort by currRank?
+
+        const upper = activePage * numPerPage;
+        const playersShown = _.slice(players, (activePage - 1) * numPerPage, upper > players.length ? players.length : upper);
+        const totalPages = Math.ceil(players.length / numPerPage);
 
         return (
             <div>
@@ -24,9 +45,9 @@ export default class GameRankings extends Component {
                     </Table.Header>
 
                     <Table.Body>
-                        {_.map(players, (p, index) => 
+                        {_.map(playersShown, (p, index) => 
                             <Table.Row key={index}>
-                                <Table.Cell>{index + 1}</Table.Cell>
+                                <Table.Cell>{p.currRank}</Table.Cell>
                                 <Table.Cell>{p.username}</Table.Cell>
                                 <Table.Cell>{formatCurrency(p.netWorth, { format: '%s%v', symbol: '$' })}</Table.Cell>
                                 <Table.Cell>{p.numTrades}</Table.Cell>
@@ -35,6 +56,10 @@ export default class GameRankings extends Component {
                         )}
                     </Table.Body>
                 </Table>
+                {totalPages > 1 &&
+                <div key='2' className={styles.center}>
+                    <Pagination totalPages={totalPages} activePage={activePage} onPageChange={this.handlePageChange} />
+                </div>}
             </div>
         );
     }

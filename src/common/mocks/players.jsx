@@ -1,7 +1,7 @@
 import date from 'date-and-time';
 
 export const player1 = {
-    name: 'player1',
+    username: 'player1',
     _id: '1',
     portfolio: [
         {
@@ -111,7 +111,7 @@ export const player1 = {
 };
 
 export const player2 = {
-    name: 'player2',
+    username: 'player2',
     _id: '2',
     portfolio: [
         {
@@ -176,6 +176,7 @@ export const player2 = {
             }
         ]
     },
+    currRank: 1,
     netWorth: 300,
     numTrades: 2,
     netReturn: 120

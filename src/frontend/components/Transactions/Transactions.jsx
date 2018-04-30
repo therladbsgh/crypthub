@@ -2,9 +2,9 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import formatCurrency from 'format-currency';
 import date from 'date-and-time';
-import { Table, Button } from 'semantic-ui-react';
+import { Table, Button, Pagination } from 'semantic-ui-react';
 import { CancelModal } from 'components';
-import { TransactionsStyle as styles } from 'styles';
+import { TransactionsStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
 date.subtractStr = (date1, date2) => {
 	const subtract = date.subtract(date1, date2);
@@ -30,10 +30,30 @@ date.subtractStr = (date1, date2) => {
 	return val === 1 ? _.slice(str, 0, -1) : str;
 };
 
+const numPerPage = 10;
+
 export default class Transactions extends Component {
+    constructor(props) {
+		super(props);
+		this.state = {
+			activePage: 1
+		};
+
+		this.handlePageChange = this.handlePageChange.bind(this);
+    }
+
+    handlePageChange(event, { activePage }) {
+		this.setState({ activePage });
+    }
+
     render() {
         const { gameId, playerId, transactions, current } = this.props;
-        const now = new Date(); 
+        const { activePage } = this.state;
+
+        const now = new Date();
+        const upper = activePage * numPerPage;
+        const transactionsShown = _.slice(transactions, (activePage - 1) * numPerPage, upper > transactions.length ? transactions.length : upper);
+        const totalPages = Math.ceil(transactions.length / numPerPage);
 
         return (
             _.isEmpty(transactions) ?
@@ -42,7 +62,7 @@ export default class Transactions extends Component {
                 {current ? 'You have no current trade orders.' : 'None of your trades have completed yet.'}
             </div>
             :
-			<Table celled definition={current}>
+			[<Table key='1' celled definition={current}>
                 <Table.Header>
                     <Table.Row>
                         {current && <Table.HeaderCell />}
@@ -56,7 +76,7 @@ export default class Transactions extends Component {
                 </Table.Header>
 
                 <Table.Body>
-                    {_.map(transactions, (t, index) => 
+                    {_.map(transactionsShown, (t, index) => 
                         <Table.Row key={index} positive={t.filled} error={!current && !t.filled && t.expiration <= now}>
                             {current && <Table.Cell id={styles.cancel}><CancelModal gameId={gameId} playerId={playerId} tradeId={t._id} /></Table.Cell>}
                             <Table.Cell>{_.capitalize(`${t.type} ${t.side}`)}</Table.Cell>
@@ -68,7 +88,11 @@ export default class Transactions extends Component {
                         </Table.Row>
                     )}
                 </Table.Body>
-            </Table>
+            </Table>,
+            totalPages > 1 &&
+            <div key='2' className={sharedStyles.center}>
+                <Pagination totalPages={totalPages} activePage={activePage} onPageChange={this.handlePageChange} />
+            </div>]
         );
     }
 }
