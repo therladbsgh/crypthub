@@ -1,5 +1,6 @@
 const { Types } = require('mongoose');
 const axios = require('axios');
+const nodemailer = require('nodemailer');
 
 const Game = require('../models/game.model');
 const Player = require('../models/player.model');
@@ -7,6 +8,8 @@ const Coin = require('../models/coin.model');
 const Asset = require('../models/asset.model');
 const User = require('../models/user.model');
 const Trade = require('../models/trade.model');
+
+const url = 'localhost:8080';
 
 
 /**
@@ -526,11 +529,52 @@ function getAll(req, res) {
   });
 }
 
+function inviteUsers(req, res){
+    const users = req.body.usernames;
+    //console.log(req.body.gameId);
+    const id = req.body.gameId;
+    //console.log(users);
+
+    User.find({ username: { $in: users } }).exec().then((users) => {
+      //console.log(users);
+
+      users.forEach(function(user){
+       // console.log(user);
+     var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
+          });
+        var mailOptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Game invite', 
+        text: 'Hello,\n\n' + 'You have been invited to a game. Please click the link to view it: \nhttp:\/\/' + url + '\/game/' + id  + '\n'};
+            transporter.sendMail(mailOptions, function (err) {
+                if (err) { return res.status(500).send({ msg: err.message }); }
+
+                
+            });
+
+
+
+      });
+      res.status(200).send({msg: 'The game invites have been sent.'});
+
+    });
+    //console.log(req.body.usernames);
+
+        //  var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
+        //   });
+        // var mailOptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Account Verification Token', 
+        // text: 'Hello,\n\n' + 'your new password is ' + newPassword + '\n' + 'Please log in.' + '\n'};
+        //     transporter.sendMail(mailOptions, function (err) {
+        //         if (err) { return res.status(500).send({ msg: err.message }); }
+
+        //         res.status(200).send('A password reset email has been sent to ' + user.email + '.');
+        //     });
+}
+
 module.exports = {
   validate,
   create,
   getGame,
   placeOrder,
   cancelOrder,
-  getAll
+  getAll,
+  inviteUsers
 };
