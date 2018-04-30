@@ -38,7 +38,7 @@ class FindGames extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			games: _.sortBy(this.props.games, g => -g.created),
+			games: _.sortBy(this.props.games, g => -new Date(g.created)),
 			sortValue: 'Recently Created',
 			onlyPublic: false
 		};
@@ -59,7 +59,7 @@ class FindGames extends Component {
 				sorted = _.sortBy(games, g => date.subtract(new Date(g.end), now).toMilliseconds());
 				break;
 			case 'Start Date':
-				sorted = _.sortBy(games, g => g.start);
+				sorted = _.sortBy(games, g => new Date(g.start));
 				break;
 			case 'Most Players':
 				sorted = _.sortBy(games, g => -g.players.length);
@@ -68,7 +68,7 @@ class FindGames extends Component {
 				sorted = _.sortBy(games, g => g.players.length);
 				break;
 			default:
-				sorted = _.sortBy(games, g => -g.created);
+				sorted = _.sortBy(games, g => -new Date(g.created));
 				break;
 		}
 
