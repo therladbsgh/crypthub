@@ -39,8 +39,8 @@ class Home extends Component {
 					<span id={styles.preText}>Virtual Cryptocurrency Trading Game</span>
 					<Header as='h1' id={styles.headerText}>Trade Coins. Make Profits.<br />Write the Smartest Trading Bot.</Header>
 					<span id={styles.blurbText}>Build intelligent trading programs that operate on realtime data. Compete against friends and hackers to earn your spot at the top of the leaderboards.</span>
-					<Button positive as={Link} to='/login' size='massive' content='Create Game' />
-					<Button primary as={Link} to='/login' size='massive' content='Find Game' />
+					<Button positive as={Link} to={{ pathname: '/login', openTab: 2 }} size='massive' content='Create Game' />
+					<Button primary as={Link} to={{ pathname: '/login', openTab: 1 }} size='massive' content='Find Game' />
 				</div>
 			</div>
 		);

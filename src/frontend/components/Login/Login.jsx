@@ -73,7 +73,7 @@ class Login extends Component {
 	}
 
 	handleSubmitLogin(event) {
-        const { history } = this.props;
+        const { history, location } = this.props;
 
 		event.preventDefault();
 		this.setState({
@@ -86,7 +86,11 @@ class Login extends Component {
 		.then(res => {
 			console.log('success! ', res);
             this.setState({ loading: false });
-            history.push('/games');
+            if (location.redirected) {
+                history.goBack();
+            } else {
+                history.push({ pathname: '/games', state: { openTab: location.openTab }});
+            }
 		}, ({ err, field }) => {
 			console.log('error! ', err);
 			this.setState({ loading: false, errMsg: err, errField: field });

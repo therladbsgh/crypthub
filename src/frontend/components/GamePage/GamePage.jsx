@@ -88,7 +88,7 @@ class GamePage extends Component {
         );
         const GameSettingsPane = (
             <Tab.Pane id={styles.tab} key='tab6'>
-                <GameSettings game={game} inGame={inGame} isHost={isHost} username={username} />
+                <GameSettings game={game} inGame={inGame} isHost={isHost} username={usernameUser} />
             </Tab.Pane>
         );
 
@@ -115,7 +115,7 @@ class GamePage extends Component {
                         {usernameUser ?
                         <JoinModal size='tiny' isPrivate={isPrivate} gameId={id} username={usernameUser} />
                         :
-                        <Button icon='user add' size='tiny' compact primary onClick={() => this.props.history.push('/login')} content='Join Game' />}
+                        <Button icon='user add' size='tiny' compact primary onClick={() => this.props.history.push({ pathname:'/login', redirected: true })} content='Join Game' />}
                     </div>}
                 </div>,
                 <Tab key='2' className='thirteen wide column' panes={panes} renderActiveOnly={false} />]

@@ -1,12 +1,13 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import formatCurrency from 'format-currency';
 import { Header, Button, Form, Message, Grid, Icon, Input } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { GameCard, JoinModal, LeaveModal, InviteModal } from 'components';
 import { GameSettingsStyle as styles } from 'styles';
 
-export default class GameSettings extends Component {
+class GameSettings extends Component {
     constructor(props) {
         super(props);
 
@@ -113,7 +114,10 @@ export default class GameSettings extends Component {
                 inGame ?
                 <LeaveModal key='3' gameId={id} username={username} />
                 :
-                <JoinModal key='3' size='medium' isPrivate={isPrivate} gameId={id} username={username} />]}
+                username ?
+                <JoinModal key='3' size='medium' isPrivate={isPrivate} gameId={id} username={username} />
+                :
+                <Button key='3' icon='user add' size='medium' primary onClick={() => this.props.history.push({ pathname:'/login', redirected: true })} content='Join Game' />]}
 				<Header as='h2'>About This Game</Header>
                 <GameCard game={game} />
                 {isHost && !completed &&
@@ -207,3 +211,5 @@ export default class GameSettings extends Component {
         );
     }
 }
+
+export default withRouter(GameSettings);
