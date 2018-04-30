@@ -41,4 +41,6 @@ router.route('/cancelorder').post(GameController.cancelOrder);
 
 router.route('/getall').get(GameController.getAll);
 
+router.route('/inviteUsers').post(GameController.inviteUsers);
+
 module.exports = router;

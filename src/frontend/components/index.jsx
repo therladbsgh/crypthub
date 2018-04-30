@@ -30,4 +30,6 @@ export { default as UserTradingBots } from './UserTradingBots';
 export { default as TradingBotIDE } from './TradingBotIDE';
 export { default as DeleteBotModal } from './DeleteBotModal';
 export { default as APIDocumentation } from './APIDocumentation';
+export { default as UserSettings } from './UserSettings';
+export { default as ChangeEmailModal } from './ChangeEmailModal';
 export { default as PageNotFound } from './PageNotFound';

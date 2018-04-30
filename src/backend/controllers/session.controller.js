@@ -332,9 +332,68 @@ function resendToken(req, res, next) {
 
 function forgot(req, res){
 // query database by email 
+    
+  
+    var email = req.body.email;
+    
+  
+ 
+    User.findOne({ email: email }, function (err, user) {
+      
+         if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.', field: 'invalid-email' });
+        console.log(user);
+        // // Create a verification token, save it, and send email
+        // var token = new Token({ username: user.username, token: crypto.randomBytes(16).toString('hex') });
+
+        // get user and change password
+        //user.password = crypto.randomBytes(4).toString('hex');
+        var newPassword = crypto.randomBytes(4).toString('hex');
+        user.password = createHash(newPassword);
+        console.log(user.password);
+        console.log(newPassword);
+        user.isVerified = true;
+            user.save(function (err) {
+            if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save Token'  }); }
+ 
+            // Send the email
+              var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
+          });
+        var mailOptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Account Verification Token', 
+        text: 'Hello,\n\n' + 'your new password is ' + newPassword + '\n' + 'Please log in.' + '\n'};
+            transporter.sendMail(mailOptions, function (err) {
+                if (err) { return res.status(500).send({ msg: err.message }); }
+
+                res.status(200).send('A password reset email has been sent to ' + user.email + '.');
+            });
+        });
+
+
+
+ 
+        // // Save the token
+        // token.save(function (err) {
+        //     if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save Token'  }); }
+ 
+        //     // Send the email
+        //       var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
+        //   });
+        // var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
+        // text: 'Hello,\n\n' + 'Please verify your CryptHub account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email='+ email + '\n'};
+        //     transporter.sendMail(mailOptions, function (err) {
+        //         if (err) { return res.status(500).send({ msg: err.message }); }
+        //         res.status(200).send('A verification email has been sent to ' + user.email + '.');
+        //     });
+        // });
+ 
+    });
+
+
+
 // change password of user
 // send email back to user with their new password
-}
+
+
+};
 
 
 
@@ -377,6 +436,7 @@ module.exports = {
   getUser,
   resendToken,
   confirmToken,
+  forgot,
   ensureAuthenticated
 
 };

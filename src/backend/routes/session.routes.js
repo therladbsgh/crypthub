@@ -14,7 +14,7 @@ const router = new Router();
 router.route('/signup').post(SessionController.signup);
 
 /**
- * Login method.
+* Login method
  * @param  login - The login username or email
  * @param  password - The password
  *
@@ -59,7 +59,7 @@ router.route('/sendVerification').get(SessionController.resendToken);
 * forgot password method 
 *@return 400 on error, 200 on success
 */
-//router.route('/forgot').get(SessionController.forgot);
+router.route('/forgot').post(SessionController.forgot);
 
 
 module.exports = router;

@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Modal, Button, Message, Dropdown, Form } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
-import { InviteModalStyle as styles } from 'styles';
+import { InviteModalStyle as styles, SharedStyle as sharedStyles } from 'styles';
 import { UserMocks } from 'mocks';
 
 //TODO: get users
@@ -21,7 +21,8 @@ export default class InviteModal extends Component {
                 usernames: [],
             },
             open: false,
-			loading: false,
+            loading: false,
+            submitted: false,
             err: ''
 		};
     
@@ -42,7 +43,8 @@ export default class InviteModal extends Component {
                 usernames: [],
             },
             open: false,
-			loading: false,
+            loading: false,
+            submitted: false,
 			err: ''
         });
     }
@@ -59,41 +61,52 @@ export default class InviteModal extends Component {
 	handleSubmit(event) {
         this.setState({
             loading: true,
+            submitted: false,
             err: ''
         });
-
-        console.log(this.state.inviteObj);
 
 		GameBackend.inviteUsers(this.state.inviteObj)
 		.then(res => {
 			console.log('success! ', res);
-            this.close();
+            this.setState({ loading: false, submitted: true });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			this.setState({ loading: false, err });
+			this.setState({ loading: false, submitted: true, err });
         });
     }
     
     render() {
-        const { inviteObj, open, loading, err } = this.state;
+        const { inviteObj, open, submitted, loading, err } = this.state;
         const { usernames } = inviteObj;
+        const success = submitted && !err;
 
         return (
-            <Modal trigger={<Button icon='mail outline' positive content='Invite Players' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
-                <Modal.Header id={styles.invite}>Invite Players</Modal.Header>
-                    <Modal.Content>
-                        <Form>
-                            <Form.Field>
-                                <label>Users to Invite</label>
-                                <Dropdown placeholder='Usernames' multiple search selection options={_.map(users, u => ({ text: u.name, value: u.id }))} value={usernames} onChange={this.handleChange} />
-                            </Form.Field>
-                        </Form>
-                        {err && <Message error header='Error' content={err} />}
-                    </Modal.Content>
-                <Modal.Actions>
-                    <Button positive icon='mail outline' content='Send Invites' onClick={this.handleSubmit} loading={loading} />
-                </Modal.Actions>
-            </Modal>
+            <div className={sharedStyles.inline}>
+                <Modal trigger={<Button icon='mail outline' positive content='Invite Players' />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+                    <Modal.Header id={styles.invite}>Invite Players</Modal.Header>
+                        <Modal.Content>
+                            <Form error={!!err}>
+                                <Form.Field>
+                                    <label>Users to Invite</label>
+                                    <Dropdown placeholder='Usernames' multiple search selection options={_.map(users, u => ({ text: u.name, value: u.name }))} value={usernames} onChange={this.handleChange} />
+                                </Form.Field>
+                                <Message error header='Error' content={err} />
+                            </Form>
+                        </Modal.Content>
+                    <Modal.Actions>
+                        <Button positive icon='mail outline' content='Send Invites' onClick={this.handleSubmit} loading={loading} />
+                    </Modal.Actions>
+                </Modal>
+                <Modal open={open && success}>
+                    <Modal.Header id={styles.invite}>Success!</Modal.Header>
+                        <Modal.Content>
+                            <p>The users you selected have been sent an email invitation to this game.</p>
+                        </Modal.Content>
+                    <Modal.Actions>
+                        <Button icon='check' content='All Done' onClick={this.close} positive />
+                    </Modal.Actions>
+                </Modal>
+            </div>
         );
     }
 }
