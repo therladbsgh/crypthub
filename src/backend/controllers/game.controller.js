@@ -158,128 +158,23 @@ function getGame(req, res) {
     });
 }
 
-function updateSinglePrice(li, cb) {
-  if (li.length === 0) {
-    cb(null);
-  } else if (li[0].name !== 'US Dollars') {
-    axios.get(`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${li[0].symbol}&tsyms=USD`).then((res) => {
-      const data = res['data']["RAW"][li[0].symbol]["USD"];
-
-      Coin.findOne({ name: li[0].name }, (err, coin) => {
-        if (err) {
-          cb('MongoDB query error');
-          return;
-        }
-        coin.set({ currPrice: parseFloat(data.PRICE) });
-        coin.set({ todayReturn: parseFloat(data.CHANGEPCT24HOUR) });
-        coin.save((err2) => {
-          if (err2) {
-            cb('MongoDB save error');
-            return;
-          }
-          const newList = li.slice();
-          newList.shift(0);
-          updateSinglePrice(newList, cb);
-        });
-      });
-    });
-  } else {
-    const newList = li.slice();
-    newList.shift(0);
-    updateSinglePrice(newList, cb);
-  }
-}
-
-function updatePrices(cb) {
-  Coin.find({}, (err, coins) => {
-    if (err) {
-      cb('MongoDB query error');
-      return;
-    }
-
-    updateSinglePrice(coins, (err2) => {
-      cb(err2);
-    });
+function addTrade(side, size, coinId, coinPrice, playerId) {
+  const trade = new Trade({
+    _id: new Types.ObjectId(),
+    type: 'market',
+    side,
+    size,
+    price: coinPrice,
+    coin: coinId,
+    date: Date.now(),
+    GTC: false,
+    filled: true,
+    filledDate: Date.now()
   });
-}
-
-function dealWithCurrentTransactions(id, cb) {
-  const populatePath = { path: 'players', populate: { path: 'transactionCurrent', populate: { path: 'coin' } } };
-  Game.findOne({ id }).populate(populatePath).exec().then((game) => {
-    const minutes = Math.ceil((Date.now() - game.lastUpdated.getTime()) / 60000);
-
-    Coin.get().then((coins) => {
-      const promiseLog = [];
-      coins.forEach((coin) => {
-        axios.get('https://min-api.cryptocompare.com/data/histominute?' +
-                  `fsym=${coin}&tsym=USD&e=CCCAGG&limit=${minutes}`).then((res) => {
-          if (res.data.Response !== 'Success') {
-            cb('History API fetch error');
-            return;
-          }
-          const data = res.data.Data.map(x => x.close);
-          data.forEach((price) => {
-            // console.log(`---------${price}-----------`);
-            game.players.forEach((player) => {
-              player.transactionCurrent.forEach((trade) => {
-                if (((trade.type === 'limit' && trade.side === 'buy') ||
-                     (trade.type === 'stop' && trade.side === 'sell')) &&
-                     price <= trade.price) {
-                  console.log(`FILLED TRADE: Price ${price}, Transaction: ${trade}`);
-                  player.transactionCurrent = player.transactionCurrent.filter(each => each !== trade);
-                } else if (((trade.type === 'limit' && trade.side === 'sell') ||
-                            (trade.type === 'stop' && trade.side === 'buy')) &&
-                           price >= trade.price) {
-                  console.log(`FILLED TRADE: Price ${price}, Transaction: ${trade}`);
-                  player.transactionCurrent = player.transactionCurrent.filter(each => each !== trade);
-                }
-              });
-            });
-          });
-        });
-      });
-
-      cb();
-    });
-  });
-}
-
-function update(id, cb) {
-  updatePrices((err) => {
-    if (err) {
-      cb(err);
-      return;
-    }
-    dealWithCurrentTransactions(id, (err1) => {
-      cb(err1);
-    });
-  });
-}
-
-function simpleTradeHelper(side, usd, size, coinPrice, coinId, player) {
-  return Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
-    if (side === 'buy') {
-      usdAsset.set({ amount: usdAsset.amount - (size * coinPrice) });
-    } else {
-      usdAsset.set({ amount: usdAsset.amount + (size * coinPrice) });
-    }
-    return usdAsset.save();
-  }).then(() => {
-    const trade = new Trade({
-      _id: new Types.ObjectId(),
-      type: 'market',
-      side,
-      size,
-      price: coinPrice,
-      coin: coinId,
-      date: Date.now(),
-      GTC: false,
-      filled: true,
-      filledDate: Date.now()
-    });
-    return trade.save();
-  }).then((newTrade) => {
-    player.transactionHistory.push(newTrade._id);
+  return trade.save().then(() => {
+    return Player.findOne({ _id: playerId }).exec();
+  }).then((player) => {
+    player.transactionHistory.push(trade._id);
     return player.save();
   });
 }
@@ -304,17 +199,25 @@ function simpleBuy(username, symbol, size) {
           return Promise.reject(new Error('Trying to buy more than amount of USD available'));
         }
 
-        const asset = new Asset({
+        sym = {
           _id: new Types.ObjectId(),
-          coin: coin._id,
+          coin,
           amount: size
-        });
+        };
 
-        return asset.save().then(() => {
-          player.portfolio.push(asset._id);
-          return simpleTradeHelper('buy', usd, size, coin.currPrice, coin._id, player);
-        });
-      });
+        const asset = new Asset(sym);
+        return asset.save();
+      }).then(() => Asset.findOne({ _id: usd._id }).exec()).then((usdAsset) => {
+        usdAsset.set({ amount: usdAsset.amount - (size * sym.coin.currPrice) });
+        return usdAsset.save();
+      }).then(() => {
+        player.portfolio.push(sym._id);
+        return player.save();
+      }).then(() => Promise.resolve({
+        id: sym.coin._id,
+        price: sym.coin.currPrice,
+        player: player._id
+      }));
     }
 
     if (usd.amount < size * sym.coin.currPrice) {
@@ -324,7 +227,14 @@ function simpleBuy(username, symbol, size) {
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
       asset.set({ amount: asset.amount + size });
       return asset.save();
-    }).then(() => simpleTradeHelper('buy', usd, size, sym.coin.currPrice, sym.coin._id, player));
+    }).then(() => Asset.findOne({ _id: usd._id }).exec()).then((usdAsset) => {
+      usdAsset.set({ amount: usdAsset.amount - (size * sym.coin.currPrice) });
+      return usdAsset.save();
+    }).then(() => Promise.resolve({
+      id: sym.coin._id,
+      price: sym.coin.currPrice,
+      player: player._id
+    }));
   });
 }
 
@@ -350,13 +260,148 @@ function simpleSell(username, symbol, size) {
       if (asset.amount - size === 0) {
         const index = player.portfolio.indexOf(asset._id);
         player.portfolio.splice(index, 1);
-        return Asset.remove({ _id: asset._id });
+        return Asset.remove({ _id: asset._id }).then(() => player.save());
       }
 
       asset.set({ amount: asset.amount - size });
       return asset.save();
-    }).then(() => simpleTradeHelper('sell', usd, size, sym.coin.currPrice, sym.coin._id, player));
+    }).then(() => Asset.findOne({ _id: usd._id }).exec()).then((usdAsset) => {
+      usdAsset.set({ amount: usdAsset.amount + (size * sym.coin.currPrice) });
+      return usdAsset.save();
+    }).then(() => Promise.resolve({
+      id: sym.coin._id,
+      price: sym.coin.currPrice,
+      player: player._id
+    }));
   });
+}
+
+function updateSinglePrice(symbol) {
+  const queryUrl = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${symbol}&tsyms=USD`;
+  return axios.get(queryUrl).then((res) => {
+    const data = res.data.RAW[symbol].USD;
+
+    return Coin.findOne({ symbol }).exec().then((coin) => {
+      coin.set({ currPrice: parseFloat(data.PRICE) });
+      coin.set({ todayReturn: parseFloat(data.CHANGEPCT24HOUR) });
+      return coin.save();
+    });
+  });
+}
+
+function updatePrices() {
+  return Coin.get().then((coins) => {
+    const promiseLog = [];
+    coins.forEach((coin) => {
+      if (coin !== 'USD') {
+        promiseLog.push(updateSinglePrice(coin));
+      }
+    });
+
+    return Promise.all(promiseLog);
+  });
+}
+
+function fillTrade(playerId, trade) {
+  const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
+  return Player.findOne({ _id: playerId }).populate(populatePath).exec().then((player) => {
+    let usd;
+    let sym;
+    player.portfolio.forEach((each) => {
+      if (each.coin.symbol === 'USD') {
+        usd = each;
+      }
+      if (each.coin.symbol === trade.coin.symbol) {
+        sym = each;
+      }
+    });
+
+    if (trade.side === 'sell') {
+      return Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
+        usdAsset.set({ amount: usdAsset.amount + (trade.size * trade.price) });
+        return usdAsset.save();
+      });
+    }
+
+    if (!sym) {
+      const asset = new Asset({
+        _id: new Types.ObjectId(),
+        coin: trade.coin._id,
+        amount: trade.size
+      });
+      return asset.save().then(() => {
+        player.portfolio.append(asset._id);
+        return player.save();
+      });
+    }
+
+    return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+      asset.set({ amount: asset.amount + (trade.size * trade.price) });
+      return asset.save();
+    });
+  }).then(() => {
+    return Trade.findOne({ _id: trade._id }).exec().then((newTrade) => {
+      newTrade.filled = true;
+      newTrade.filledDate = Date.now();
+      return newTrade.save();
+    });
+  });
+}
+
+function dealWithCurrentTransactions(id) {
+  const populatePath = { path: 'players', populate: { path: 'transactionCurrent', populate: { path: 'coin' } } };
+  return Game.findOne({ id }).populate(populatePath).exec().then((game) => {
+    const minutes = Math.ceil((Date.now() - game.lastUpdated.getTime()) / 60000);
+
+    return Coin.get().then((coins) => {
+      const promiseLog = [];
+      coins.forEach((coin) => {
+        const tr = axios.get('https://min-api.cryptocompare.com/data/histominute?' +
+                  `fsym=${coin}&tsym=USD&e=CCCAGG&limit=${minutes}`).then((res) => {
+          if (res.data.Response !== 'Success') {
+            return Promise.reject(new Error('History price fetch error'));
+          }
+
+          const fillLog = [];
+          const data = res.data.Data.map(x => x.close);
+          data.forEach((price) => {
+            game.players.forEach((player) => {
+              player.transactionCurrent.forEach((trade) => {
+                if ((((trade.type === 'limit' && trade.side === 'buy') ||
+                      (trade.type === 'stop' && trade.side === 'sell')) &&
+                     price <= trade.price) ||
+                    (((trade.type === 'limit' && trade.side === 'sell') ||
+                      (trade.type === 'stop' && trade.side === 'buy')) &&
+                     price >= trade.price)) {
+                  fillLog.push(fillTrade(player._id, trade));
+                  player.transactionCurrent = player.transactionCurrent.filter(each => each !== trade);
+                  player.transactionHistory.push(trade._id);
+                }
+              });
+            });
+          });
+          return Promise.all(fillLog);
+        });
+        promiseLog.push(tr);
+      });
+      return Promise.all(promiseLog).then(() => {
+        const userPromises = [];
+        game.players.forEach((p) => {
+          const userP = Player.findOne({ _id: p._id }).exec().then((player) => {
+            player.transactionCurrent = p.transactionCurrent;
+            player.transactionHistory = p.transactionHistory;
+            return player.save();
+          });
+          userPromises.push(userP);
+        });
+        return Promise.all(userPromises);
+      });
+    });
+  });
+}
+
+function update(id) {
+  return updatePrices().then(() => dealWithCurrentTransactions(id));
 }
 
 function futureTrade(type, side, username, price, symbol, size, GTC) {
@@ -374,7 +419,7 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
     });
 
     let coinId;
-    Coin.findOne({ symbol }).exec().then((coin) => {
+    return Coin.findOne({ symbol }).exec().then((coin) => {
       coinId = coin._id;
 
       if (side === 'sell' && (!sym || sym.amount < size)) {
@@ -435,22 +480,21 @@ function placeOrder(req, res) {
     return;
   }
 
-  update(gameId, (err) => {
-    if (err) {
-      res.status(500).json({ error: err });
-      return;
-    }
-
+  update(gameId).then(() => {
     if (type === 'market' && side === 'buy') {
       // Regular buy
-      simpleBuy(playerId, symbol, size).then(() => {
+      simpleBuy(playerId, symbol, size).then((data) => {
+        return addTrade(side, size, data.id, data.price, data.player);
+      }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
         res.status(400).json({ err: err1.message });
       });
     } else if (type === 'market' && side === 'sell') {
       // Regular sell
-      simpleSell(playerId, symbol, size).then(() => {
+      simpleSell(playerId, symbol, size).then((data) => {
+        return addTrade(side, size, data.id, data.price, data.player);
+      }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
         res.status(400).json({ err: err1.message });
@@ -463,8 +507,8 @@ function placeOrder(req, res) {
       // Limit buy / sell or stop buy / sell
       futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
         res.status(200).json({ success: true });
-      }, (err1) => {
-        res.status(400).json({ err: err1 });
+      }).catch((err1) => {
+        res.status(400).json({ err: err1.message });
       });
     } else {
       // Wrong argument
