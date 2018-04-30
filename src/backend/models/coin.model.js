@@ -23,6 +23,15 @@ const CoinSchema = new Schema({
   }
 });
 
+CoinSchema.statics = {
+  /**
+   * Gets all coins but USD.
+   */
+  get() {
+    return this.find({ symbol: { $ne: 'USD' } }).exec().then(user => user.map(x => x.symbol));
+  }
+};
+
 const Model = mongoose.model('Coin', CoinSchema);
 
 Model.findOne({ symbol: 'BTC' }, (err, result) => {
