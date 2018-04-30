@@ -115,6 +115,8 @@ class FindGames extends Component {
 		const upper = activePage * numPerPage;
 		const gamesShown = _.slice(games, (activePage - 1) * numPerPage, upper > games.length ? games.length : upper);
 		
+		const totalPages = Math.ceil(games.length / numPerPage);
+
 		return (
 			<div>
 				<Header as='h2'>Find a Game</Header>
@@ -131,9 +133,10 @@ class FindGames extends Component {
 				{_.map(gamesShown, (game, index) =>
 					<GameCard key={index} game={game} />
 				)}
+				{totalPages > 1 &&
 				<div className={sharedStyles.center} id={sharedStyles.card}>
-					<Pagination totalPages={Math.ceil(games.length / numPerPage)} activePage={activePage} onPageChange={this.handlePageChange} />
-				</div>
+					<Pagination totalPages={totalPages} activePage={activePage} onPageChange={this.handlePageChange} />
+				</div>}
 			</div>
 		);
 	}

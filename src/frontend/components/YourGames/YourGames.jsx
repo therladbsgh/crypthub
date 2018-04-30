@@ -28,7 +28,9 @@ export default class YourGames extends Component {
         const { activePage } = this.state;
 
         const upper = activePage * numPerPage;
-		const gamesShown = _.slice(games, (activePage - 1) * numPerPage, upper > games.length ? games.length : upper);
+        const gamesShown = _.slice(games, (activePage - 1) * numPerPage, upper > games.length ? games.length : upper);
+        
+        const totalPages = Math.ceil(games.length / numPerPage);
 
         return (
             _.isEmpty(games) ?
@@ -70,9 +72,10 @@ export default class YourGames extends Component {
                         )}
                     </Table.Body>
                 </Table>
+                {totalPages > 1 &&
                 <div className={sharedStyles.center}>
-					<Pagination totalPages={Math.ceil(games.length / numPerPage)} activePage={activePage} onPageChange={this.handlePageChange} />
-				</div>
+					<Pagination totalPages={totalPages} activePage={activePage} onPageChange={this.handlePageChange} />
+				</div>}
 			</div>
         );
     }
