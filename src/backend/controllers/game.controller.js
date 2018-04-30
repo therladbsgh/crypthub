@@ -210,7 +210,6 @@ function dealWithCurrentTransactions(id, cb) {
 
     Coin.get().then((coins) => {
       const promiseLog = [];
-
       coins.forEach((coin) => {
         axios.get('https://min-api.cryptocompare.com/data/histominute?' +
                   `fsym=${coin}&tsym=USD&e=CCCAGG&limit=${minutes}`).then((res) => {
@@ -220,7 +219,7 @@ function dealWithCurrentTransactions(id, cb) {
           }
           const data = res.data.Data.map(x => x.close);
           data.forEach((price) => {
-            console.log(`---------${price}-----------`);
+            // console.log(`---------${price}-----------`);
             game.players.forEach((player) => {
               player.transactionCurrent.forEach((trade) => {
                 if (((trade.type === 'limit' && trade.side === 'buy') ||
@@ -257,8 +256,8 @@ function update(id, cb) {
   });
 }
 
-function simpleTradeHelper(side, usd, size, coinPrice, coinId, player, assetId, cb) {
-  Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
+function simpleTradeHelper(side, usd, size, coinPrice, coinId, player) {
+  return Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
     if (side === 'buy') {
       usdAsset.set({ amount: usdAsset.amount - (size * coinPrice) });
     } else {
@@ -282,14 +281,12 @@ function simpleTradeHelper(side, usd, size, coinPrice, coinId, player, assetId, 
   }).then((newTrade) => {
     player.transactionHistory.push(newTrade._id);
     return player.save();
-  }).then(() => {
-    cb(null);
   });
 }
 
-function simpleBuy(username, symbol, size, cb) {
+function simpleBuy(username, symbol, size) {
   const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
-  Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
+  return Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
     let usd;
     let sym;
     player.portfolio.forEach((each) => {
@@ -302,10 +299,9 @@ function simpleBuy(username, symbol, size, cb) {
     });
 
     if (!sym) {
-      Coin.findOne({ symbol }).exec().then((coin) => {
+      return Coin.findOne({ symbol }).exec().then((coin) => {
         if (usd.amount < size * coin.currPrice) {
-          cb('Trying to buy more than amount of USD available');
-          return;
+          return Promise.reject(new Error('Trying to buy more than amount of USD available'));
         }
 
         const asset = new Asset({
@@ -314,30 +310,27 @@ function simpleBuy(username, symbol, size, cb) {
           amount: size
         });
 
-        asset.save((err) => {
+        return asset.save().then(() => {
           player.portfolio.push(asset._id);
-          simpleTradeHelper('buy', usd, size, coin.currPrice, coin._id, player, asset._id, cb);
+          return simpleTradeHelper('buy', usd, size, coin.currPrice, coin._id, player);
         });
       });
-    } else {
-      if (usd.amount < size * sym.coin.currPrice) {
-        cb('Trying to buy more than amount of USD available');
-        return;
-      }
-
-      Asset.findOne({ _id: sym._id }).exec().then((asset) => {
-        asset.set({ amount: asset.amount + size });
-        return asset.save();
-      }).then((err) => {
-        simpleTradeHelper('buy', usd, size, sym.coin.currPrice, sym.coin._id, player, sym._id, cb);
-      });
     }
+
+    if (usd.amount < size * sym.coin.currPrice) {
+      return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+    }
+
+    return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+      asset.set({ amount: asset.amount + size });
+      return asset.save();
+    }).then(() => simpleTradeHelper('buy', usd, size, sym.coin.currPrice, sym.coin._id, player));
   });
 }
 
-function simpleSell(username, symbol, size, cb) {
+function simpleSell(username, symbol, size) {
   const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
-  Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
+  return Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
     let usd;
     let sym;
     player.portfolio.forEach((each) => {
@@ -350,11 +343,10 @@ function simpleSell(username, symbol, size, cb) {
     });
 
     if (!sym || sym.amount < size) {
-      cb('Not enough coin to sell');
-      return;
+      return Promise.reject(new Error('Not enough coin to sell'));
     }
 
-    Asset.findOne({ _id: sym._id }).exec().then((asset) => {
+    return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
       if (asset.amount - size === 0) {
         const index = player.portfolio.indexOf(asset._id);
         player.portfolio.splice(index, 1);
@@ -363,9 +355,7 @@ function simpleSell(username, symbol, size, cb) {
 
       asset.set({ amount: asset.amount - size });
       return asset.save();
-    }).then((err) => {
-      simpleTradeHelper('sell', usd, size, sym.coin.currPrice, sym.coin._id, player, sym._id, cb);
-    });
+    }).then(() => simpleTradeHelper('sell', usd, size, sym.coin.currPrice, sym.coin._id, player));
   });
 }
 
@@ -453,21 +443,17 @@ function placeOrder(req, res) {
 
     if (type === 'market' && side === 'buy') {
       // Regular buy
-      simpleBuy(playerId, symbol, size, (err1) => {
-        if (err1) {
-          res.status(400).json({ err: err1 });
-        } else {
-          res.status(200).json({ success: true });
-        }
+      simpleBuy(playerId, symbol, size).then(() => {
+        res.status(200).json({ success: true });
+      }).catch((err1) => {
+        res.status(400).json({ err: err1.message });
       });
     } else if (type === 'market' && side === 'sell') {
       // Regular sell
-      simpleSell(playerId, symbol, size, (err1) => {
-        if (err1) {
-          res.status(400).json({ err: err1 });
-        } else {
-          res.status(200).json({ success: true });
-        }
+      simpleSell(playerId, symbol, size).then(() => {
+        res.status(200).json({ success: true });
+      }).catch((err1) => {
+        res.status(400).json({ err: err1.message });
       });
     } else if (type === 'short' && side === 'buy') {
       // Short buying
@@ -570,12 +556,12 @@ function inviteUsers(req, res){
        // console.log(user);
      var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
           });
-        var mailOptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Game invite', 
+        var mailOptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Game invite',
         text: 'Hello,\n\n' + 'You have been invited to a game. Please click the link to view it: \nhttp:\/\/' + url + '\/game/' + id  + '\n'};
             transporter.sendMail(mailOptions, function (err) {
                 if (err) { return res.status(500).send({ msg: err.message }); }
 
-                
+
             });
 
 
@@ -588,7 +574,7 @@ function inviteUsers(req, res){
 
         //  var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
         //   });
-        // var mailOptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Account Verification Token', 
+        // var mailOptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Account Verification Token',
         // text: 'Hello,\n\n' + 'your new password is ' + newPassword + '\n' + 'Please log in.' + '\n'};
         //     transporter.sendMail(mailOptions, function (err) {
         //         if (err) { return res.status(500).send({ msg: err.message }); }
