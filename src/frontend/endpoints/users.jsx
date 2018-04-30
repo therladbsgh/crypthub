@@ -24,6 +24,14 @@ export function logout() {
     return Backend.get('passport/logout');
 }
 
+export function savePassword(changePasswordObj) {
+    return Backend.post('passport/savePassword', changePasswordObj);
+}
+
+export function saveEmail(changeEmailObj) {
+    return Backend.post('passport/saveEmail', changeEmailObj);
+}
+
 export function verifyEmail(token) {
     return Backend.get(`passport/verifyEmail?token=${token}`);
 }

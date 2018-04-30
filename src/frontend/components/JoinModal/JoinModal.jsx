@@ -83,7 +83,7 @@ export default class JoinModal extends Component {
                     <Modal.Content>
                         {isPrivate ?
                         <Form>
-                            <Form.Field error={errField == 'password'}>
+                            <Form.Field error={errField == 'password'} disabled={loading}>
                                 <label>Password</label>
                                 <Input icon='key' iconPosition='left' type='password' placeholder='Password' name='password' value={password} onChange={this.handleChange} />
                             </Form.Field>
