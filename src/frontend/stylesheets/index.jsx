@@ -21,4 +21,5 @@ export { default as DeleteBotModalStyle } from './deletebotmodal';
 export { default as LoginStyle } from './login';
 export { default as GlobalRankingsStyle } from './globalrankings';
 export { default as VerifyEmailStyle } from './verifyemail';
+export { default as APIDocumentationStyle } from './apidocumentation';
 export { default as SharedStyle } from './shared';

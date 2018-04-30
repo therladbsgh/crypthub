@@ -7,5 +7,6 @@ module.exports = {
     JoinModalStyle: {},
     GameTradingBotsStyle: {},
     UserTradingBotsStyle: {},
-    TradingBotIDEStyle: {}
+    TradingBotIDEStyle: {},
+    NavbarStyle: {}
 };

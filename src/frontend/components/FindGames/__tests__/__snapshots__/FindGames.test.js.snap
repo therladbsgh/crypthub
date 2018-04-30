@@ -5,49 +5,62 @@ exports[`renders correctly 1`] = `
   <h2
     className="ui header"
   >
-    Search for a Game
+    Find a Game
   </h2>
-  <div
-    className="ui fluid search"
-    field="name"
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseDown={[Function]}
-    source={undefined}
+  <form
+    action={undefined}
+    className="ui form"
+    onSubmit={[Function]}
   >
     <div
-      className="ui icon input"
+      className="field"
     >
-      <input
-        autoComplete="off"
-        className="prompt"
-        disabled={undefined}
-        onChange={[Function]}
-        onClick={[Function]}
-        placeholder="Game name"
-        tabIndex="0"
-        type="text"
-        value=""
-      />
-      <i
-        aria-hidden="true"
-        className="search icon"
-      />
-    </div>
-    <div
-      className="results transition"
-    >
+      <label>
+        Search for a Game
+      </label>
       <div
-        className="message empty"
+        className="ui fluid search"
+        field="name"
+        onBlur={[Function]}
+        onFocus={[Function]}
+        onMouseDown={[Function]}
+        source={undefined}
       >
         <div
-          className="header"
+          className="ui icon input"
         >
-          No results found.
+          <input
+            autoComplete="off"
+            className="prompt"
+            disabled={undefined}
+            onChange={[Function]}
+            onClick={[Function]}
+            placeholder="Game name"
+            tabIndex="0"
+            type="text"
+            value=""
+          />
+          <i
+            aria-hidden="true"
+            className="search icon"
+          />
+        </div>
+        <div
+          className="results transition"
+        >
+          <div
+            className="message empty"
+          >
+            <div
+              className="header"
+            >
+              No results found.
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </form>
   <h2
     className="ui header"
   >
@@ -122,7 +135,7 @@ exports[`renders correctly 1`] = `
         <span
           className="text"
         >
-          Most Days Remaining
+          Most Time Remaining
         </span>
       </div>
       <div
@@ -141,7 +154,7 @@ exports[`renders correctly 1`] = `
         <span
           className="text"
         >
-          Least Days Remaining
+          Least Time Remaining
         </span>
       </div>
       <div

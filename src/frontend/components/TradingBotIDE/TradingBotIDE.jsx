@@ -114,12 +114,12 @@ export default class UserTradingBots extends Component {
         const name = _.get(_.find(tradingBots, { _id: botId }), 'name', '');
 
         return (
-			<div>
+			<div className={styles.top}>
                 <Form onSubmit={this.handleSave} loading={loading} error={!!err} success={submitted && !err}>
                     <Form.Field width={10}>
                         <label>Trading Bot</label>
                         <Dropdown placeholder='Trading bot to edit' name='botId' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleDropdownChange} />
-                    </Form.Field>
+                    </Form.Field>                  
                     <Form.Group>
                         <Form.Field width={10}>
                             <AceEditor

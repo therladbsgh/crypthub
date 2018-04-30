@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Header, Dropdown, Form, Button, Message, TextArea, Icon } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { TradingBotIDE } from 'components';
@@ -70,7 +71,8 @@ export default class UserTradingBots extends Component {
                     </label>
                     <input type='file' id='file-upload' className={sharedStyles.hide} onChange={this.handleUpload} />
                 </div>}
-				<Header as='h2'>Create/Edit Trading Bots</Header>
+				<Header as='h2' id={styles.bot}>Create/Edit Trading Bots</Header>
+                <Link to='/docs'>Find the API Documentation here.</Link>  
                 <TradingBotIDE tradingBots={tradingBots} />
 			</div>
         );

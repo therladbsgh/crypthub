@@ -39,7 +39,8 @@
 			"components": "<rootDir>/src/frontend/components",
 			"styles": "<rootDir>/src/frontend/stylesheets/__mocks__/styleMock.js",
 			"endpoints": "<rootDir>/src/frontend/endpoints",
-			"mocks": "<rootDir>/src/common/mocks"
+			"mocks": "<rootDir>/src/common/mocks",
+			"docs": "<rootDir>/src/common/docs"
 		},
 		"moduleFileExtensions": [
 			"js",

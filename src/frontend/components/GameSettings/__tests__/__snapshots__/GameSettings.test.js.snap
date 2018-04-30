@@ -63,7 +63,7 @@ exports[`renders correctly 1`] = `
       >
         Created 
         <strong>
-          26 days
+          28 days
            ago
         </strong>
          by 
@@ -78,7 +78,7 @@ exports[`renders correctly 1`] = `
         in
          
         <strong>
-          9 days
+          7 days
         </strong>
       </div>
     </div>
@@ -86,7 +86,8 @@ exports[`renders correctly 1`] = `
       className="extra content"
     >
       2
-       players
+       player
+      s
     </div>
   </div>
   <h2

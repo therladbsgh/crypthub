@@ -3,13 +3,18 @@
 exports[`renders correctly 1`] = `
 <div
   className="ui inverted menu"
+  id={undefined}
 >
   <a
     className="item"
     href="/"
     onClick={[Function]}
   >
-    Crypthub
+    <i
+      aria-hidden="true"
+      className="home icon"
+    />
+    CryptHub
   </a>
   <div
     className="right menu"
@@ -24,6 +29,17 @@ exports[`renders correctly 1`] = `
         className="trophy icon"
       />
       Global Rankings
+    </a>
+    <a
+      className="item"
+      href="/docs"
+      onClick={[Function]}
+    >
+      <i
+        aria-hidden="true"
+        className="file code outline icon"
+      />
+      API Documentation
     </a>
     <a
       className="item"

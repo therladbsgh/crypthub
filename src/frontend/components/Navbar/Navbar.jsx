@@ -28,7 +28,7 @@ class Navbar extends Component {
         const { username } = this.props;
         
 		return (
-            <Menu id={styles.navbar} inverted style={{backgroundColor: '#2F2F2F'}}>
+            <Menu id={styles.navbar} inverted>
                 <Menu.Item name='home' as={Link} to={username ? '/games' : '/'}>
                     <Icon name='home' />CryptHub
                 </Menu.Item>
@@ -36,6 +36,9 @@ class Navbar extends Component {
                 <Menu.Menu position='right'>
                     <Menu.Item as={Link} to='/rankings'>
                         <Icon name='trophy' />Global Rankings
+                    </Menu.Item>
+                    <Menu.Item as={Link} to='/docs'>
+                        <Icon name='file code outline' />API Documentation
                     </Menu.Item>
                     {username ? 
                     <Dropdown item text={username}>

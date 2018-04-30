@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Home, Signup, Login, UserPage, GamePage, GlobalRankings, VerifyEmail, PageNotFound } from 'components';
+import { Home, Signup, Login, UserPage, GamePage, GlobalRankings, VerifyEmail, APIDocumentation, PageNotFound } from 'components';
 
 // Necessary for date picker to work
 import 'react-dates/initialize';
@@ -17,6 +17,7 @@ ReactDOM.render(
 				<Route exact path='/login' component={Login} />
 				<Route exact path='/games' component={UserPage} />
 				<Route exact path='/rankings' component={GlobalRankings} />
+				<Route exact path='/docs' component={APIDocumentation} />
 				<Route path='/game/:id' component={GamePage} />
 				<Route path='/verifyEmail' component={VerifyEmail} />
 				<Route component={PageNotFound} />
