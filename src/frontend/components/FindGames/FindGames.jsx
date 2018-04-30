@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import date from 'date-and-time';
-import { Tab, Header, Dropdown, Checkbox, Form } from 'semantic-ui-react';
+import { Tab, Header, Dropdown, Checkbox, Form, Pagination } from 'semantic-ui-react';
 import { Searchbar, GameCard } from 'components';
-import { FindGamesStyle as styles } from 'styles';
+import { FindGamesStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
 const sortOptions = [
 	{
@@ -34,17 +34,21 @@ const sortOptions = [
 	}
 ];
 
+const numPerPage = 5;
+
 class FindGames extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			games: _.sortBy(this.props.games, g => -new Date(g.created)),
+			activePage: 1,
 			sortValue: 'Recently Created',
 			onlyPublic: false
 		};
 
 		this.getSortedGames = this.getSortedGames.bind(this);
 		this.handleSortChange = this.handleSortChange.bind(this);
+		this.handlePageChange = this.handlePageChange.bind(this);
 		this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
 	}
 
@@ -86,17 +90,30 @@ class FindGames extends Component {
 		}
 	}
 
+	handlePageChange(event, { activePage }) {
+		this.setState({ activePage });
+	}
+
 	handleCheckboxChange(event, { checked }) {
-		const { games, sortValue } = this.state;
+		const { games, activePage, sortValue } = this.state;
+
+		const oldNumPages = Math.ceil(games.length / numPerPage);
+		const sorted = this.getSortedGames(checked ? _.filter(games, { isPrivate: false }) : this.props.games, sortValue);
+		const newNumPages = Math.ceil(sorted.length / numPerPage);
 
 		this.setState({
-			games: this.getSortedGames(checked ? _.filter(games, { isPrivate: false }) : this.props.games, sortValue),
+			games: sorted,
+			activePage: newNumPages < oldNumPages && activePage > newNumPages ? newNumPages : activePage,
 			onlyPublic: checked
 		});
 	}
 
 	render() {
-		const { games } = this.state;
+		const fullGames = this.props.games;
+		const { games, activePage, sortValue, onlyPublic } = this.state;
+		
+		const upper = activePage * numPerPage;
+		const gamesShown = _.slice(games, (activePage - 1) * numPerPage, upper > games.length ? games.length : upper);
 		
 		return (
 			<div>
@@ -104,16 +121,19 @@ class FindGames extends Component {
 				<Form>
 					<Form.Field className={styles.search}>
 						<label>Search for a Game</label>
-						<Searchbar placeholder='Game name' source={this.props.games} field='name' searchFields={['name']} resultRenderer={({ name }) => name} onResultSelect={(e, d) => this.props.history.push(`/game/${d.result.id}`)} />
+						<Searchbar placeholder='Game name' source={fullGames} field='name' searchFields={['name']} resultRenderer={({ name }) => name} onResultSelect={(e, d) => this.props.history.push(`/game/${d.result.id}`)} />
 					</Form.Field>
 				</Form>
 				<Header as='h2'>Current Games</Header>
 				<label id={styles.sortLabel}>Sort By</label>
-				<Dropdown placeholder='Sort By' selection options={sortOptions} value={this.state.sortValue} onChange={this.handleSortChange} />
-				<Checkbox className={styles.onlyPublic} label='Only show public games' checked={this.state.onlyPublic} onChange={this.handleCheckboxChange} />
-				{_.map(games, (game, index) =>
+				<Dropdown placeholder='Sort By' selection options={sortOptions} value={sortValue} onChange={this.handleSortChange} />
+				<Checkbox className={styles.onlyPublic} label='Only show public games' checked={onlyPublic} onChange={this.handleCheckboxChange} />
+				{_.map(gamesShown, (game, index) =>
 					<GameCard key={index} game={game} />
 				)}
+				<div className={sharedStyles.center} id={sharedStyles.card}>
+					<Pagination totalPages={Math.ceil(games.length / numPerPage)} activePage={activePage} onPageChange={this.handlePageChange} />
+				</div>
 			</div>
 		);
 	}
