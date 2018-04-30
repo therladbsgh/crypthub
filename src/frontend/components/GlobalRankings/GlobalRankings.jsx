@@ -1,13 +1,13 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { Container, Header, Table, Icon, Form } from 'semantic-ui-react';
+import { Container, Header, Table, Icon, Form, Pagination } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar, Searchbar } from 'components';
 import { GlobalRankingsStyle as styles, SharedStyle as sharedStyles } from 'styles';
 import { UserMocks } from 'mocks';
 
 //TODO: get users
-const users = [
+const users = _.map([
     UserMocks.user1,
     UserMocks.user2,
     UserMocks.user1,
@@ -24,7 +24,9 @@ const users = [
     UserMocks.user1,
     UserMocks.user1,
     UserMocks.user1,
-];
+], (u, index) => _.extend({}, u, { rank: index + 1 }));
+
+const numPerPage = 10;
 
 export default class GlobalRankings extends Component {
     constructor(props) {
@@ -32,9 +34,11 @@ export default class GlobalRankings extends Component {
 		this.state = {
             username: '',
             results: ['RESET'],
+            activePage: 1,
             hasMounted: false
-		};
+        };
 
+		this.handlePageChange = this.handlePageChange.bind(this);
 		this.handleResults = this.handleResults.bind(this);
     }
     
@@ -47,14 +51,27 @@ export default class GlobalRankings extends Component {
 			console.log('error! ', err);
 			alert(`Error: ${err}`);
         });
+    }
+    
+    handlePageChange(event, { activePage }) {
+		this.setState({ activePage });
 	}
 
 	handleResults(results) {
-		this.setState({ results });
+		this.setState({
+			results,
+			activePage: 1
+		});
     }
     
     render() {
-        const { username, results, hasMounted } = this.state;
+        const { username, results, activePage, hasMounted } = this.state;
+
+        const resultUsers = results[0] === 'RESET' ? users : _.filter(users, u => _.some(results, _.mapKeys(_.mapValues(u, v => String(v)), (v, k) => k.toLowerCase())));
+        const upper = activePage * numPerPage;
+		const usersShown = _.slice(resultUsers, (activePage - 1) * numPerPage, upper > resultUsers.length ? resultUsers.length : upper);
+
+        const totalPages = Math.ceil((results[0] === 'RESET' ? users.length : results.length) / numPerPage);
 
         // User's keys need to be lowercase to work with searchbar results
         return (
@@ -69,8 +86,8 @@ export default class GlobalRankings extends Component {
                             <Searchbar placeholder='Username' source={users} field='name' searchFields={['name']} handleResults={this.handleResults} open={false} />                
                         </Form.Field>
                     </Form>
-                    {!_.isEmpty(results) ?
-                        <Table celled>
+                    {!_.isEmpty(usersShown) ?
+                        [<Table key='1' celled>
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell><Icon name='trophy' /></Table.HeaderCell>
@@ -80,16 +97,19 @@ export default class GlobalRankings extends Component {
                             </Table.Header>
 
                             <Table.Body>
-                                {_.map(users, (u, index) => 
-                                    (_.some(results, _.mapKeys(_.mapValues(u, v => String(v)), (v, k) => k.toLowerCase())) || results[0] === 'RESET') && 
-                                        <Table.Row key={index}>
-                                            <Table.Cell>{index + 1}</Table.Cell>
-                                            <Table.Cell>{u.name}</Table.Cell>
-                                            <Table.Cell>{u.ELO}</Table.Cell>
-                                        </Table.Row>
+                                {_.map(usersShown, (u, index) =>
+                                    <Table.Row key={index}>
+                                        <Table.Cell>{u.rank}</Table.Cell>
+                                        <Table.Cell>{u.name}</Table.Cell>
+                                        <Table.Cell>{u.ELO}</Table.Cell>
+                                    </Table.Row>
                                 )}
                             </Table.Body>
-                        </Table>
+                        </Table>,
+                        totalPages > 1 && 
+                        <div key='2' className={sharedStyles.center}>
+					        <Pagination totalPages={totalPages} activePage={activePage} onPageChange={this.handlePageChange} />
+                        </div>]
                         :
                         <Header as='h3'>No users found</Header>
                     }
