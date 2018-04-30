@@ -46,7 +46,7 @@ export default class APIDocumentation extends Component {
 								<Table.Header>
 									<Table.Row>
 										<Table.HeaderCell>Name</Table.HeaderCell>
-										<Table.HeaderCell>Default</Table.HeaderCell>
+										<Table.HeaderCell>Default Value</Table.HeaderCell>
 										<Table.HeaderCell>Type</Table.HeaderCell>
 										<Table.HeaderCell>Description</Table.HeaderCell>
 									</Table.Row>

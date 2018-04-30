@@ -19,3 +19,13 @@ export const user2 = {
         GameMocks.game3
     ]
 };
+
+export const user3 = {
+    id: 'id3',
+    name: 'user3',
+    ELO: 2000,
+    games: [
+        GameMocks.game2,
+        GameMocks.game3
+    ]
+};

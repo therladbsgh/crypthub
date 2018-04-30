@@ -8,7 +8,8 @@ import { UserMocks } from 'mocks';
 //TODO: get users
 const users = [
     UserMocks.user1,
-    UserMocks.user2
+    UserMocks.user2,
+    UserMocks.user3
 ];
 
 export default class InviteModal extends Component {
