@@ -41,11 +41,11 @@ class UserPage extends Component {
     
   	render() {
         const { user, allGames, hasMounted } = this.state;
-        const { username, games, tradingBots } = user;
+        const { username, ELO, games, tradingBots } = user;
 
         const YourGamesPane = (
             <Tab.Pane id={styles.tab} key='tab1'>
-                <YourGames games={games} username={username} />
+                <YourGames games={games} username={username} ELO={ELO} />
             </Tab.Pane>
         );
         const FindGamesPane = (
