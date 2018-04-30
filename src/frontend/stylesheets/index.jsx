@@ -22,4 +22,5 @@ export { default as LoginStyle } from './login';
 export { default as GlobalRankingsStyle } from './globalrankings';
 export { default as VerifyEmailStyle } from './verifyemail';
 export { default as APIDocumentationStyle } from './apidocumentation';
+export { default as UserSettingsStyle } from './usersettings';
 export { default as SharedStyle } from './shared';
