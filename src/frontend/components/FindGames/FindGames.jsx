@@ -7,6 +7,9 @@ import { Tab, Header, Dropdown, Checkbox, Form, Pagination } from 'semantic-ui-r
 import { Searchbar, GameCard } from 'components';
 import { FindGamesStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
+// necessary to give search dropdown scrolling capabilities
+import '../../stylesheets/findgamesraw.scss?raw';
+
 const sortOptions = [
 	{
 		text: 'Recently Created',
@@ -121,7 +124,7 @@ class FindGames extends Component {
 			<div>
 				<Header as='h2'>Find a Game</Header>
 				<Form>
-					<Form.Field className={styles.search}>
+					<Form.Field className={styles.searchbar}>
 						<label>Search for a Game</label>
 						<Searchbar placeholder='Game name' source={fullGames} field='name' searchFields={['name']} resultRenderer={({ name }) => name} onResultSelect={(e, d) => this.props.history.push(`/game/${d.result.id}`)} />
 					</Form.Field>
