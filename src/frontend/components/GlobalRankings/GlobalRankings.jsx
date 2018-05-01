@@ -4,27 +4,6 @@ import { Container, Header, Table, Icon, Form, Pagination } from 'semantic-ui-re
 import { UserBackend } from 'endpoints';
 import { Navbar, Searchbar } from 'components';
 import { GlobalRankingsStyle as styles, SharedStyle as sharedStyles } from 'styles';
-import { UserMocks } from 'mocks';
-
-//TODO: get users
-const users = _.map([
-    UserMocks.user1,
-    UserMocks.user2,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-    UserMocks.user1,
-], (u, index) => _.extend({}, u, { rank: index + 1 }));
 
 const numPerPage = 10;
 
@@ -33,6 +12,7 @@ export default class GlobalRankings extends Component {
 		super(props);
 		this.state = {
             username: '',
+            users: [],
             results: ['RESET'],
             activePage: 1,
             hasMounted: false
@@ -44,9 +24,20 @@ export default class GlobalRankings extends Component {
     
     componentWillMount() {
 		UserBackend.getUsername()
-		.then(res => {
-			console.log('success! ', res);
-            this.setState({ username: res.username, hasMounted: true });
+		.then(resUsername => {
+			console.log('success! ', resUsername);
+            UserBackend.getAllUsers()
+            .then(resUsers => {
+                console.log('success! ', resUsers);
+                this.setState({
+                    username: resUsername.username,
+                    users: _.map(resUsers.users, (u, index) => _.extend({}, u, { rank: index + 1 })),
+                    hasMounted: true
+                });
+            }, ({ err }) => {
+                console.log('error! ', err);
+                alert(`Error: ${err}`);
+            });
 		}, ({ err }) => {
 			console.log('error! ', err);
 			alert(`Error: ${err}`);
@@ -65,7 +56,7 @@ export default class GlobalRankings extends Component {
     }
     
     render() {
-        const { username, results, activePage, hasMounted } = this.state;
+        const { username, users, results, activePage, hasMounted } = this.state;
 
         const resultUsers = results[0] === 'RESET' ? users : _.filter(users, u => _.some(results, _.mapKeys(_.mapValues(u, v => String(v)), (v, k) => k.toLowerCase())));
         const upper = activePage * numPerPage;
