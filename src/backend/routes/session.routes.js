@@ -70,11 +70,25 @@ router.route('/getAllUsers').get(SessionController.getAllUsers);
 
 /**
 *
-* get all user email, gets all users email based on session
+* get user email 
+*gets a user email based on session
 *@return 400 on error, 200 on success
 */
 router.route('/email').get(SessionController.getUserEmail);
 
+/**
+*
+* changes a user's email
+*@return 400 on error, 200 on success
+*/
+router.route('/saveEmail').post(SessionController.saveEmail);
+
+/**
+*
+* changes a user's password
+*@return 400 on error, 200 on success
+*/
+router.route('/savePassword').post(SessionController.savePassword);
 
 
 

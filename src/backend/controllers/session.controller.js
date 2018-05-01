@@ -342,18 +342,15 @@ function forgot(req, res){
       
          if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.', field: 'invalid-email' });
         console.log(user);
-        // // Create a verification token, save it, and send email
-        // var token = new Token({ username: user.username, token: crypto.randomBytes(16).toString('hex') });
-
-        // get user and change password
-        //user.password = crypto.randomBytes(4).toString('hex');
+        
         var newPassword = crypto.randomBytes(4).toString('hex');
         user.password = createHash(newPassword);
         console.log(user.password);
         console.log(newPassword);
+        // possible get rid of next line 
         user.isVerified = true;
             user.save(function (err) {
-            if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save Token'  }); }
+            if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save user password' }); }
  
             // Send the email
               var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
@@ -370,27 +367,9 @@ function forgot(req, res){
 
 
  
-        // // Save the token
-        // token.save(function (err) {
-        //     if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save Token'  }); }
- 
-        //     // Send the email
-        //       var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
-        //   });
-        // var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token', 
-        // text: 'Hello,\n\n' + 'Please verify your CryptHub account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email='+ email + '\n'};
-        //     transporter.sendMail(mailOptions, function (err) {
-        //         if (err) { return res.status(500).send({ msg: err.message }); }
-        //         res.status(200).send('A verification email has been sent to ' + user.email + '.');
-        //     });
-        // });
+
  
     });
-
-
-
-// change password of user
-// send email back to user with their new password
 
 
 };
@@ -449,7 +428,7 @@ function getAllUsers(req, res) {
 /**
  * Gets user email from database based on session.
  *
- * @return user email if exists, null otherwise
+ * @return user email if exists, error 500 otherwise
  */
 function getUserEmail(req, res) {
   
@@ -464,6 +443,86 @@ function getUserEmail(req, res) {
 }
 else {
   return res.status(500).send({err: 'User session does not exist', field: 'session'});
+}
+}
+
+/**
+ * Changes user email 
+ *
+ * @return 200 on sucess with message, 500 on error 
+ */
+function saveEmail(req, res) {
+
+  var newEmail = req.body.email;
+  console.log(newEmail);
+  
+  if (req.session.user){
+  User.get(req.session.user).then((user) => {
+    
+
+    if (!user){
+      return res.status(500).send({err: 'Can not find user', field: 'user'});
+    }
+
+    user.email = newEmail;
+
+    user.save(function(err){
+
+      if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save user email' }); }
+
+      res.status(200).send({msg: 'user email has been saved as' + newEmail});
+
+
+    });
+    console.log(user);
+
+    
+
+  });
+
+}
+else {
+  return res.status(500).send({err: 'User session does not exist. Please log in and try again', field: 'session'});
+}
+}
+
+
+/**
+ * Changes user password 
+ *
+ * @return 200 on sucess with message, 500 on error 
+ */
+function savePassword(req, res) {
+
+  var newPassword = req.body.password;
+  console.log(newPassword);
+  
+  if (req.session.user){
+  User.get(req.session.user).then((user) => {
+    console.log(user);
+
+    if (!user){
+      return res.status(500).send({err: 'Can not find user', field: 'user'});
+    }
+
+    user.password = createHash(newPassword);
+
+    user.save(function(err){
+
+      if (err) { return res.status(500).send({ err: 'MongoDB Server Error: Cannot save user password' }); }
+
+      res.status(200).send({msg: 'user password has been saved as' + newPassword});
+
+
+    });
+
+    console.log(user);
+
+  });
+
+}
+else {
+  return res.status(500).send({err: 'User session does not exist. Please log in and try again', field: 'session'});
 }
 }
 
@@ -483,6 +542,8 @@ module.exports = {
   forgot,
   getAllUsers,
   getUserEmail,
+  saveEmail,
+  savePassword,
   ensureAuthenticated
 
 };
