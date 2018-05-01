@@ -118,7 +118,7 @@ class UserSettings extends Component {
 				<Container id={styles.container}>
 					<Header as='h1'>Welcome, {username}</Header>
                     <Header as='h3'>Your email is: {email}</Header>
-                    <ChangeEmailModal />
+                    <ChangeEmailModal successHandler={(email) => this.setState({ email })} />
                     <Header as='h3'>Change Password</Header>
                     <Form onSubmit={this.handleSubmit} loading={loading} success={submitted && !errMsg} error={!!errMsg}>
                         <Form.Group widths='equal'>

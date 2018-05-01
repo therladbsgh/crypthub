@@ -105,7 +105,8 @@ export default class ChangeEmailModal extends Component {
 
 		UserBackend.saveEmail(emailChangeObj)
 		.then(res => {
-			console.log('success! ', res);
+            console.log('success! ', res);
+            this.props.successHandler(email);
             this.setState({ loading: false, submitted: true });
 		}, ({ err, field }) => {
 			console.log('error! ', err);
