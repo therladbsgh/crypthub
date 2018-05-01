@@ -28,6 +28,7 @@ export default class UserTradingBots extends Component {
             err: ''
         });
 
+        console.log(file);
         if (!_.includes(file.type, 'javascript')) {
             this.setState({
                 loading: false,
