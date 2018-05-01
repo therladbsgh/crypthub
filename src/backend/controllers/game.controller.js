@@ -336,7 +336,7 @@ function fillTrade(playerId, trade) {
     }
 
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
-      asset.set({ amount: asset.amount + (trade.size * trade.price) });
+      asset.set({ amount: asset.amount + trade.size });
       return asset.save();
     });
   }).then(() => {
@@ -430,6 +430,16 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
         return Promise.reject(new Error('Trying to buy more than amount of USD available'));
       }
 
+      if (((type === 'limit' && side === 'buy') || (type === 'stop' && side === 'sell')) &&
+          coin.currPrice < price) {
+        return Promise.reject(new Error('Cannot specify price above current market price'));
+      }
+
+      if (((type === 'limit' && side === 'sell') || (type === 'stop' && side === 'buy')) &&
+          coin.currPrice > price) {
+        return Promise.reject(new Error('Cannot specify price below current market price'));
+      }
+
       if (side === 'buy') {
         return Asset.findOne({ _id: usd._id }).exec().then((usdAsset) => {
           usdAsset.set({ amount: usdAsset.amount - (size * price) });
@@ -514,6 +524,8 @@ function placeOrder(req, res) {
       // Wrong argument
       res.status(400).json({ error: 'Wrong arguments' });
     }
+  }).catch((err) => {
+    res.status(400).json({ err: err.message });
   });
 }
 

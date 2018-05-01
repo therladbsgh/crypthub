@@ -102,7 +102,7 @@ class GameSettings extends Component {
     }
 
     render() {
-        const { inGame, isHost, username, game } = this.props;
+        const { inGame, isHost, username, game, users } = this.props;
         const { gameObj, submitted, loading, errMsg, errField } = this.state;
         const { id, host, playerPortfolioPublic, startingBalance, commissionValue, shortSelling, limitOrders, stopOrders, isPrivate, password, passwordConfirm, completed } = gameObj;
 
@@ -110,7 +110,7 @@ class GameSettings extends Component {
 			<div>
                 {!completed &&
                 [<Header key='1' as='h2'>Game Actions</Header>,
-                isHost && <InviteModal key='2' gameId={id} />,
+                isHost && <InviteModal key='2' gameId={id} users={users} />,
                 inGame ?
                 <LeaveModal key='3' gameId={id} username={username} />
                 :
