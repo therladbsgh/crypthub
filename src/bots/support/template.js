@@ -8,7 +8,9 @@ const api = require('../../../../backend/api/api');
  * interact with the API to accomplish your desired trade behaviors. 
 */
 function trade(prices) {
+    // Use console.log to print information you want to see in the debug log
     console.log(prices);
+
     // Perform trade behavior based on the given prices.
 }
 

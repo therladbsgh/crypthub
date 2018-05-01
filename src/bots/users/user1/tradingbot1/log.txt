@@ -1,0 +1,10 @@
+trading [ 2, 3, 4 ]
+{ gameId: 'gameid', playerId: 'playerid', set: true }
+id
+trading [ 2, 3, 4 ]
+{ gameId: 'gameid', playerId: 'playerid', set: true }
+id
+[ERROR] conasdfsole is not defined
+trading [ 2, 3, 4 ]
+{ gameId: 'gameid', playerId: 'playerid', set: true }
+id
