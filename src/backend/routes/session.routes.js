@@ -61,5 +61,21 @@ router.route('/sendVerification').get(SessionController.resendToken);
 */
 router.route('/forgot').post(SessionController.forgot);
 
+/**
+*
+* get all user method, gets all users in database  
+*@return 400 on error, 200 on success
+*/
+router.route('/getAllUsers').get(SessionController.getAllUsers);
+
+/**
+*
+* get all user email, gets all users email based on session
+*@return 400 on error, 200 on success
+*/
+router.route('/email').get(SessionController.getUserEmail);
+
+
+
 
 module.exports = router;
