@@ -498,7 +498,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message });
+        res.status(400).json({ err: err1.message, field: null });
       });
     } else if (type === 'market' && side === 'sell') {
       // Regular sell
@@ -507,7 +507,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message });
+        res.status(400).json({ err: err1.message, field: null });
       });
     } else if (type === 'short' && side === 'buy') {
       // Short buying
@@ -518,7 +518,7 @@ function placeOrder(req, res) {
       futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message });
+        res.status(400).json({ err: err1.message, field: null });
       });
     } else {
       // Wrong argument
