@@ -7,7 +7,7 @@ const api = require('../../../../backend/api/api');
  * to accomplish your desired trade behaviors. 
 */
 function trade(prices) {
-    console.log('trading');
+    console.log('trading', prices);
     console.log(api.placeOrder('limit', 'sell', 2, 2, 'BTC', false));
 }
 
