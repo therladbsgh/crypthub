@@ -91,7 +91,7 @@ function getOrders() {
     return [{ orderId: 'orderid1' }, { orderId: 'orderid2' }];
 }
 
-function getFills() {
+function getCompletedOrders() {
     return [{ orderId: 'orderid1' }, { orderId: 'orderid2' }];
 }
 
@@ -108,6 +108,6 @@ module.exports = {
     cancelAll,
     getOrder,
     getOrders,
-    getFills,
+    getCompletedOrders,
     getPortfolio
 };
