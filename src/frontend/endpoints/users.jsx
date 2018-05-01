@@ -12,6 +12,10 @@ export function getUsername() {
     return Backend.get('passport/username');
 }
 
+export function getEmail() {
+    return Backend.get('passport/email');
+}
+
 export function signup(signupObj) {
     return Backend.post('passport/signup', signupObj);
 }

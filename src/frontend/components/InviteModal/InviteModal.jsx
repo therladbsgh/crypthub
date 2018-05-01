@@ -81,7 +81,7 @@ export default class InviteModal extends Component {
                             <Form error={!!err}>
                                 <Form.Field>
                                     <label>Users to Invite</label>
-                                    <Dropdown placeholder='Usernames' multiple search selection options={_.map(this.props.users, u => ({ text: u.name, value: u.name }))} value={usernames} onChange={this.handleChange} />
+                                    <Dropdown placeholder='Usernames' multiple search selection options={_.map(this.props.users, u => ({ text: u.username, value: u.username }))} value={usernames} onChange={this.handleChange} />
                                 </Form.Field>
                                 <Message error header='Error' content={err} />
                             </Form>

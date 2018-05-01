@@ -11,6 +11,7 @@ class UserSettings extends Component {
 
 		this.state = {
             username: '',
+            email: '',
             passwordChangeObj: {
                 password: ''
             },
@@ -29,12 +30,19 @@ class UserSettings extends Component {
 	componentWillMount() {
 		const { history } = this.props;
 		UserBackend.getUsername()
-		.then(res => {
-			console.log('success! ', res);
-            if (_.isEmpty(res)) {
+		.then(resUsername => {
+			console.log('success! ', resUsername);
+            if (_.isEmpty(resUsername)) {
 				history.push({ pathname: '/login', redirected: true });
 			} else {
-                this.setState({ username: res.username, hasMounted: true });
+                UserBackend.getEmail()
+                .then(resEmail => {
+                    console.log('success! ', resEmail);
+                    this.setState({ username: resUsername.username, email: resEmail.email, hasMounted: true });
+                }, ({ err }) => {
+                    console.log('error! ', err);
+                    alert(`Error: ${err}`);
+                });
 			}
 		}, ({ err }) => {
 			console.log('error! ', err);
@@ -100,7 +108,7 @@ class UserSettings extends Component {
     }
 
   	render() {
-        const { username, passwordChangeObj, passwordConfirm, loading, submitted, errMsg, errField, hasMounted } = this.state;
+        const { username, email, passwordChangeObj, passwordConfirm, loading, submitted, errMsg, errField, hasMounted } = this.state;
         const { password } = passwordChangeObj;
 
 		return (
@@ -109,7 +117,7 @@ class UserSettings extends Component {
 				<Navbar username={username} />
 				<Container id={styles.container}>
 					<Header as='h1'>Welcome, {username}</Header>
-                    <Header as='h3'>Your email is: EMAIL HERE</Header>
+                    <Header as='h3'>Your email is: {email}</Header>
                     <ChangeEmailModal />
                     <Header as='h3'>Change Password</Header>
                     <Form onSubmit={this.handleSubmit} loading={loading} success={submitted && !errMsg} error={!!errMsg}>
