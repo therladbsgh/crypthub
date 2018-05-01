@@ -60,15 +60,54 @@ function placeOrder(type, side, size, price, coin, GTC) {
         err(`placeOrder: Fifth argument (coin) must be one of 'BTC' or 'ETH'. Found: ${coin}`);        
     }
 
-    if(!_.isBoolean(GTC)) {
+    if (!_.isBoolean(GTC)) {
         err(`placeOrder: Sixth argument (GTC) must be a boolean. Found: ${GTC}`);        
     }
 
-    console.log(context);
     return 'id';
 }
 
+function cancelOrder(orderId) {
+    if (!_.isString(orderId)) {
+        err(`cancelOrder: First argument (orderId) must be a string. Found: ${orderId}`);        
+    }
+
+    return true;
+}
+
+function cancelAll() {
+    return true;
+}
+
+function getOrder(orderId) {
+    if (!_.isString(orderId)) {
+        err(`getOrder: First argument (orderId) must be a string. Found: ${orderId}`);        
+    }
+
+    return { orderId: 'orderid' };
+}
+
+function getOrders() {
+    return [{ orderId: 'orderid1' }, { orderId: 'orderid2' }];
+}
+
+function getFills() {
+    return [{ orderId: 'orderid1' }, { orderId: 'orderid2' }];
+}
+
+function getPortfolio() {
+    return [{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508 }];
+}
+
+// getHistory() function?
+
 module.exports = {
     setContext,
-    placeOrder
+    placeOrder,
+    cancelOrder,
+    cancelAll,
+    getOrder,
+    getOrders,
+    getFills,
+    getPortfolio
 };
