@@ -593,17 +593,25 @@ function inviteUsers(req, res){
     const id = req.body.gameId;
     //console.log(users);
 
-    User.find({ username: { $in: users } }).exec().then((users) => {
-      //console.log(users);
+    User.find({ username: { $in: users } }).exec().then(( users) => {
 
+      console.log(users.length);
+      
+      if (users.length == 0){
+        return res.status(500).send({err: 'These users do not exist. Please check the usernames you have inputted are correct.', field: 'users'});
+      }
+      
       users.forEach(function(user){
-       // console.log(user);
+        console.log(user);
+     if (!user){
+      return res.status(500).send({err: 'This user' + user.username + 'does not exist', field: 'user'});
+     };
      var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
           });
         var mailOptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Game invite',
         text: 'Hello,\n\n' + 'You have been invited to a game. Please click the link to view it: \nhttp:\/\/' + url + '\/game/' + id  + '\n'};
             transporter.sendMail(mailOptions, function (err) {
-                if (err) { return res.status(500).send({ msg: err.message }); }
+                if (err) { return res.status(500).send({ err: 'Can not send email to this user' + user.username, field: 'email'}); }
 
 
             });
@@ -614,17 +622,7 @@ function inviteUsers(req, res){
       res.status(200).send({msg: 'The game invites have been sent.'});
 
     });
-    //console.log(req.body.usernames);
 
-        //  var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
-        //   });
-        // var mailOptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Account Verification Token',
-        // text: 'Hello,\n\n' + 'your new password is ' + newPassword + '\n' + 'Please log in.' + '\n'};
-        //     transporter.sendMail(mailOptions, function (err) {
-        //         if (err) { return res.status(500).send({ msg: err.message }); }
-
-        //         res.status(200).send('A password reset email has been sent to ' + user.email + '.');
-        //     });
 }
 
 module.exports = {

@@ -428,6 +428,27 @@ function getUser(req, res) {
   }
 }
 
+/**
+ * Gets username list from database.
+ *
+ * @return user name if exists, null otherwise
+ */
+function getAllUsers(req, res) {
+  
+  
+  User.find({}).exec().then((users) => {
+    console.log(users);
+    if (!users){
+      return res.status(500).send({err: 'Can not find users', field: 'users'});
+    }
+    res.status(200).json({ users });
+  });
+
+}
+
+
+
+
 module.exports = {
   signup,
   login,
@@ -437,6 +458,7 @@ module.exports = {
   resendToken,
   confirmToken,
   forgot,
+  getAllUsers,
   ensureAuthenticated
 
 };
