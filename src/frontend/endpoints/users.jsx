@@ -4,6 +4,10 @@ export function getUser() {
     return Backend.get('passport/user');
 }
 
+export function getAllUsers() {
+    return Backend.get('passport/getAllUsers');
+}
+
 export function getUsername() {
     return Backend.get('passport/username');
 }

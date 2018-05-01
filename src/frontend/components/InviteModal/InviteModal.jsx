@@ -3,14 +3,6 @@ import React, { Component } from 'react';
 import { Modal, Button, Message, Dropdown, Form } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { InviteModalStyle as styles, SharedStyle as sharedStyles } from 'styles';
-import { UserMocks } from 'mocks';
-
-//TODO: get users
-const users = [
-    UserMocks.user1,
-    UserMocks.user2,
-    UserMocks.user3
-];
 
 export default class InviteModal extends Component {
     constructor(props) {
@@ -89,7 +81,7 @@ export default class InviteModal extends Component {
                             <Form error={!!err}>
                                 <Form.Field>
                                     <label>Users to Invite</label>
-                                    <Dropdown placeholder='Usernames' multiple search selection options={_.map(users, u => ({ text: u.name, value: u.name }))} value={usernames} onChange={this.handleChange} />
+                                    <Dropdown placeholder='Usernames' multiple search selection options={_.map(this.props.users, u => ({ text: u.name, value: u.name }))} value={usernames} onChange={this.handleChange} />
                                 </Form.Field>
                                 <Message error header='Error' content={err} />
                             </Form>

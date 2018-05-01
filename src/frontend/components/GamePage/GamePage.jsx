@@ -14,6 +14,7 @@ class GamePage extends Component {
             thisPlayer: {},
             usernameUser: '',
             coins: [],
+            users: [],
             hasMounted: false
         };
     }
@@ -30,12 +31,20 @@ class GamePage extends Component {
                 GameBackend.getCoins()
                 .then(resCoins => {
                     console.log('success! ', resCoins);
-                    this.setState({
-                        game: resGame.game,
-                        thisPlayer: resGame.player,
-                        usernameUser: resUser.username,
-                        coins: resCoins.data,
-                        hasMounted: true
+                    UserBackend.getAllUsers()
+                    .then(resUsers => {
+                        console.log('success! ', resUsers);
+                        this.setState({
+                            game: resGame.game,
+                            thisPlayer: resGame.player,
+                            usernameUser: resUser.username,
+                            coins: resCoins.data,
+                            users: resUsers.users,
+                            hasMounted: true
+                        });
+                    }, ({ err }) => {
+                        console.log('error! ', err);
+                        alert(`Error: ${err}`);
                     });
                 }, ({ err }) => {
                     console.log('error! ', err);
@@ -52,7 +61,7 @@ class GamePage extends Component {
 	}
 
   	render() {
-        const { game, thisPlayer, usernameUser, coins, hasMounted } = this.state;
+        const { game, thisPlayer, usernameUser, coins, users, hasMounted } = this.state;
         const { id, name, players, playerPortfolioPublic, isPrivate, completed } = game;
         const { username } = thisPlayer;
 
@@ -88,7 +97,7 @@ class GamePage extends Component {
         );
         const GameSettingsPane = (
             <Tab.Pane id={styles.tab} key='tab6'>
-                <GameSettings game={game} inGame={inGame} isHost={isHost} username={usernameUser} />
+                <GameSettings game={game} inGame={inGame} isHost={isHost} username={usernameUser} users={users} />
             </Tab.Pane>
         );
 
