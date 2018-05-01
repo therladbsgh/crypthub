@@ -7,9 +7,6 @@ const connectMongo = require('connect-mongo');
 const db = require('./db');
 const router = require('./routes/index.js');
 
-//setup api
-var api = require('./api');
-
 // Setup express server
 const app = express();
 
@@ -35,11 +32,6 @@ app.use(session({
   resave: true,
   secret: 'secret'
 }));
-
-app.post('/', function(request, response){
-  api(request, response);
-});
-
 
 // Configure router
 app.use('/', router);
