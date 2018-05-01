@@ -441,10 +441,33 @@ function getAllUsers(req, res) {
     if (!users){
       return res.status(500).send({err: 'Can not find users', field: 'users'});
     }
-    res.status(200).json({ users });
+    res.status(200).send({ users });
   });
 
 }
+
+/**
+ * Gets user email from database based on session.
+ *
+ * @return user email if exists, null otherwise
+ */
+function getUserEmail(req, res) {
+  
+  if (req.session.user){
+  User.get(req.session.user).then((user) => {
+    console.log(user);
+    if (!user){
+      return res.status(500).send({err: 'Can not find user', field: 'user'});
+    }
+    res.status(200).send({ email: user.email });
+  });
+}
+else {
+  return res.status(500).send({err: 'User session does not exist', field: 'session'});
+}
+}
+
+
 
 
 
@@ -459,6 +482,7 @@ module.exports = {
   confirmToken,
   forgot,
   getAllUsers,
+  getUserEmail,
   ensureAuthenticated
 
 };
