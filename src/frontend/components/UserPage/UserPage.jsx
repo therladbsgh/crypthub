@@ -43,6 +43,8 @@ class UserPage extends Component {
         const { user, allGames, hasMounted } = this.state;
         const { username, ELO, games, tradingBots } = user;
 
+        if (!hasMounted) return null;
+
         const YourGamesPane = (
             <Tab.Pane id={styles.tab} key='tab1'>
                 <YourGames games={games} username={username} ELO={ELO} />

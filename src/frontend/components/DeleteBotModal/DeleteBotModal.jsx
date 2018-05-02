@@ -50,11 +50,11 @@ export default class DeleteBotModal extends Component {
     }
     
     render() {
-        const { botId, botName, disabled } = this.props;
+        const { botId, disabled } = this.props;
         const { open, loading, err } = this.state;
 
         return (
-            <Modal trigger={<Button icon='cancel' type='button' disabled={disabled} negative content={`Delete ${botName}`} />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
+            <Modal trigger={<Button icon='cancel' type='button' disabled={disabled} negative content={'Delete'} />} open={open} onOpen={this.open} onClose={this.close} closeIcon>
                 <Modal.Header id={styles.del}>Delete Trading Bot</Modal.Header>
                     <Modal.Content>
                         <p>Are you sure you want to delete this trading bot?</p>
