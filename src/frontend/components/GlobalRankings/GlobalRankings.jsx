@@ -74,7 +74,7 @@ export default class GlobalRankings extends Component {
                     <Form>
                         <Form.Field width={8}>
                             <label>Search for a User</label>
-                            <Searchbar placeholder='Username' source={users} field='name' searchFields={['name']} handleResults={this.handleResults} open={false} />                
+                            <Searchbar placeholder='Username' source={users} field='name' searchFields={['username']} handleResults={this.handleResults} open={false} />                
                         </Form.Field>
                     </Form>
                     {!_.isEmpty(usersShown) ?
@@ -91,7 +91,7 @@ export default class GlobalRankings extends Component {
                                 {_.map(usersShown, (u, index) =>
                                     <Table.Row key={index}>
                                         <Table.Cell>{u.rank}</Table.Cell>
-                                        <Table.Cell>{u.name}</Table.Cell>
+                                        <Table.Cell>{u.username}</Table.Cell>
                                         <Table.Cell>{u.ELO}</Table.Cell>
                                     </Table.Row>
                                 )}

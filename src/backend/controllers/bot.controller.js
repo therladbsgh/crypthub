@@ -1,6 +1,10 @@
+const path = require('path');
+
 function upload(req, res) {
-  console.log(req.files);
-  res.status(200).json({ success: true });
+  const file = req.files.code;
+  file.mv(path.join(__dirname, `../bots/${file.name}`)).then(() => {
+    res.status(200).send({ success: true });
+  });
 }
 
 module.exports = {

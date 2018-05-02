@@ -35,7 +35,8 @@ module.exports = {
 			"styles": path.join(__dirname, '../src/frontend/stylesheets'),
 			"mocks": path.join(__dirname, '../src/common/mocks'),
 			"endpoints": path.join(__dirname, '../src/frontend/endpoints'),
-			"docs": path.join(__dirname, '../src/common/docs')
+			"docs": path.join(__dirname, '../src/common/docs'),
+			"api": path.join(__dirname, '../src/backend/api/api.js')
 		}
 	},
   	plugins: [

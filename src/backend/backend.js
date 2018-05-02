@@ -1,6 +1,7 @@
 const express = require('express');
+const path = require('path');
+// const busboy = require('express-busboy');
 const fileUpload = require('express-fileupload');
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const connectMongo = require('connect-mongo');
@@ -8,14 +9,14 @@ const connectMongo = require('connect-mongo');
 const db = require('./db');
 const router = require('./routes/index.js');
 
-//setup api
-var api = require('./api');
-
 // Setup express server
 const app = express();
-
-app.use(bodyParser.json());
 app.use(fileUpload());
+// busboy.extend(app, {
+//     upload: true,
+//     path: path.join(__dirname, 'bots'),
+//     allowedPath: /./
+// });
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
@@ -37,11 +38,6 @@ app.use(session({
   resave: true,
   secret: 'secret'
 }));
-
-app.post('/', function(request, response){
-  api(request, response);
-});
-
 
 // Configure router
 app.use('/', router);

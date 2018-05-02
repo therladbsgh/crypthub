@@ -105,7 +105,8 @@ export default class ChangeEmailModal extends Component {
 
 		UserBackend.saveEmail(emailChangeObj)
 		.then(res => {
-			console.log('success! ', res);
+            console.log('success! ', res);
+            this.props.successHandler(email);
             this.setState({ loading: false, submitted: true });
 		}, ({ err, field }) => {
 			console.log('error! ', err);
@@ -144,7 +145,7 @@ export default class ChangeEmailModal extends Component {
                 <Modal open={open && success}>
                     <Modal.Header id={styles.success}>Success!</Modal.Header>
                         <Modal.Content>
-                            <p>Check your email for a verification link.</p>
+                            <p>Your email has successfully been changed.</p>
                         </Modal.Content>
                     <Modal.Actions>
                         <Button icon='check' content='All Done' onClick={this.close} positive />

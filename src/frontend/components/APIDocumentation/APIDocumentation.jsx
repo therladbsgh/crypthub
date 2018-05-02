@@ -42,11 +42,13 @@ export default class APIDocumentation extends Component {
 							<Header as='h1'>{m.name}</Header>
 							<span>{m.description}</span>
 							<Header as='h3'>Parameters</Header>
+							{_.isEmpty(m.params) ?
+							'None.'
+							:
 							<Table fixed>
 								<Table.Header>
 									<Table.Row>
 										<Table.HeaderCell>Name</Table.HeaderCell>
-										<Table.HeaderCell>Default Value</Table.HeaderCell>
 										<Table.HeaderCell>Type</Table.HeaderCell>
 										<Table.HeaderCell>Description</Table.HeaderCell>
 									</Table.Row>
@@ -59,9 +61,6 @@ export default class APIDocumentation extends Component {
 												{p.name}
 											</Table.Cell>
 											<Table.Cell>
-												{p.default}
-											</Table.Cell>
-											<Table.Cell>
 												{p.type}
 											</Table.Cell>
 											<Table.Cell>
@@ -70,8 +69,8 @@ export default class APIDocumentation extends Component {
 										</Table.Row>
 									)}
 								</Table.Body>
-							</Table>
-							<Header as='h3'>Return [{m.return.type}]</Header>
+							</Table>}
+							<Header as='h3'>Return - {m.return.type}</Header>
 							<span>{m.return.description}</span>
 							{index < methods.length - 1 && <Divider id={styles.divider} section />}
 						</div>
