@@ -10,23 +10,23 @@ import { UserBackend } from 'endpoints';
 import { DeleteBotModal } from 'components';
 import { TradingBotIDEStyle as styles } from 'styles';
 
-const tradingBots = [
-    {
-        _id: 'id1',
-        name: 'tradingBot1',
-        data: 'trading bot 1 code goes here'
-    },
-    {
-        _id: 'id2',
-        name: 'tradingBot2',
-        data: 'trading bot 2 code goes here'
-    },
-    {
-        _id: 'id3',
-        name: 'tradingBot3',
-        data: 'trading bot 3 code goes here'
-    }
-];
+// const tradingBots = [
+//     {
+//         _id: 'id1',
+//         name: 'tradingBot1',
+//         data: 'trading bot 1 code goes here'
+//     },
+//     {
+//         _id: 'id2',
+//         name: 'tradingBot2',
+//         data: 'trading bot 2 code goes here'
+//     },
+//     {
+//         _id: 'id3',
+//         name: 'tradingBot3',
+//         data: 'trading bot 3 code goes here'
+//     }
+// ];
 
 export default class UserTradingBots extends Component {
     constructor(props) {
@@ -42,13 +42,15 @@ export default class UserTradingBots extends Component {
             loading: false,
             submitted: false,
             success: '',
-            err: ''
+            err: '',
+            errAdd: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleEditorChange = this.handleEditorChange.bind(this);
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handleCreateNew = this.handleCreateNew.bind(this);
         this.runBot = this.runBot.bind(this);
         this.stopBot = this.stopBot.bind(this);
     }
@@ -94,7 +96,8 @@ export default class UserTradingBots extends Component {
         this.setState({
             loading: true,
             submitted: false,
-            err: ''
+            err: '',
+            errAdd: ''
         });
 
         UserBackend.saveTradingBot(tradingBotObj)
@@ -115,6 +118,30 @@ export default class UserTradingBots extends Component {
         });
     }
 
+    handleCreateNew(event) {
+        event.preventDefault();
+        this.setState({
+            loading: true,
+            submitted: false,
+            err: '',
+            errAdd: ''
+        });
+
+        UserBackend.newTradingBot()
+        .then(res => {
+            console.log('success! ', res);
+            this.setState({
+                loading: false,
+            });
+        }, ({ err }) => {
+            console.log('error! ', err);
+            this.setState({
+                loading: false,
+                errAdd: err
+            });
+        });
+    }
+
     runBot() {
         this.setState({
             running: true
@@ -128,12 +155,13 @@ export default class UserTradingBots extends Component {
     }
 
     render() {
-        // const { tradingBots } = this.props;
-        const { tradingBotObj, debugLog, loading, submitted, running, success, err } = this.state;
+        const { tradingBots } = this.props;
+        const { tradingBotObj, debugLog, loading, submitted, running, success, err, errAdd } = this.state;
         const { botId, botName, data } = tradingBotObj;
 
         return (
 			<div className={styles.top}>
+                {errAdd && <Message error header='Error' content={errAdd} />}
                 <Form onSubmit={this.handleSave} loading={loading} error={!!err} success={submitted && !err}>
                     <Form.Group>
                         <Form.Field width={8} disabled={running}>
@@ -142,7 +170,7 @@ export default class UserTradingBots extends Component {
                         </Form.Field>
                         <Form.Field width={2} disabled={running}>
                             <label>Add New Bot</label>
-                            <Button icon='add' type='button' primary disabled={running} content={'New Bot'} />
+                            <Button icon='add' type='button' fluid positive disabled={running} onClick={this.handleCreateNew} content={'New Bot'} />
                         </Form.Field>
                     </Form.Group>
                     <Form.Field width={10} disabled={!botId}>

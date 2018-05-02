@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Header, Button, Icon, Container, Form, Input, Message } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
-import { Navbar, ChangeEmailModal } from 'components'; 
+import { Navbar, ChangeEmailModal, DeleteAccountModal } from 'components'; 
 import { UserSettingsStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
 class UserSettings extends Component {
@@ -69,7 +69,7 @@ class UserSettings extends Component {
 		}
     }
     
-    handleSubmit() {
+    handleSubmit(event) {
         const { passwordChangeObj, passwordConfirm } = this.state;
         const { password } = passwordChangeObj;
 
@@ -117,7 +117,8 @@ class UserSettings extends Component {
 				<Navbar username={username} />
 				<Container id={styles.container}>
 					<Header as='h1'>Welcome, {username}</Header>
-                    <Header as='h3'>Your email is: {email}</Header>
+                    <Header as='h3'>Change Email</Header>
+                    <Header as='h4' id={styles.emailLine}>Your email is: <span className={styles.email}>{email}</span></Header>
                     <ChangeEmailModal successHandler={(email) => this.setState({ email })} />
                     <Header as='h3'>Change Password</Header>
                     <Form onSubmit={this.handleSubmit} loading={loading} success={submitted && !errMsg} error={!!errMsg}>
@@ -143,6 +144,8 @@ class UserSettings extends Component {
                         />
                         <Button icon='save' type='submit' positive content='Save Password' />
                     </Form>
+                    <Header as='h3'>Delete Account</Header>
+                    <DeleteAccountModal />                    
 				</Container>
 			</div>
 		);

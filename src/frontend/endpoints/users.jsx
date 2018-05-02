@@ -32,6 +32,10 @@ export function logout() {
     return Backend.get('passport/logout');
 }
 
+export function deleteUser() {
+    return Backend.get('passport/delete');
+}
+
 export function savePassword(changePasswordObj) {
     return Backend.post('passport/savePassword', changePasswordObj);
 }
@@ -55,5 +59,9 @@ export function uploadTradingBot(fileObj) {
 }
 
 export function saveTradingBot(tradingBotObj) {
-    return Backend.post('saveTradingBot', tradingBotObj);
+    return Backend.post('bot/save', tradingBotObj);
+}
+
+export function newTradingBot() {
+    return Backend.get('bot/new');
 }
