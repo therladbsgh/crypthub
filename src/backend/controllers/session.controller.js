@@ -532,6 +532,8 @@ else {
 
 
 module.exports = {
+  isValidPassword,
+  createHash,
   signup,
   login,
   logout,
