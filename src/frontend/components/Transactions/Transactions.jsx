@@ -36,10 +36,17 @@ export default class Transactions extends Component {
     constructor(props) {
 		super(props);
 		this.state = {
+            transactions: _.sortBy(this.props.transactions, t => -new Date(t.date)),
 			activePage: 1
 		};
 
 		this.handlePageChange = this.handlePageChange.bind(this);
+    }
+
+    componentWillReceiveProps(newProps) {
+        this.setState({
+            transactions: _.sortBy(newProps.transactions, t => -new Date(t.date))
+        });
     }
 
     handlePageChange(event, { activePage }) {
@@ -47,8 +54,8 @@ export default class Transactions extends Component {
     }
 
     render() {
-        const { gameId, playerId, transactions, current } = this.props;
-        const { activePage } = this.state;
+        const { gameId, playerId, current } = this.props;
+        const { transactions, activePage } = this.state;
 
         const now = new Date();
         const upper = activePage * numPerPage;
