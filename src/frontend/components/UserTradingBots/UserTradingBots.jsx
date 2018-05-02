@@ -41,7 +41,7 @@ export default class UserTradingBots extends Component {
                 console.log('success! ', res);
                 this.setState({
                     loading: false,
-                    submitted: true    
+                    submitted: true
                 });
             }, ({ err }) => {
                 console.log('error! ', err);
@@ -73,7 +73,7 @@ export default class UserTradingBots extends Component {
                     <input type='file' id='file-upload' className={sharedStyles.hide} onChange={this.handleUpload} />
                 </div>}
 				<Header as='h2' id={styles.bot}>Create/Edit Trading Bots</Header>
-                <Link to='/docs'>Find the API Documentation here.</Link>  
+                <Link to='/docs'>Find the API Documentation here.</Link>
                 <TradingBotIDE tradingBots={tradingBots} />
 			</div>
         );

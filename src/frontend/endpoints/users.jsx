@@ -45,13 +45,13 @@ export function verifyEmail(token) {
 }
 
 export function sendVerification(email) {
-    return Backend.get(`passport/sendVerification?email=${email}`);    
+    return Backend.get(`passport/sendVerification?email=${email}`);
 }
 
 export function uploadTradingBot(fileObj) {
     const fileSendObj = new FormData();
     fileSendObj.append('file', fileObj.file);
-    return Backend.post('uploadTradingBot', fileSendObj);
+    return Backend.post('bot/upload', fileSendObj);
 }
 
 export function saveTradingBot(tradingBotObj) {

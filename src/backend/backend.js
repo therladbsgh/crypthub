@@ -1,4 +1,5 @@
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -14,6 +15,7 @@ var api = require('./api');
 const app = express();
 
 app.use(bodyParser.json());
+app.use(fileUpload());
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
