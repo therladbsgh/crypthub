@@ -1,6 +1,5 @@
 const express = require('express');
-const path = require('path');
-// const busboy = require('express-busboy');
+const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -12,11 +11,7 @@ const router = require('./routes/index.js');
 // Setup express server
 const app = express();
 app.use(fileUpload());
-// busboy.extend(app, {
-//     upload: true,
-//     path: path.join(__dirname, 'bots'),
-//     allowedPath: /./
-// });
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
