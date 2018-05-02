@@ -22,4 +22,13 @@ router.route('/:id').get(UserController.get);
  */
 router.route('/create').post(UserController.create);
 
+/**
+ * Deletes user
+ *
+ * @param username - The username
+ *
+ * @return { success: true } on success, { err: message } otherwise
+ */
+router.route('/delete').post(UserController.remove);
+
 module.exports = router;
