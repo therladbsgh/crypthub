@@ -13,6 +13,7 @@ export default class YourGames extends Component {
     constructor(props) {
 		super(props);
 		this.state = {
+            games: _.sortBy(this.props.games, g => -new Date(g.end)),
 			activePage: 1
 		};
 
@@ -24,8 +25,8 @@ export default class YourGames extends Component {
 	}
 
     render() {
-        const { games, username, ELO } = this.props;
-        const { activePage } = this.state;
+        const { username, ELO } = this.props;
+        const { games, activePage } = this.state;
 
         const upper = activePage * numPerPage;
         const gamesShown = _.slice(games, (activePage - 1) * numPerPage, upper > games.length ? games.length : upper);

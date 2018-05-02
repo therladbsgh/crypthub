@@ -8,7 +8,8 @@ export default class TradeCard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			results: ['RESET']
+			results: ['RESET'],
+			coins: _.sortBy(this.props.coins, c => -c.currPrice)
 		};
 
 		this.handleResults = this.handleResults.bind(this);
@@ -19,9 +20,9 @@ export default class TradeCard extends Component {
 	}
 
 	render() {
-		const { game, playerId, coins } = this.props;
+		const { game, playerId } = this.props;
 		const { id, limitOrders, shortSelling, stopOrders } = game;
-		const { results } = this.state;
+		const { results, coins } = this.state;
 
 		const orderTypes = [
 			{

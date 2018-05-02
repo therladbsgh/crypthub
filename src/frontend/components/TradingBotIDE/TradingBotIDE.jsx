@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { Header, Dropdown, Form, Button, Message, TextArea, Icon } from 'semantic-ui-react';
+import { Header, Dropdown, Form, Button, Message, TextArea, Icon, Input } from 'semantic-ui-react';
 import brace from 'brace';
 import 'brace/mode/javascript';
 import 'brace/theme/textmate';
@@ -10,23 +10,23 @@ import { UserBackend } from 'endpoints';
 import { DeleteBotModal } from 'components';
 import { TradingBotIDEStyle as styles } from 'styles';
 
-const tradingBots = [
-    {
-        _id: 'id1',
-        name: 'tradingBot1',
-        data: 'trading bot 1 code goes here'
-    },
-    {
-        _id: 'id2',
-        name: 'tradingBot2',
-        data: 'trading bot 2 code goes here'
-    },
-    {
-        _id: 'id3',
-        name: 'tradingBot3',
-        data: 'trading bot 3 code goes here'
-    }
-];
+// const tradingBots = [
+//     {
+//         _id: 'id1',
+//         name: 'tradingBot1',
+//         data: 'trading bot 1 code goes here'
+//     },
+//     {
+//         _id: 'id2',
+//         name: 'tradingBot2',
+//         data: 'trading bot 2 code goes here'
+//     },
+//     {
+//         _id: 'id3',
+//         name: 'tradingBot3',
+//         data: 'trading bot 3 code goes here'
+//     }
+// ];
 
 export default class UserTradingBots extends Component {
     constructor(props) {
@@ -35,20 +35,36 @@ export default class UserTradingBots extends Component {
         this.state = {
             tradingBotObj: {
                 botId: '',
+                botName: '',
                 data: ''
             },
             debugLog: '',
             loading: false,
             submitted: false,
-            err: ''
+            success: '',
+            err: '',
+            errAdd: ''
         };
 
+        this.handleChange = this.handleChange.bind(this);
         this.handleEditorChange = this.handleEditorChange.bind(this);
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handleCreateNew = this.handleCreateNew.bind(this);
         this.runBot = this.runBot.bind(this);
         this.stopBot = this.stopBot.bind(this);
     }
+
+    handleChange(event) {
+		const { name, value } = event.target;
+		
+        this.setState({
+            tradingBotObj: {
+                ...this.state.tradingBotObj,
+                [name]: value
+            }
+        });
+	}
 
     handleEditorChange(value) {
         this.setState({
@@ -60,29 +76,37 @@ export default class UserTradingBots extends Component {
     }
 
     handleDropdownChange(event, { value }) {
+        const bot = _.find(tradingBots, { _id: value});
+
 		this.setState({
             tradingBotObj: {
                 ...this.state.tradingBotObj,
                 botId: value,
-                data: _.find(tradingBots, { _id: value}).data
+                botName: bot.name,
+                data: bot.data
             }
         });
     }
 
     handleSave(event) {
+        const { tradingBotObj } = this.state;
+        const { botName } = tradingBotObj;
+
         event.preventDefault();
         this.setState({
             loading: true,
             submitted: false,
-            err: ''
+            err: '',
+            errAdd: ''
         });
 
-        UserBackend.saveTradingBot(this.state.tradingBotObj)
+        UserBackend.saveTradingBot(tradingBotObj)
         .then(res => {
             console.log('success! ', res);
             this.setState({
                 loading: false,
-                submitted: true    
+                submitted: true,
+                success: `${botName} has been saved.`
             });
         }, ({ err }) => {
             console.log('error! ', err);
@@ -90,6 +114,30 @@ export default class UserTradingBots extends Component {
                 loading: false,
                 submitted: true,
                 err
+            });
+        });
+    }
+
+    handleCreateNew(event) {
+        event.preventDefault();
+        this.setState({
+            loading: true,
+            submitted: false,
+            err: '',
+            errAdd: ''
+        });
+
+        UserBackend.newTradingBot()
+        .then(res => {
+            console.log('success! ', res);
+            this.setState({
+                loading: false,
+            });
+        }, ({ err }) => {
+            console.log('error! ', err);
+            this.setState({
+                loading: false,
+                errAdd: err
             });
         });
     }
@@ -107,19 +155,28 @@ export default class UserTradingBots extends Component {
     }
 
     render() {
-        // const { tradingBots } = this.props;
-        const { tradingBotObj, debugLog, loading, submitted, running, err } = this.state;
-        const { botId, data } = tradingBotObj;
-
-        const name = _.get(_.find(tradingBots, { _id: botId }), 'name', '');
+        const { tradingBots } = this.props;
+        const { tradingBotObj, debugLog, loading, submitted, running, success, err, errAdd } = this.state;
+        const { botId, botName, data } = tradingBotObj;
 
         return (
 			<div className={styles.top}>
+                {errAdd && <Message error header='Error' content={errAdd} />}
                 <Form onSubmit={this.handleSave} loading={loading} error={!!err} success={submitted && !err}>
-                    <Form.Field width={10}>
-                        <label>Trading Bot</label>
-                        <Dropdown placeholder='Trading bot to edit' name='botId' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleDropdownChange} />
-                    </Form.Field>                  
+                    <Form.Group>
+                        <Form.Field width={8} disabled={running}>
+                            <label>Trading Bot</label>
+                            <Dropdown placeholder='Trading bot to edit' name='botId' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleDropdownChange} />
+                        </Form.Field>
+                        <Form.Field width={2} disabled={running}>
+                            <label>Add New Bot</label>
+                            <Button icon='add' type='button' fluid positive disabled={running} onClick={this.handleCreateNew} content={'New Bot'} />
+                        </Form.Field>
+                    </Form.Group>
+                    <Form.Field width={10} disabled={!botId}>
+                        <label>Name</label>
+                        <Input placeholder='Trading bot name' name='botName' value={botName} onChange={this.handleChange} />
+                    </Form.Field>
                     <Form.Group>
                         <Form.Field width={10}>
                             <AceEditor
@@ -147,12 +204,12 @@ export default class UserTradingBots extends Component {
 							<TextArea className={styles.debugLog} autoHeight name='debugLog' value={debugLog} />
                         </Form.Field>
                     </Form.Group>
-                    <Message success header='Success!' content={`${name} has been saved.`} />
+                    <Message success header='Success!' content={success} />
 					<Message error header='Error' content={err} />
-                    <Button icon='save' type='submit' positive disabled={!name || running} content={`Save ${name}`} />
-                    <DeleteBotModal botId={botId} botName={name} disabled={!name || running} />
-                    <Button icon='play' type='button' primary disabled={!name || running} onClick={this.runBot} content={`Run ${name}`} />
-                    <Button icon='stop' type='button' negative disabled={!name || !running} onClick={this.stopBot} content={`Stop ${name}`} />
+                    <Button icon='save' type='submit' positive disabled={!botId || running} content={'Save'} />
+                    <DeleteBotModal botId={botId} disabled={!botId || running} />
+                    <Button icon='play' type='button' primary disabled={!botId || running} onClick={this.runBot} content={'Run'} />
+                    <Button icon='stop' type='button' negative disabled={!botId || !running} onClick={this.stopBot} content={'Stop'} />
                 </Form>
             </div>
         );

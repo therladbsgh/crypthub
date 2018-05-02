@@ -24,4 +24,5 @@ export { default as VerifyEmailStyle } from './verifyemail';
 export { default as APIDocumentationStyle } from './apidocumentation';
 export { default as UserSettingsStyle } from './usersettings';
 export { default as ChangeEmailModalStyle } from './changeemailmodal';
+export { default as DeleteAccountModalStyle } from './deleteaccountmodal';
 export { default as SharedStyle } from './shared';

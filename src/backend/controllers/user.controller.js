@@ -8,9 +8,14 @@ const User = require('../models/user.model');
  */
 function get(req, res) {
   User.get(req.params.id).then((result) => {
-    result.password = undefined;
-    res.json({ result });
+    if (!result) {
+      res.status(404).json(result);
+      return;
+    }
+
+    res.status(200).json({ result });
   }).catch((err) => {
+    console.log(err);
     res.json({ err });
   });
 }
@@ -32,11 +37,24 @@ function create(req, res) {
   });
 
   user.save().then((result) => {
-    res.json(result);
-  });
+    res.status(200).json(result);
+  }).catch((err) => {
+    res.status(500).json({ err });
+  })
+}
+
+function remove(req, res) {
+  const username = req.body.username;
+
+  User.remove({ username }).exec().then(() => {
+    res.status(200).json({ success: true });
+  }).catch(() => {
+    res.status(500).json({ err: 'MongoDB removal error' });
+  })
 }
 
 module.exports = {
   get,
-  create
+  create,
+  remove
 };

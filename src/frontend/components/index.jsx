@@ -32,4 +32,5 @@ export { default as DeleteBotModal } from './DeleteBotModal';
 export { default as APIDocumentation } from './APIDocumentation';
 export { default as UserSettings } from './UserSettings';
 export { default as ChangeEmailModal } from './ChangeEmailModal';
+export { default as DeleteAccountModal } from './DeleteAccountModal';
 export { default as PageNotFound } from './PageNotFound';

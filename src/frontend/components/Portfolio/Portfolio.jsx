@@ -5,8 +5,16 @@ import date from 'date-and-time';
 import { Table } from 'semantic-ui-react';
 
 export default class Portfolio extends Component {
+    constructor(props) {
+		super(props);
+		this.state = {
+			portfolio: _.sortBy(this.props.portfolio, a => a.coin.symbol == 'USD' ? Number.MAX_SAFE_INTEGER : -a.amount * a.coin.currPrice)
+		};
+    }
+    
     render() {
-        const { portfolio, header, completed } = this.props;
+        const { header, completed } = this.props;
+        const { portfolio } = this.state;
 
         return (
 			<Table celled>

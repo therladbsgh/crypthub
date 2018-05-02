@@ -39,7 +39,7 @@ export default class GameRankings extends Component {
                             <Table.HeaderCell><Icon name='trophy' /></Table.HeaderCell>
                             <Table.HeaderCell>Name</Table.HeaderCell>
                             <Table.HeaderCell>Net Worth</Table.HeaderCell>
-                            <Table.HeaderCell>Trades</Table.HeaderCell>
+                            <Table.HeaderCell>Total Trades</Table.HeaderCell>
                             <Table.HeaderCell>Net Return</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
@@ -50,7 +50,7 @@ export default class GameRankings extends Component {
                                 <Table.Cell>{p.currRank}</Table.Cell>
                                 <Table.Cell>{p.username}</Table.Cell>
                                 <Table.Cell>{formatCurrency(p.netWorth, { format: '%s%v', symbol: '$' })}</Table.Cell>
-                                <Table.Cell>{p.numTrades}</Table.Cell>
+                                <Table.Cell>{p.transactionCurrent.length + p.transactionHistory.length}</Table.Cell>
                                 <Table.Cell className={p.netReturn >= 0 ? styles.pos : styles.neg}>{formatCurrency(Math.abs(p.netReturn), { format: '%s%v', symbol: `${p.netReturn >= 0 ? '+' : '-'}$` })}</Table.Cell>
                             </Table.Row>
                         )}
