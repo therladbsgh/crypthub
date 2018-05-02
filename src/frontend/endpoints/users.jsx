@@ -55,5 +55,9 @@ export function uploadTradingBot(fileObj) {
 }
 
 export function saveTradingBot(tradingBotObj) {
-    return Backend.post('saveTradingBot', tradingBotObj);
+    return Backend.post('bot/save', tradingBotObj);
+}
+
+export function newTradingBot() {
+    return Backend.get('bot/new');
 }
