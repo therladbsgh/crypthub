@@ -32,6 +32,10 @@ export function logout() {
     return Backend.get('passport/logout');
 }
 
+export function deleteUser() {
+    return Backend.get('passport/delete');
+}
+
 export function savePassword(changePasswordObj) {
     return Backend.post('passport/savePassword', changePasswordObj);
 }
