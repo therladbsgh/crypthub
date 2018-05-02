@@ -10,6 +10,9 @@ function runBot(botPath, logPath, gameId, playerId, prices) {
         const logFile = fs.createWriteStream(logPath, { flags: 'a' });
         console.log = (...messages) => logFile.write(util.format.apply(null, messages) + '\n');
 
+        // make a server running a separate port that runs bots through a POST request and perhaps 
+        // returns an array of messages to be written. this way we can do a promise race on the backend
+        // when running a trading bot. but we will need a way to cancel the run if it is taking too long?
         bot.trade(prices);
     } catch (e) {
         console.log('[ERROR]', e.message);
