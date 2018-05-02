@@ -1,102 +1,110 @@
 {
-	"name": "crypthub",
-	"version": "1.0.0",
-	"description": "CryptHub - Brown University CSCI1320 Spring 2018 Project",
-	"scripts": {
-		"clean": "rm -rf node_modules/ && rm -rf dist/",
-		"backend": "node src/backend/backend.js",
-		"frontend": "webpack-dev-server --mode development --config webpack/dev.config.js --hot --open",
-		"dev": "npm run backend & npm run frontend",
-		"test": "jest",
-		"build": "webpack --mode production --config webpack/prod.config.js --display-error-details && cp -rf img/ dist/img/",
-		"prod": "npm run build && (npm run backend & node server.js)"
-	},
-	"main": "./src/frontend/index.jsx",
-	"engines": {
-		"node": ">=8.9.4"
-	},
-	"contributors": [
-		{
-			"name": "bwesner"
-		},
-		{
-			"name": "atrehan1"
-		},
-		{
-			"name": "ykim81"
-		},
-		{
-			"name": "fmerk"
-		}
-	],
-	"license": "AGPL-3.0+",
-	"jest": {
-		"testRegex": "\\.test\\.js$",
-		"roots": [
-			"src"
-		],
-		"moduleNameMapper": {
-			"components": "<rootDir>/src/frontend/components",
-			"styles": "<rootDir>/src/frontend/stylesheets/__mocks__/styleMock.js",
-			"endpoints": "<rootDir>/src/frontend/endpoints",
-			"mocks": "<rootDir>/src/common/mocks",
-			"docs": "<rootDir>/src/common/docs"
-		},
-		"moduleFileExtensions": [
-			"js",
-			"jsx",
-			"scss"
-		]
-	},
-	"devDependencies": {
-		"babel-core": "^6.26.0",
-		"babel-loader": "^7.1.4",
-		"babel-plugin-transform-object-rest-spread": "^6.26.0",
-		"babel-preset-env": "^1.6.1",
-		"babel-preset-react": "^6.24.1",
-		"css-loader": "^0.28.11",
-		"html-webpack-plugin": "^3.0.7",
-		"jest": "^22.4.3",
-		"mini-css-extract-plugin": "^0.2.0",
-		"node-sass": "^4.7.2",
-		"react-test-renderer": "^16.3.2",
-		"sass-loader": "^6.0.7",
-		"style-loader": "^0.20.3",
-		"webpack": "^4.2.0",
-		"webpack-cli": "^2.0.12",
-		"webpack-dev-server": "^3.1.1",
-		"webpack-merge": "^4.1.2"
-	},
-	"dependencies": {
-		"axios": "^0.18.0",
-		"bcrypt-nodejs": "0.0.3",
-		"bluebird": "^3.5.1",
-		"body-parser": "^1.18.2",
-		"connect-mongo": "^2.0.1",
-		"cookie-parser": "^1.4.3",
-		"cookie-session": "^2.0.0-beta.3",
-		"crypto": "^1.0.1",
-		"date-and-time": "^0.6.2",
-		"express": "^4.16.3",
-		"express-session": "^1.15.6",
-		"format-currency": "^1.0.0",
-		"https": "^1.0.0",
-		"lodash": "^4.17.5",
-		"moment": "^2.22.0",
-		"mongoose": "^5.0.13",
-		"nodemailer": "^4.6.4",
-		"passport": "^0.4.0",
-		"passport-local": "^1.0.0",
-		"path": "^0.12.7",
-		"query-string": "^6.0.0",
-		"react": "^16.2.0",
-		"react-ace": "^6.0.0",
-		"react-addons-shallow-compare": "^15.6.2",
-		"react-dates": "^16.6.1",
-		"react-dom": "^16.2.0",
-		"react-router": "^4.2.0",
-		"react-router-dom": "^4.2.2",
-		"semantic-ui-react": "^0.79.0"
-	},
-	"private": true
+  "name": "crypthub",
+  "version": "1.0.0",
+  "description": "CryptHub - Brown University CSCI1320 Spring 2018 Project",
+  "scripts": {
+    "clean": "rm -rf node_modules/ && rm -rf dist/",
+    "backend": "node src/backend/backend.js",
+    "frontend": "webpack-dev-server --mode development --config webpack/dev.config.js --hot --open",
+    "dev": "npm run backend & npm run frontend",
+    "test": "jest",
+    "build": "webpack --mode production --config webpack/prod.config.js --display-error-details && cp -rf img/ dist/img/",
+    "prod": "npm run build && (npm run backend & node server.js)"
+  },
+  "main": "./src/frontend/index.jsx",
+  "engines": {
+    "node": ">=8.9.4"
+  },
+  "contributors": [
+    {
+      "name": "bwesner"
+    },
+    {
+      "name": "atrehan1"
+    },
+    {
+      "name": "ykim81"
+    },
+    {
+      "name": "fmerk"
+    }
+  ],
+  "license": "AGPL-3.0+",
+  "jest": {
+    "testRegex": "\\.test\\.js$",
+    "roots": [
+      "src"
+    ],
+    "moduleNameMapper": {
+      "components": "<rootDir>/src/frontend/components",
+      "styles": "<rootDir>/src/frontend/stylesheets/__mocks__/styleMock.js",
+      "endpoints": "<rootDir>/src/frontend/endpoints",
+      "mocks": "<rootDir>/src/common/mocks",
+      "docs": "<rootDir>/src/common/docs"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "scss"
+    ]
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.11",
+    "html-webpack-plugin": "^3.0.7",
+    "jest": "^22.4.3",
+    "mini-css-extract-plugin": "^0.2.0",
+    "node-sass": "^4.7.2",
+    "react-test-renderer": "^16.3.2",
+    "sass-loader": "^6.0.7",
+    "style-loader": "^0.20.3",
+    "webpack": "^4.2.0",
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.1",
+    "webpack-merge": "^4.1.2"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bcrypt-nodejs": "0.0.3",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "chai": "^4.1.2",
+    "connect-mongo": "^2.0.1",
+    "cookie-parser": "^1.4.3",
+    "cookie-session": "^2.0.0-beta.3",
+    "crypto": "^1.0.1",
+    "date-and-time": "^0.6.2",
+    "express": "^4.16.3",
+    "express-busboy": "^6.0.1",
+    "express-fileupload": "^0.4.0",
+    "express-session": "^1.15.6",
+    "format-currency": "^1.0.0",
+    "formidable": "^1.2.1",
+    "https": "^1.0.0",
+    "lodash": "^4.17.5",
+    "mocha": "^5.1.1",
+    "moment": "^2.22.0",
+    "mongoose": "^5.0.13",
+    "multer": "^1.3.0",
+    "nodemailer": "^4.6.4",
+    "nodeunit": "^0.11.2",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
+    "query-string": "^6.0.0",
+    "react": "^16.2.0",
+    "react-ace": "^6.0.0",
+    "react-addons-shallow-compare": "^15.6.2",
+    "react-dates": "^16.6.1",
+    "react-dom": "^16.2.0",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "semantic-ui-react": "^0.79.0",
+    "sinon-chai": "^3.0.0"
+  },
+  "private": true
 }

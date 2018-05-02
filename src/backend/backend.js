@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const connectMongo = require('connect-mongo');
@@ -9,7 +10,7 @@ const router = require('./routes/index.js');
 
 // Setup express server
 const app = express();
-
+app.use(fileUpload());
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {

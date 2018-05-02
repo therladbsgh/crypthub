@@ -49,9 +49,6 @@ export function postFormData(url, data) {
     return new Promise((resolve, reject) => {
         fetch(`${BASE_URI}${url}`, {
             body: data,
-            headers: {
-                'content-type': 'multipart/form-data',
-            },
             method: 'POST',
             credentials: 'include',
         })
