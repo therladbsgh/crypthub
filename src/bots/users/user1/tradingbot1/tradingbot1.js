@@ -1,5 +1,5 @@
 // Use the api to call the functions as specified in the API Docs.
-const api = require('../../../../backend/api/api');
+const api = require('api');
 
 /*
  * Our support code operates by calling this trade function every time there are new prices.
