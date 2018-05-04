@@ -53,6 +53,10 @@ const PlayerSchema = new Schema({
   eloDelta: {
     type: Number,
     default: 0
+  },
+  activeBotId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Bot'
   }
 });
 

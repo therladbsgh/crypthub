@@ -11,6 +11,7 @@ export default class GameTradingBots extends Component {
         this.state = {
             setBotObj: {
                 gameId: this.props.gameId,
+                playerId: this.props.player._id,
                 botId: ''
             },
             loading: false,
@@ -30,7 +31,7 @@ export default class GameTradingBots extends Component {
             }
         });
     }
-    
+
     handleSave() {
         const { setBotObj } = this.state;
         this.setState({
@@ -89,13 +90,13 @@ export default class GameTradingBots extends Component {
                             <label>Trading Bot Currently in Play</label>
                             { activeBotId ? _.find(tradingBots, { _id: activeBotId }).name : 'You currently don\'t have an active trading bot.'}
                             <br /><br /><br />
-                            <Button icon='stop' negative disabled={!activeBotId} onClick={this.handleStop} content='Stop Active Bot' />                            
+                            <Button icon='stop' negative disabled={!activeBotId} onClick={this.handleStop} content='Stop Active Bot' />
                         </Form.Field>
                         <Form.Field width={5}>
                             <label>Trading Bot to Make Active</label>
-                            <Dropdown placeholder='Trading bot to make active' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleChange} />  
+                            <Dropdown placeholder='Trading bot to make active' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleChange} />
                             <br /><br />
-                            <Button icon='save' positive onClick={this.handleSave} content='Save Changes' />                            
+                            <Button icon='save' positive onClick={this.handleSave} content='Save Changes' />
                         </Form.Field>
                     </Form.Group>
                     <Form.Field width={10}>
@@ -103,8 +104,8 @@ export default class GameTradingBots extends Component {
                             error
                             header='Error'
                             content={err}
-                        />   
-                    </Form.Field>         
+                        />
+                    </Form.Field>
                 </Form>
                 <Header as='h2'>Debug Log</Header>
                 <Form>

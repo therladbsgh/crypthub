@@ -6,12 +6,19 @@ const SessionController = require('../controllers/session.controller');
 const router = new Router();
 
 /**
- * Validates information before creating game
+ * Uploads a new bot.
  *
- * @param  name - The name of the game
+ * @param  code - The code file
  *
- * @return User object
+ * @return 200 on success, 500 on server error, 403 if not logged in,
+ *         400 if bot with same next exists
  */
-router.route('/upload').all(SessionController.authenticate).post(BotController.upload);
+router.route('/upload').post(SessionController.authenticate, BotController.upload);
+
+router.route('/new').get(SessionController.authenticate, BotController.create);
+
+router.route('/save').post(SessionController.authenticate, BotController.save);
+
+router.route('/delete').post(SessionController.authenticate, BotController.remove);
 
 module.exports = router;

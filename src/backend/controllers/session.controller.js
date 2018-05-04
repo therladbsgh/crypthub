@@ -424,16 +424,13 @@ function getUser(req, res) {
  * @return user name if exists, null otherwise
  */
 function getAllUsers(req, res) {
-
-
   User.find({}).exec().then((users) => {
-    console.log(users);
-    if (!users){
-      return res.status(500).send({err: 'Can not find users', field: 'users'});
+    if (!users) {
+      res.status(500).send({ err: 'Can not find users', field: 'users' });
+      return;
     }
     res.status(200).send({ users });
   });
-
 }
 
 /**

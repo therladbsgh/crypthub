@@ -10,43 +10,128 @@ function upload(req, res) {
   const { user } = req.session;
   const { name } = file;
 
+  const botId = new Types.ObjectId();
   const userPath = path.join(__dirname, `../../bots/users/${user}`);
-  if (!fs.existsSync(userPath)) {
-    fs.mkdirSync(userPath);
-  }
+  const botPath = path.join(__dirname, `../../bots/users/${user}/${botId}`);
 
-  const botPath = path.join(__dirname, `../../bots/users/${user}/${name}`);
-  if (!fs.existsSync(botPath)) {
+  User.getBots(user).then((bots) => {
+    for (let i = 0; i < bots.length; i++) {
+      if (bots[i].name === name) {
+        return Promise.reject(Error('400'));
+      }
+    }
+    return Promise.resolve();
+  }).then(() => {
+    if (!fs.existsSync(userPath)) {
+      fs.mkdirSync(userPath);
+    }
+
     fs.mkdirSync(botPath);
-  }
+    return file.mv(path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`));
+  }).then(() => {
+    const bot = new Bot({
+      _id: botId,
+      name,
+      path: botPath
+    });
 
-  const botFilePath = path.join(__dirname, `../../bots/users/${user}/${name}/bot.js`);
-  if (fs.existsSync(botFilePath)) {
-    res.status(500).send({ err: 'File with the same name already exists.', field: null });
-    return;
-  }
-
-  const bot = new Bot({
-    _id: new Types.ObjectId(),
-    name,
-    path: botPath
-  });
-
-  file.mv(path.join(__dirname, `../../bots/users/${user}/${name}/bot.js`)).then(() => {
     return bot.save();
   }).then(() => {
     return User.findOne({ username: user }).exec();
   }).then((userObj) => {
-    userObj.tradingBots.push(bot._id);
+    userObj.tradingBots.push(botId);
     return userObj.save();
   }).then(() => {
     res.status(200).send({ success: true });
   }).catch((err) => {
-    console.log(err);
+    if (err.message === '400') {
+      res.status(400).send({ err: 'File name already exists', field: null });
+    } else {
+      res.status(500).send({ err: 'Internal server error', field: null });
+    }
+  });
+}
+
+function create(req, res) {
+  const { user } = req.session;
+
+  const botId = new Types.ObjectId();
+  const templatePath = path.join(__dirname, '../../bots/support/template.js');
+  const userPath = path.join(__dirname, `../../bots/users/${user}`);
+  const botPath = path.join(__dirname, `../../bots/users/${user}/${botId}`);
+  const botFilePath = path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`);
+
+  if (!fs.existsSync(userPath)) {
+    fs.mkdirSync(userPath);
+  }
+
+  fs.mkdirSync(botPath);
+  const code = fs.readFileSync(templatePath, 'utf8');
+  fs.writeFileSync(botFilePath, code);
+
+  const botData = {
+    _id: botId,
+    name: `${Math.random().toString(36).substring(7)}.js`,
+    path: botPath
+  };
+
+  const bot = new Bot(botData);
+  bot.save().then(() => {
+    return User.findOne({ username: user }).exec();
+  }).then((userObj) => {
+    userObj.tradingBots.push(botId);
+    return userObj.save();
+  }).then(() => {
+    botData.data = code;
+    res.status(200).send(botData);
+  }).catch(() => {
     res.status(500).send({ err: 'Internal server error', field: null });
   });
 }
 
+function save(req, res) {
+  const { user } = req.session;
+  const { botId, data, botName } = req.body;
+  const botFilePath = path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`);
+
+  fs.writeFileSync(botFilePath, data);
+  Bot.findOne({ _id: botId }).exec().then((bot) => {
+    bot.set({ name: botName });
+    return bot.save();
+  }).then(() => {
+    res.status(200).json({ success: true });
+  }).catch(() => {
+    res.status(500).json({ err: 'Internal server error', field: null });
+  });
+}
+
+function remove(req, res) {
+  const { botId } = req.body;
+  const username = req.session.user;
+  const botPath = path.join(__dirname, `../../bots/users/${username}/${botId}`);
+
+  Bot.remove({ _id: botId }).then(() => {
+    return User.findOne({ username }).exec();
+  }).then((user) => {
+    const index = user.tradingBots.indexOf(botId);
+    user.tradingBots.splice(index, 1);
+    return user.save();
+  }).then(() => {
+    const files = fs.readdirSync(botPath);
+    files.forEach((file) => {
+      fs.unlinkSync(path.join(botPath, file));
+    });
+    fs.rmdirSync(botPath);
+
+    res.status(200).json({ success: true });
+  }).catch((err) => {
+    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
+  });
+}
+
 module.exports = {
-  upload
+  upload,
+  create,
+  save,
+  remove
 };
