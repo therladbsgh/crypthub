@@ -10,43 +10,57 @@ function upload(req, res) {
   const { user } = req.session;
   const { name } = file;
 
+  const botId = new Types.ObjectId();
   const userPath = path.join(__dirname, `../../bots/users/${user}`);
-  if (!fs.existsSync(userPath)) {
-    fs.mkdirSync(userPath);
-  }
+  const botPath = path.join(__dirname, `../../bots/users/${user}/${botId}`);
 
-  const botPath = path.join(__dirname, `../../bots/users/${user}/${name}`);
-  if (!fs.existsSync(botPath)) {
-    fs.mkdirSync(botPath);
-  }
+  User.getBots(user).then((bots) => {
+    for (let i = 0; i < bots.length; i++) {
+      if (bots[i].name === name) {
+        return Promise.reject(Error('400'));
+      }
+    }
+    return Promise.resolve();
+  }).then(() => {
+    if (!fs.existsSync(userPath)) {
+      fs.mkdirSync(userPath);
+    }
 
-  const botFilePath = path.join(__dirname, `../../bots/users/${user}/${name}/bot.js`);
-  if (fs.existsSync(botFilePath)) {
-    res.status(500).send({ err: 'File with the same name already exists.', field: null });
-    return;
-  }
+    if (!fs.existsSync(botPath)) {
+      fs.mkdirSync(botPath);
+    }
 
-  const bot = new Bot({
-    _id: new Types.ObjectId(),
-    name,
-    path: botPath
-  });
+    return file.mv(path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`));
+  }).then(() => {
+    const bot = new Bot({
+      _id: botId,
+      name,
+      path: botPath
+    });
 
-  file.mv(path.join(__dirname, `../../bots/users/${user}/${name}/bot.js`)).then(() => {
     return bot.save();
   }).then(() => {
     return User.findOne({ username: user }).exec();
   }).then((userObj) => {
-    userObj.tradingBots.push(bot._id);
+    userObj.tradingBots.push(botId);
     return userObj.save();
   }).then(() => {
     res.status(200).send({ success: true });
   }).catch((err) => {
-    console.log(err);
-    res.status(500).send({ err: 'Internal server error', field: null });
+    console.log(err.message);
+    if (err.message === '400') {
+      res.status(400).send({ err: 'File name already exists', field: null });
+    } else {
+      res.status(500).send({ err: 'Internal server error', field: null });
+    }
   });
 }
 
+function create(req, res) {
+  console.log(req.body);
+}
+
 module.exports = {
-  upload
+  upload,
+  create
 };
