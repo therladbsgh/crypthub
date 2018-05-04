@@ -84,16 +84,29 @@ function create(req, res) {
   }).then(() => {
     botData.data = code;
     res.status(200).send(botData);
-  }).catch((err) => {
-    if (err.message === '400') {
-      res.status(400).send({ err: 'File name already exists', field: null });
-    } else {
-      res.status(500).send({ err: 'Internal server error', field: null });
-    }
+  }).catch(() => {
+    res.status(500).send({ err: 'Internal server error', field: null });
+  });
+}
+
+function save(req, res) {
+  const { user } = req.session;
+  const { botId, data, botName } = req.body;
+  const botFilePath = path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`);
+
+  fs.writeFileSync(botFilePath, data);
+  Bot.findOne({ _id: botId }).exec().then((bot) => {
+    bot.set({ name: botName });
+    return bot.save();
+  }).then(() => {
+    res.status(200).send({ success: true });
+  }).catch(() => {
+    res.status(500).json({ err: 'Internal server error', field: null });
   });
 }
 
 module.exports = {
   upload,
-  create
+  create,
+  save
 };

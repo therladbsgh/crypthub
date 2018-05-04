@@ -8,4 +8,4 @@ function getAllCoin(req, res) {
 
 module.exports = {
   getAllCoin
-}
+};

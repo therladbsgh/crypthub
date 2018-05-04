@@ -17,4 +17,6 @@ router.route('/upload').post(SessionController.authenticate, BotController.uploa
 
 router.route('/new').get(SessionController.authenticate, BotController.create);
 
+router.route('/save').post(SessionController.authenticate, BotController.save);
+
 module.exports = router;
