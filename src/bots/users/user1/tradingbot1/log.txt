@@ -1,10 +1,744 @@
-trading [ 2, 3, 4 ]
-{ gameId: 'gameid', playerId: 'playerid', set: true }
-id
-trading [ 2, 3, 4 ]
-{ gameId: 'gameid', playerId: 'playerid', set: true }
-id
-[ERROR] conasdfsole is not defined
-trading [ 2, 3, 4 ]
-{ gameId: 'gameid', playerId: 'playerid', set: true }
-id
+setting context
+testing { symbol: 'BTC', price: 100 }
+
+Execution Timed Out
+setting context
+testing { symbol: 'BTC', price: 100 }
+
+Execution Timed Out
+setting context
+testing { symbol: 'BTC', price: 100 }
+
+Execution Timed Out
+setting context
+testing { symbol: 'BTC', price: 100 }
+
+Execution Timed Out
+setting context
+testing { symbol: 'BTC', price: 100 }
+
+Execution Timed Out
+setting context
+testing { symbol: 'BTC', price: 100 }
+
+Execution Timed Out
+
+module.js:340
+    throw err;
+          ^
+Error: Cannot find module 'axios'
+    at Function.Module._resolveFilename (module.js:338:15)
+    at Function.Module._load (module.js:280:25)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/usercode/api.js:1:77)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+
+
+/usr/local/lib/node_modules/request/node_modules/hawk/node_modules/boom/lib/index.js:5
+const Hoek = require('hoek');
+^^^^^
+SyntaxError: Use of const in strict mode.
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/usr/local/lib/node_modules/request/node_modules/hawk/lib/index.js:5:33)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+
+
+/usr/local/lib/node_modules/request/node_modules/hawk/node_modules/boom/lib/index.js:5
+const Hoek = require('hoek');
+^^^^^
+SyntaxError: Use of const in strict mode.
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/usr/local/lib/node_modules/request/node_modules/hawk/lib/index.js:5:33)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+
+Compilation Failed
+
+Compilation Failed
+
+Compilation Failed
+
+v0.10.25
+Compilation Failed
+
+v0.10.25
+Compilation Failed
+
+v0.10.25
+setting context
+
+Execution Timed Out
+v0.10.25
+setting context
+
+Execution Timed Out
+> 
+Execution Timed Out
+[?1049h[H[2J
+  [36mο[0m node/4.0.0[0m
+
+
+Execution Timed Out
+v0.10.25
+Compilation Failed
+
+v0.10.25
+
+    [2m0.0.1[22m
+    [2m0.0.2[22m
+    [2m0.0.3[22m
+    [2m0.0.4[22m
+    [2m0.0.5[22m
+    [2m0.0.6[22m
+    [2m0.1.0[22m
+    [2m0.1.1[22m
+    [2m0.1.2[22m
+    [2m0.1.3[22m
+    [2m0.1.4[22m
+    [2m0.1.5[22m
+    [2m0.1.6[22m
+    [2m0.1.7[22m
+    [2m0.1.8[22m
+    [2m0.1.9[22m
+    [2m0.1.10[22m
+    [2m0.1.11[22m
+    [2m0.1.12[22m
+    [2m0.1.13[22m
+    [2m0.1.14[22m
+    [2m0.1.15[22m
+    [2m0.1.16[22m
+    [2m0.1.17[22m
+    [2m0.1.18[22m
+    [2m0.1.19[22m
+    [2m0.1.20[22m
+    [2m0.1.21[22m
+    [2m0.1.22[22m
+    [2m0.1.23[22m
+    [2m0.1.24[22m
+    [2m0.1.25[22m
+    [2m0.1.26[22m
+    [2m0.1.27[22m
+    [2m0.1.28[22m
+    [2m0.1.29[22m
+    [2m0.1.30[22m
+    [2m0.1.31[22m
+    [2m0.1.32[22m
+    [2m0.1.33[22m
+    [2m0.1.90[22m
+    [2m0.1.91[22m
+    [2m0.1.92[22m
+    [2m0.1.93[22m
+    [2m0.1.94[22m
+    [2m0.1.95[22m
+    [2m0.1.96[22m
+    [2m0.1.97[22m
+    [2m0.1.98[22m
+    [2m0.1.99[22m
+    [2m0.1.100[22m
+    [2m0.1.101[22m
+    [2m0.1.102[22m
+    [2m0.1.103[22m
+    [2m0.1.104[22m
+    [2m0.2.0[22m
+    [2m0.2.1[22m
+    [2m0.2.2[22m
+    [2m0.2.3[22m
+    [2m0.2.4[22m
+    [2m0.2.5[22m
+    [2m0.2.6[22m
+    [2m0.3.0[22m
+    [2m0.3.1[22m
+    [2m0.3.2[22m
+    [2m0.3.3[22m
+    [2m0.3.4[22m
+    [2m0.3.5[22m
+    [2m0.3.6[22m
+    [2m0.3.7[22m
+    [2m0.3.8[22m
+    [2m0.4.0[22m
+    [2m0.4.1[22m
+    [2m0.4.2[22m
+    [2m0.4.3[22m
+    [2m0.4.4[22m
+    [2m0.4.5[22m
+    [2m0.4.6[22m
+    [2m0.4.7[22m
+    [2m0.4.8[22m
+    [2m0.4.9[22m
+    [2m0.4.10[22m
+    [2m0.4.11[22m
+    [2m0.4.12[22m
+    [2m0.5.0[22m
+    [2m0.5.1[22m
+    [2m0.5.2[22m
+    [2m0.5.3[22m
+    [2m0.5.4[22m
+    [2m0.5.5[22m
+    [2m0.5.6[22m
+    [2m0.5.7[22m
+    [2m0.5.8[22m
+    [2m0.5.9[22m
+    [2m0.5.10[22m
+    [2m0.6.0[22m
+    [2m0.6.1[22m
+    [2m0.6.2[22m
+    [2m0.6.3[22m
+    [2m0.6.4[22m
+    [2m0.6.5[22m
+    [2m0.6.6[22m
+    [2m0.6.7[22m
+    [2m0.6.8[22m
+    [2m0.6.9[22m
+    [2m0.6.10[22m
+    [2m0.6.11[22m
+    [2m0.6.12[22m
+    [2m0.6.13[22m
+    [2m0.6.14[22m
+    [2m0.6.15[22m
+    [2m0.6.16[22m
+    [2m0.6.17[22m
+    [2m0.6.18[22m
+    [2m0.6.19[22m
+    [2m0.6.20[22m
+    [2m0.6.21[22m
+    [2m0.7.0[22m
+    [2m0.7.1[22m
+    [2m0.7.2[22m
+    [2m0.7.3[22m
+    [2m0.7.4[22m
+    [2m0.7.5[22m
+    [2m0.7.6[22m
+    [2m0.7.7[22m
+    [2m0.7.8[22m
+    [2m0.7.9[22m
+    [2m0.7.10[22m
+    [2m0.7.11[22m
+    [2m0.7.12[22m
+    [2m0.8.0[22m
+    [2m0.8.1[22m
+    [2m0.8.2[22m
+    [2m0.8.3[22m
+    [2m0.8.4[22m
+    [2m0.8.5[22m
+    [2m0.8.6[22m
+    [2m0.8.7[22m
+    [2m0.8.8[22m
+    [2m0.8.9[22m
+    [2m0.8.10[22m
+    [2m0.8.11[22m
+    [2m0.8.12[22m
+    [2m0.8.13[22m
+    [2m0.8.14[22m
+    [2m0.8.15[22m
+    [2m0.8.16[22m
+    [2m0.8.17[22m
+    [2m0.8.18[22m
+    [2m0.8.19[22m
+    [2m0.8.20[22m
+    [2m0.8.21[22m
+    [2m0.8.22[22m
+    [2m0.8.23[22m
+    [2m0.8.24[22m
+    [2m0.8.25[22m
+    [2m0.8.26[22m
+    [2m0.8.27[22m
+    [2m0.8.28[22m
+    [2m0.9.0[22m
+    [2m0.9.1[22m
+    [2m0.9.2[22m
+    [2m0.9.3[22m
+    [2m0.9.4[22m
+    [2m0.9.5[22m
+    [2m0.9.6[22m
+    [2m0.9.7[22m
+    [2m0.9.8[22m
+    [2m0.9.9[22m
+    [2m0.9.10[22m
+    [2m0.9.11[22m
+    [2m0.9.12[22m
+    [2m0.10.0[22m
+    [2m0.10.1[22m
+    [2m0.10.2[22m
+    [2m0.10.3[22m
+    [2m0.10.4[22m
+    [2m0.10.5[22m
+    [2m0.10.6[22m
+    [2m0.10.7[22m
+    [2m0.10.8[22m
+    [2m0.10.9[22m
+    [2m0.10.10[22m
+    [2m0.10.11[22m
+    [2m0.10.12[22m
+    [2m0.10.13[22m
+    [2m0.10.14[22m
+    [2m0.10.15[22m
+    [2m0.10.16[22m
+    [2m0.10.17[22m
+    [2m0.10.18[22m
+    [2m0.10.19[22m
+    [2m0.10.20[22m
+    [2m0.10.21[22m
+    [2m0.10.22[22m
+    [2m0.10.23[22m
+    [2m0.10.24[22m
+    [2m0.10.25[22m
+    [2m0.10.26[22m
+    [2m0.10.27[22m
+    [2m0.10.28[22m
+    [2m0.10.29[22m
+    [2m0.10.30[22m
+    [2m0.10.31[22m
+    [2m0.10.32[22m
+    [2m0.10.33[22m
+    [2m0.10.34[22m
+    [2m0.10.35[22m
+    [2m0.10.36[22m
+    [2m0.10.37[22m
+    [2m0.10.38[22m
+    [2m0.10.39[22m
+    [2m0.10.40[22m
+    [2m0.10.41[22m
+    [2m0.10.42[22m
+    [2m0.10.43[22m
+    [2m0.10.44[22m
+    [2m0.10.45[22m
+    [2m0.10.46[22m
+    [2m0.10.47[22m
+    [2m0.10.48[22m
+    [2m0.11.0[22m
+    [2m0.11.1[22m
+    [2m0.11.2[22m
+    [2m0.11.3[22m
+    [2m0.11.4[22m
+    [2m0.11.5[22m
+    [2m0.11.6[22m
+    [2m0.11.7[22m
+    [2m0.11.8[22m
+    [2m0.11.9[22m
+    [2m0.11.10[22m
+    [2m0.11.11[22m
+    [2m0.11.12[22m
+    [2m0.11.13[22m
+    [2m0.11.14[22m
+    [2m0.11.15[22m
+    [2m0.11.16[22m
+    [2m0.12.0[22m
+    [2m0.12.1[22m
+    [2m0.12.2[22m
+    [2m0.12.3[22m
+    [2m0.12.4[22m
+    [2m0.12.5[22m
+    [2m0.12.6[22m
+    [2m0.12.7[22m
+    [2m0.12.8[22m
+    [2m0.12.9[22m
+    [2m0.12.10[22m
+    [2m0.12.11[22m
+    [2m0.12.12[22m
+    [2m0.12.13[22m
+    [2m0.12.14[22m
+    [2m0.12.15[22m
+    [2m0.12.16[22m
+    [2m0.12.17[22m
+    [2m0.12.18[22m
+  [36mο[0m 4.0.0 [0m
+    [2m4.1.0[22m
+    [2m4.1.1[22m
+    [2m4.1.2[22m
+    [2m4.2.0[22m
+    [2m4.2.1[22m
+    [2m4.2.2[22m
+    [2m4.2.3[22m
+    [2m4.2.4[22m
+    [2m4.2.5[22m
+    [2m4.2.6[22m
+    [2m4.3.0[22m
+    [2m4.3.1[22m
+    [2m4.3.2[22m
+    [2m4.4.0[22m
+    [2m4.4.1[22m
+    [2m4.4.2[22m
+    [2m4.4.3[22m
+    [2m4.4.4[22m
+    [2m4.4.5[22m
+    [2m4.4.6[22m
+    [2m4.4.7[22m
+    [2m4.5.0[22m
+    [2m4.6.0[22m
+    [2m4.6.1[22m
+    [2m4.6.2[22m
+    [2m4.7.0[22m
+    [2m4.7.1[22m
+    [2m4.7.2[22m
+    [2m4.7.3[22m
+    [2m4.8.0[22m
+    [2m4.8.1[22m
+    [2m4.8.2[22m
+    [2m4.8.3[22m
+    [2m4.8.4[22m
+    [2m4.8.5[22m
+    [2m4.8.6[22m
+    [2m4.8.7[22m
+    [2m4.9.0[22m
+    [2m4.9.1[22m
+    [2m5.0.0[22m
+    [2m5.1.0[22m
+    [2m5.1.1[22m
+    [2m5.2.0[22m
+    [2m5.3.0[22m
+    [2m5.4.0[22m
+    [2m5.4.1[22m
+    [2m5.5.0[22m
+    [2m5.6.0[22m
+    [2m5.7.0[22m
+    [2m5.7.1[22m
+    [2m5.8.0[22m
+    [2m5.9.0[22m
+    [2m5.9.1[22m
+    [2m5.10.0[22m
+    [2m5.10.1[22m
+    [2m5.11.0[22m
+    [2m5.11.1[22m
+    [2m5.12.0[22m
+    [2m6.0.0[22m
+    [2m6.1.0[22m
+    [2m6.2.0[22m
+    [2m6.2.1[22m
+    [2m6.2.2[22m
+    [2m6.3.0[22m
+    [2m6.3.1[22m
+    [2m6.4.0[22m
+    [2m6.5.0[22m
+    [2m6.6.0[22m
+    [2m6.7.0[22m
+    [2m6.8.0[22m
+    [2m6.8.1[22m
+    [2m6.9.0[22m
+    [2m6.9.1[22m
+    [2m6.9.2[22m
+    [2m6.9.3[22m
+    [2m6.9.4[22m
+    [2m6.9.5[22m
+    [2m6.10.0[22m
+    [2m6.10.1[22m
+    [2m6.10.2[22m
+    [2m6.10.3[22m
+    [2m6.11.0[22m
+    [2m6.11.1[22m
+    [2m6.11.2[22m
+    [2m6.11.3[22m
+    [2m6.11.4[22m
+    [2m6.11.5[22m
+    [2m6.12.0[22m
+    [2m6.12.1[22m
+    [2m6.12.2[22m
+    [2m6.12.3[22m
+    [2m6.13.0[22m
+    [2m6.13.1[22m
+    [2m6.14.0[22m
+    [2m6.14.1[22m
+    [2m6.14.2[22m
+    [2m7.0.0[22m
+    [2m7.1.0[22m
+    [2m7.2.0[22m
+    [2m7.2.1[22m
+    [2m7.3.0[22m
+    [2m7.4.0[22m
+    [2m7.5.0[22m
+    [2m7.6.0[22m
+    [2m7.7.0[22m
+    [2m7.7.1[22m
+    [2m7.7.2[22m
+    [2m7.7.3[22m
+    [2m7.7.4[22m
+    [2m7.8.0[22m
+    [2m7.9.0[22m
+    [2m7.10.0[22m
+    [2m7.10.1[22m
+    [2m8.0.0[22m
+    [2m8.1.0[22m
+    [2m8.1.1[22m
+    [2m8.1.2[22m
+    [2m8.1.3[22m
+    [2m8.1.4[22m
+    [2m8.2.0[22m
+    [2m8.2.1[22m
+    [2m8.3.0[22m
+    [2m8.4.0[22m
+    [2m8.5.0[22m
+    [2m8.6.0[22m
+    [2m8.7.0[22m
+    [2m8.8.0[22m
+    [2m8.8.1[22m
+    [2m8.9.0[22m
+    [2m8.9.1[22m
+    [2m8.9.2[22m
+    [2m8.9.3[22m
+    [2m8.9.4[22m
+    [2m8.10.0[22m
+    [2m8.11.0[22m
+    [2m8.11.1[22m
+    [2m9.0.0[22m
+    [2m9.1.0[22m
+    [2m9.2.0[22m
+    [2m9.2.1[22m
+    [2m9.3.0[22m
+    [2m9.4.0[22m
+    [2m9.5.0[22m
+    [2m9.6.0[22m
+    [2m9.6.1[22m
+    [2m9.7.0[22m
+    [2m9.7.1[22m
+    [2m9.8.0[22m
+    [2m9.9.0[22m
+    [2m9.10.0[22m
+    [2m9.10.1[22m
+    [2m9.11.0[22m
+    [2m9.11.1[22m
+    [2m10.0.0[22m
+
+Compilation Failed
+
+v0.10.25
+> 
+Execution Timed Out
+v0.10.25
+setting context
+
+Execution Timed Out
+v0.10.25
+/usr/local/n/versions/node/4.0.0/bin/node 
+Compilation Failed
+
+v0.10.25
+/usr/local/n/versions/node/4.0.0/bin/node 
+v4.0.0
+Compilation Failed
+
+v0.10.25
+/usr/local/n/versions/node/4.0.0/bin/node 
+v4.0.0
+setting context
+
+Execution Timed Out
+v0.10.25
+/usr/local/n/versions/node/4.0.0/bin/node 
+v4.0.0
+Compilation Failed
+
+
+/usr/local/lib/node_modules/request/node_modules/hawk/node_modules/boom/lib/index.js:5
+const Hoek = require('hoek');
+^^^^^
+SyntaxError: Use of const in strict mode.
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/usr/local/lib/node_modules/request/node_modules/hawk/lib/index.js:5:33)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+
+
+/usr/local/lib/node_modules/request/node_modules/hawk/node_modules/boom/lib/index.js:5
+const Hoek = require('hoek');
+^^^^^
+SyntaxError: Use of const in strict mode.
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/usr/local/lib/node_modules/request/node_modules/hawk/lib/index.js:5:33)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+
+
+/usr/local/lib/node_modules/request/node_modules/hawk/node_modules/boom/lib/index.js:5
+const Hoek = require('hoek');
+^^^^^
+SyntaxError: Use of const in strict mode.
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/usr/local/lib/node_modules/request/node_modules/hawk/lib/index.js:5:33)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+
+
+/usr/local/lib/node_modules/request/node_modules/hawk/node_modules/boom/lib/index.js:5
+const Hoek = require('hoek');
+^^^^^
+SyntaxError: Use of const in strict mode.
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/usr/local/lib/node_modules/request/node_modules/hawk/lib/index.js:5:33)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+
+
+/usr/local/lib/node_modules/request/node_modules/hawk/node_modules/boom/lib/index.js:5
+const Hoek = require('hoek');
+^^^^^
+SyntaxError: Use of const in strict mode.
+    at Module._compile (module.js:439:25)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Module.require (module.js:364:17)
+    at require (module.js:380:17)
+    at Object.<anonymous> (/usr/local/lib/node_modules/request/node_modules/hawk/lib/index.js:5:33)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+
+HELLO
+
+HELLO
+v0.10.25
+v4.0.0
+/usr/local/bin/node
+
+
+Execution Timed Out
+HELLO
+v0.10.25
+v4.0.0
+/usr/local/bin/node
+setting context
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"4","PRICE":9628.3,"LASTUPDATE":1525400626,"LASTVOLUME":0.31700468,"LASTVOLUMETO":3047.9936581064,"LASTTRADEID":"3626173382","VOLUMEDAY":12332.843544106598,"VOLUMEDAYTO":118590552.56841527,"VOLUME24HOUR":95028.87458860809,"VOLUME24HOURTO":902420581.3818365,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9249.58,"HIGH24HOUR":9831.46,"LOW24HOUR":9162.99,"LASTMARKET":"Gemini","CHANGE24HOUR":378.71999999999935,"CHANGEPCT24HOUR":4.094456180713063,"CHANGEDAY":-116.69000000000051,"CHANGEPCTDAY":-1.1974358106062757,"SUPPLY":17013850,"MKTCAP":163814451955,"TOTALVOLUME24H":334374.3686918036,"TOTALVOLUME24HTO":3206910802.2556334}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,628.30","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.3170","LASTVOLUMETO":"$ 3,047.99","LASTTRADEID":"3626173382","VOLUMEDAY":"Ƀ 12,332.8","VOLUMEDAYTO":"$ 118,590,552.6","VOLUME24HOUR":"Ƀ 95,028.9","VOLUME24HOURTO":"$ 902,420,581.4","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,249.58","HIGH24HOUR":"$ 9,831.46","LOW24HOUR":"$ 9,162.99","LASTMARKET":"Gemini","CHANGE24HOUR":"$ 378.72","CHANGEPCT24HOUR":"4.09","CHANGEDAY":"$ -116.69","CHANGEPCTDAY":"-1.20","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 163.81 B","TOTALVOLUME24H":"Ƀ 334.37 K","TOTALVOLUME24HTO":"$ 3,206.91 M"}}}}
+
+HELLO
+v0.10.25
+v4.0.0
+/usr/local/bin/node
+setting context
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"4","PRICE":9629.23,"LASTUPDATE":1525400656,"LASTVOLUME":0.00103801,"LASTVOLUMETO":9.97008605,"LASTTRADEID":"42850451","VOLUMEDAY":12333.522445836596,"VOLUMEDAYTO":118597076.1218391,"VOLUME24HOUR":95029.55349033806,"VOLUME24HOURTO":902427104.9352604,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9249.61,"HIGH24HOUR":9831.78,"LOW24HOUR":9163.05,"LASTMARKET":"Coinbase","CHANGE24HOUR":379.619999999999,"CHANGEPCT24HOUR":4.104173040809276,"CHANGEDAY":-115.76000000000022,"CHANGEPCTDAY":-1.1878924452462263,"SUPPLY":17013850,"MKTCAP":163830274835.5,"TOTALVOLUME24H":334411.41759261396,"TOTALVOLUME24HTO":3207490132.2048182}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,629.23","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.001038","LASTVOLUMETO":"$ 9.97","LASTTRADEID":"42850451","VOLUMEDAY":"Ƀ 12,333.5","VOLUMEDAYTO":"$ 118,597,076.1","VOLUME24HOUR":"Ƀ 95,029.6","VOLUME24HOURTO":"$ 902,427,104.9","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,249.61","HIGH24HOUR":"$ 9,831.78","LOW24HOUR":"$ 9,163.05","LASTMARKET":"Coinbase","CHANGE24HOUR":"$ 379.62","CHANGEPCT24HOUR":"4.10","CHANGEDAY":"$ -115.76","CHANGEPCTDAY":"-1.19","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 163.83 B","TOTALVOLUME24H":"Ƀ 334.41 K","TOTALVOLUME24HTO":"$ 3,207.49 M"}}}}
+
+
+Execution Timed Out
+setting context
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"4","PRICE":9646.04,"LASTUPDATE":1525401081,"LASTVOLUME":0.002,"LASTVOLUMETO":19.255200000000002,"LASTTRADEID":"1525401081.4438","VOLUMEDAY":12577.454893856648,"VOLUMEDAYTO":120948061.63456665,"VOLUME24HOUR":95272.57294262812,"VOLUME24HOURTO":904769321.542144,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9249.64,"HIGH24HOUR":9832.14,"LOW24HOUR":9163.14,"LASTMARKET":"Kraken","CHANGE24HOUR":396.40000000000146,"CHANGEPCT24HOUR":4.285572195242209,"CHANGEDAY":-98.94999999999891,"CHANGEPCTDAY":-1.0153935509425758,"SUPPLY":17013850,"MKTCAP":164116277654,"TOTALVOLUME24H":335371.7956936746,"TOTALVOLUME24HTO":3220776028.1676483}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,646.04","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.002000","LASTVOLUMETO":"$ 19.26","LASTTRADEID":"1525401081.4438","VOLUMEDAY":"Ƀ 12,577.5","VOLUMEDAYTO":"$ 120,948,061.6","VOLUME24HOUR":"Ƀ 95,272.6","VOLUME24HOURTO":"$ 904,769,321.5","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,249.64","HIGH24HOUR":"$ 9,832.14","LOW24HOUR":"$ 9,163.14","LASTMARKET":"Kraken","CHANGE24HOUR":"$ 396.40","CHANGEPCT24HOUR":"4.29","CHANGEDAY":"$ -98.95","CHANGEPCTDAY":"-1.02","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 164.12 B","TOTALVOLUME24H":"Ƀ 335.37 K","TOTALVOLUME24HTO":"$ 3,220.78 M"}}}}
+
+setting context
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"1","PRICE":9647.67,"LASTUPDATE":1525401424,"LASTVOLUME":0.05017725,"LASTVOLUMETO":484.77746542499995,"LASTTRADEID":"238842862","VOLUMEDAY":12805.266035776678,"VOLUMEDAYTO":123145424.2467073,"VOLUME24HOUR":95337.8782734481,"VOLUME24HOURTO":905447294.8918656,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9251.28,"HIGH24HOUR":9831.52,"LOW24HOUR":9163.01,"LASTMARKET":"Bitfinex","CHANGE24HOUR":396.3899999999994,"CHANGEPCT24HOUR":4.2847043868524075,"CHANGEDAY":-97.31999999999971,"CHANGEPCTDAY":-0.9986670073545454,"SUPPLY":17013850,"MKTCAP":164144010229.5,"TOTALVOLUME24H":335997.2104990011,"TOTALVOLUME24HTO":3227249114.6243668}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,647.67","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.05018","LASTVOLUMETO":"$ 484.78","LASTTRADEID":"238842862","VOLUMEDAY":"Ƀ 12,805.3","VOLUMEDAYTO":"$ 123,145,424.2","VOLUME24HOUR":"Ƀ 95,337.9","VOLUME24HOURTO":"$ 905,447,294.9","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,251.28","HIGH24HOUR":"$ 9,831.52","LOW24HOUR":"$ 9,163.01","LASTMARKET":"Bitfinex","CHANGE24HOUR":"$ 396.39","CHANGEPCT24HOUR":"4.28","CHANGEDAY":"$ -97.32","CHANGEPCTDAY":"-1.00","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 164.14 B","TOTALVOLUME24H":"Ƀ 336.00 K","TOTALVOLUME24HTO":"$ 3,227.25 M"}}}}
+
+setting context
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"1","PRICE":9640.67,"LASTUPDATE":1525401623,"LASTVOLUME":0.1,"LASTVOLUMETO":964.7200000000001,"LASTTRADEID":"238844067","VOLUMEDAY":12917.457639838489,"VOLUMEDAYTO":124228101.18379964,"VOLUME24HOUR":95450.06987750992,"VOLUME24HOURTO":906529971.8289578,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9250.45,"HIGH24HOUR":9830.8,"LOW24HOUR":9162.14,"LASTMARKET":"Bitfinex","CHANGE24HOUR":390.21999999999935,"CHANGEPCT24HOUR":4.218389375651988,"CHANGEDAY":-104.31999999999971,"CHANGEPCTDAY":-1.0704987896344655,"SUPPLY":17013850,"MKTCAP":164024913279.5,"TOTALVOLUME24H":336410.3606968268,"TOTALVOLUME24HTO":3229548618.722022}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,640.67","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.1000","LASTVOLUMETO":"$ 964.72","LASTTRADEID":"238844067","VOLUMEDAY":"Ƀ 12,917.5","VOLUMEDAYTO":"$ 124,228,101.2","VOLUME24HOUR":"Ƀ 95,450.1","VOLUME24HOURTO":"$ 906,529,971.8","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,250.45","HIGH24HOUR":"$ 9,830.80","LOW24HOUR":"$ 9,162.14","LASTMARKET":"Bitfinex","CHANGE24HOUR":"$ 390.22","CHANGEPCT24HOUR":"4.22","CHANGEDAY":"$ -104.32","CHANGEPCTDAY":"-1.07","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 164.02 B","TOTALVOLUME24H":"Ƀ 336.41 K","TOTALVOLUME24HTO":"$ 3,229.55 M"}}}}
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js', '-' ]
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"1","PRICE":9642.76,"LASTUPDATE":1525401804,"LASTVOLUME":0.13,"LASTVOLUMETO":1254.318,"LASTTRADEID":"238845001","VOLUMEDAY":12968.105270351161,"VOLUMEDAYTO":124716495.10784441,"VOLUME24HOUR":95500.7175080226,"VOLUME24HOURTO":907018365.7530023,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9251.41,"HIGH24HOUR":9832.25,"LOW24HOUR":9163.08,"LASTMARKET":"Bitfinex","CHANGE24HOUR":391.35000000000036,"CHANGEPCT24HOUR":4.230165996318403,"CHANGEDAY":-102.22999999999956,"CHANGEPCTDAY":-1.0490518717823165,"SUPPLY":17013850,"MKTCAP":164060472226,"TOTALVOLUME24H":336726.12736348895,"TOTALVOLUME24HTO":3233097098.8908987}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,642.76","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.1300","LASTVOLUMETO":"$ 1,254.32","LASTTRADEID":"238845001","VOLUMEDAY":"Ƀ 12,968.1","VOLUMEDAYTO":"$ 124,716,495.1","VOLUME24HOUR":"Ƀ 95,500.7","VOLUME24HOURTO":"$ 907,018,365.8","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,251.41","HIGH24HOUR":"$ 9,832.25","LOW24HOUR":"$ 9,163.08","LASTMARKET":"Bitfinex","CHANGE24HOUR":"$ 391.35","CHANGEPCT24HOUR":"4.23","CHANGEDAY":"$ -102.23","CHANGEPCTDAY":"-1.05","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 164.06 B","TOTALVOLUME24H":"Ƀ 336.73 K","TOTALVOLUME24HTO":"$ 3,233.10 M"}}}}
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js' ]
+
+Execution Timed Out
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js' ]
+
+Execution Timed Out
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js' ]
+
+Execution Timed Out
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js' ]
+
+Execution Timed Out
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js', '-' ]
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"1","PRICE":9644.34,"LASTUPDATE":1525402265,"LASTVOLUME":0.0909,"LASTVOLUMETO":875.2942800000001,"LASTTRADEID":"1525402265.4535","VOLUMEDAY":13293.505255804075,"VOLUMEDAYTO":127851558.73982331,"VOLUME24HOUR":95826.1174934755,"VOLUME24HOURTO":910153429.3849808,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9251.27,"HIGH24HOUR":9831.46,"LOW24HOUR":9162.94,"LASTMARKET":"Kraken","CHANGE24HOUR":393.0699999999997,"CHANGEPCT24HOUR":4.248822053620742,"CHANGEDAY":-100.64999999999964,"CHANGEPCTDAY":-1.032838412353421,"SUPPLY":17013850,"MKTCAP":164087354109,"TOTALVOLUME24H":337898.9051270157,"TOTALVOLUME24HTO":3244785698.070638}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,644.34","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.09090","LASTVOLUMETO":"$ 875.29","LASTTRADEID":"1525402265.4535","VOLUMEDAY":"Ƀ 13,293.5","VOLUMEDAYTO":"$ 127,851,558.7","VOLUME24HOUR":"Ƀ 95,826.1","VOLUME24HOURTO":"$ 910,153,429.4","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,251.27","HIGH24HOUR":"$ 9,831.46","LOW24HOUR":"$ 9,162.94","LASTMARKET":"Kraken","CHANGE24HOUR":"$ 393.07","CHANGEPCT24HOUR":"4.25","CHANGEDAY":"$ -100.65","CHANGEPCTDAY":"-1.03","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 164.09 B","TOTALVOLUME24H":"Ƀ 337.90 K","TOTALVOLUME24HTO":"$ 3,244.79 M"}}}}
+
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js', '-' ]
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"4","PRICE":9652.93,"LASTUPDATE":1525402486,"LASTVOLUME":0.00015513,"LASTVOLUMETO":1.49973786,"LASTTRADEID":"22990928","VOLUMEDAY":13487.788572491183,"VOLUMEDAYTO":129726927.84267278,"VOLUME24HOUR":96020.40081016261,"VOLUME24HOURTO":912028798.48783,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9251.29,"HIGH24HOUR":9831.76,"LOW24HOUR":9162.98,"LASTMARKET":"Poloniex","CHANGE24HOUR":401.6399999999994,"CHANGEPCT24HOUR":4.341448597979302,"CHANGEDAY":-92.05999999999949,"CHANGEPCTDAY":-0.9446905538127746,"SUPPLY":17013850,"MKTCAP":164233503080.5,"TOTALVOLUME24H":338511.05136428704,"TOTALVOLUME24HTO":3252774073.9412546}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,652.93","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.0001551","LASTVOLUMETO":"$ 1.50","LASTTRADEID":"22990928","VOLUMEDAY":"Ƀ 13,487.8","VOLUMEDAYTO":"$ 129,726,927.8","VOLUME24HOUR":"Ƀ 96,020.4","VOLUME24HOURTO":"$ 912,028,798.5","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,251.29","HIGH24HOUR":"$ 9,831.76","LOW24HOUR":"$ 9,162.98","LASTMARKET":"Poloniex","CHANGE24HOUR":"$ 401.64","CHANGEPCT24HOUR":"4.34","CHANGEDAY":"$ -92.06","CHANGEPCTDAY":"-0.94","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 164.23 B","TOTALVOLUME24H":"Ƀ 338.51 K","TOTALVOLUME24HTO":"$ 3,252.77 M"}}}}
+
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js', '-' ]
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"4","PRICE":9653.49,"LASTUPDATE":1525402527,"LASTVOLUME":0.00015513,"LASTVOLUMETO":1.49892409,"LASTTRADEID":"22990945","VOLUMEDAY":13497.406802131183,"VOLUMEDAYTO":129819697.99842753,"VOLUME24HOUR":96030.0190398026,"VOLUME24HOURTO":912121568.6435848,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9251.29,"HIGH24HOUR":9831.75,"LOW24HOUR":9162.98,"LASTMARKET":"Poloniex","CHANGE24HOUR":402.1999999999989,"CHANGEPCT24HOUR":4.3475018078559735,"CHANGEDAY":-91.5,"CHANGEPCTDAY":-0.9389440112303862,"SUPPLY":17013850,"MKTCAP":164243030836.5,"TOTALVOLUME24H":338558.50050922664,"TOTALVOLUME24HTO":3253367839.223855}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,653.49","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.0001551","LASTVOLUMETO":"$ 1.50","LASTTRADEID":"22990945","VOLUMEDAY":"Ƀ 13,497.4","VOLUMEDAYTO":"$ 129,819,698.0","VOLUME24HOUR":"Ƀ 96,030.0","VOLUME24HOURTO":"$ 912,121,568.6","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,251.29","HIGH24HOUR":"$ 9,831.75","LOW24HOUR":"$ 9,162.98","LASTMARKET":"Poloniex","CHANGE24HOUR":"$ 402.20","CHANGEPCT24HOUR":"4.35","CHANGEDAY":"$ -91.50","CHANGEPCTDAY":"-0.94","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 164.24 B","TOTALVOLUME24H":"Ƀ 338.56 K","TOTALVOLUME24HTO":"$ 3,253.37 M"}}}}
+
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js', '-' ]
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"2","PRICE":9651.9,"LASTUPDATE":1525402545,"LASTVOLUME":3.71402449,"LASTVOLUMETO":35896.418098299,"LASTTRADEID":"238848107","VOLUMEDAY":13519.727749601198,"VOLUMEDAYTO":130035389.89876184,"VOLUME24HOUR":96052.3399872726,"VOLUME24HOURTO":912337260.5439191,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9251.29,"HIGH24HOUR":9831.76,"LOW24HOUR":9162.98,"LASTMARKET":"Bitfinex","CHANGE24HOUR":400.60999999999876,"CHANGEPCT24HOUR":4.3303150155275505,"CHANGEDAY":-93.09000000000015,"CHANGEPCTDAY":-0.9552600874911124,"SUPPLY":17013850,"MKTCAP":164215978815,"TOTALVOLUME24H":338662.99939758366,"TOTALVOLUME24HTO":3253991084.1063004}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,651.90","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 3.71","LASTVOLUMETO":"$ 35,896.4","LASTTRADEID":"238848107","VOLUMEDAY":"Ƀ 13,519.7","VOLUMEDAYTO":"$ 130,035,389.9","VOLUME24HOUR":"Ƀ 96,052.3","VOLUME24HOURTO":"$ 912,337,260.5","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,251.29","HIGH24HOUR":"$ 9,831.76","LOW24HOUR":"$ 9,162.98","LASTMARKET":"Bitfinex","CHANGE24HOUR":"$ 400.61","CHANGEPCT24HOUR":"4.33","CHANGEDAY":"$ -93.09","CHANGEPCTDAY":"-0.96","SUPPLY":"Ƀ 17,013,850.0","MKTCAP":"$ 164.22 B","TOTALVOLUME24H":"Ƀ 338.66 K","TOTALVOLUME24HTO":"$ 3,253.99 M"}}}}
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js', '-' ]
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"1","PRICE":9631.26,"LASTUPDATE":1525402685,"LASTVOLUME":0.01485452,"LASTVOLUMETO":143.179747376,"LASTTRADEID":"238848755","VOLUMEDAY":13890.373135944128,"VOLUMEDAYTO":133607587.77194445,"VOLUME24HOUR":96422.98537361548,"VOLUME24HOURTO":915909458.4171015,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9251.33,"HIGH24HOUR":9832.16,"LOW24HOUR":9163.03,"LASTMARKET":"Bitfinex","CHANGE24HOUR":379.9300000000003,"CHANGEPCT24HOUR":4.106760865734984,"CHANGEDAY":-113.72999999999956,"CHANGEPCTDAY":-1.1670612283850426,"SUPPLY":17013900,"MKTCAP":163865294514,"TOTALVOLUME24H":339391.8564777319,"TOTALVOLUME24HTO":3256005827.927334}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,631.26","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.01485","LASTVOLUMETO":"$ 143.18","LASTTRADEID":"238848755","VOLUMEDAY":"Ƀ 13,890.4","VOLUMEDAYTO":"$ 133,607,587.8","VOLUME24HOUR":"Ƀ 96,423.0","VOLUME24HOURTO":"$ 915,909,458.4","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,251.33","HIGH24HOUR":"$ 9,832.16","LOW24HOUR":"$ 9,163.03","LASTMARKET":"Bitfinex","CHANGE24HOUR":"$ 379.93","CHANGEPCT24HOUR":"4.11","CHANGEDAY":"$ -113.73","CHANGEPCTDAY":"-1.17","SUPPLY":"Ƀ 17,013,900.0","MKTCAP":"$ 163.87 B","TOTALVOLUME24H":"Ƀ 339.39 K","TOTALVOLUME24HTO":"$ 3,256.01 M"}}}}
+
+HELLO
+
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js', '-' ]
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"4","PRICE":9631.99,"LASTUPDATE":1525402762,"LASTVOLUME":0.00589062,"LASTVOLUMETO":56.645969105999995,"LASTTRADEID":"1525402762.6396","VOLUMEDAY":13920.358179234127,"VOLUMEDAYTO":133896711.89242186,"VOLUME24HOUR":96452.97041690547,"VOLUME24HOURTO":916198582.5375788,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9251.33,"HIGH24HOUR":9832.16,"LOW24HOUR":9163.03,"LASTMARKET":"Kraken","CHANGE24HOUR":380.65999999999985,"CHANGEPCT24HOUR":4.114651623063925,"CHANGEDAY":-113,"CHANGEPCTDAY":-1.1595701996615697,"SUPPLY":17013900,"MKTCAP":163877714661,"TOTALVOLUME24H":339584.21830708155,"TOTALVOLUME24HTO":3258036330.9032755}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,631.99","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.005891","LASTVOLUMETO":"$ 56.65","LASTTRADEID":"1525402762.6396","VOLUMEDAY":"Ƀ 13,920.4","VOLUMEDAYTO":"$ 133,896,711.9","VOLUME24HOUR":"Ƀ 96,453.0","VOLUME24HOURTO":"$ 916,198,582.5","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,251.33","HIGH24HOUR":"$ 9,832.16","LOW24HOUR":"$ 9,163.03","LASTMARKET":"Kraken","CHANGE24HOUR":"$ 380.66","CHANGEPCT24HOUR":"4.11","CHANGEDAY":"$ -113.00","CHANGEPCTDAY":"-1.16","SUPPLY":"Ƀ 17,013,900.0","MKTCAP":"$ 163.88 B","TOTALVOLUME24H":"Ƀ 339.58 K","TOTALVOLUME24HTO":"$ 3,258.04 M"}}}}
+
+HELLO
+GAMEID
+setting context
+[ '/usr/local/bin/node', '/usercode/runBot.js', 'GAMEID', '-' ]
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"2","PRICE":9630.44,"LASTUPDATE":1525402957,"LASTVOLUME":0.2,"LASTVOLUMETO":1921.42,"LASTTRADEID":"1525402957.4886","VOLUMEDAY":13978.603853817247,"VOLUMEDAYTO":134457537.1401209,"VOLUME24HOUR":93059.76198738122,"VOLUME24HOURTO":884816579.4033637,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9239.14,"HIGH24HOUR":9832.17,"LOW24HOUR":9162.95,"LASTMARKET":"Kraken","CHANGE24HOUR":391.3000000000011,"CHANGEPCT24HOUR":4.235242674101714,"CHANGEDAY":-114.54999999999927,"CHANGEPCTDAY":-1.1754758085949732,"SUPPLY":17013900,"MKTCAP":163851343116,"TOTALVOLUME24H":329110.29032081895,"TOTALVOLUME24HTO":3158087029.486836}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,630.44","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.2000","LASTVOLUMETO":"$ 1,921.42","LASTTRADEID":"1525402957.4886","VOLUMEDAY":"Ƀ 13,978.6","VOLUMEDAYTO":"$ 134,457,537.1","VOLUME24HOUR":"Ƀ 93,059.8","VOLUME24HOURTO":"$ 884,816,579.4","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,239.14","HIGH24HOUR":"$ 9,832.17","LOW24HOUR":"$ 9,162.95","LASTMARKET":"Kraken","CHANGE24HOUR":"$ 391.30","CHANGEPCT24HOUR":"4.24","CHANGEDAY":"$ -114.55","CHANGEPCTDAY":"-1.18","SUPPLY":"Ƀ 17,013,900.0","MKTCAP":"$ 163.85 B","TOTALVOLUME24H":"Ƀ 329.11 K","TOTALVOLUME24HTO":"$ 3,158.09 M"}}}}
+
+setting context
+[ '/usr/local/bin/node',
+  '/usercode/runBot.js',
+  'GAMEID*PLAYERID',
+  '-' ]
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"4","PRICE":9630.23,"LASTUPDATE":1525403002,"LASTVOLUME":0.045631,"LASTVOLUMETO":438.3815801,"LASTTRADEID":"1525403002.9926","VOLUMEDAY":14012.318483177252,"VOLUMEDAYTO":134782575.23752463,"VOLUME24HOUR":93090.81112066122,"VOLUME24HOURTO":885116920.2813588,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9239.04,"HIGH24HOUR":9832.42,"LOW24HOUR":9163.16,"LASTMARKET":"Kraken","CHANGE24HOUR":391.1899999999987,"CHANGEPCT24HOUR":4.23409791493487,"CHANGEDAY":-114.76000000000022,"CHANGEPCTDAY":-1.1776307620633804,"SUPPLY":17013900,"MKTCAP":163847770197,"TOTALVOLUME24H":329219.26832856424,"TOTALVOLUME24HTO":3159088272.7386227}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,630.23","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.04563","LASTVOLUMETO":"$ 438.38","LASTTRADEID":"1525403002.9926","VOLUMEDAY":"Ƀ 14,012.3","VOLUMEDAYTO":"$ 134,782,575.2","VOLUME24HOUR":"Ƀ 93,090.8","VOLUME24HOURTO":"$ 885,116,920.3","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,239.04","HIGH24HOUR":"$ 9,832.42","LOW24HOUR":"$ 9,163.16","LASTMARKET":"Kraken","CHANGE24HOUR":"$ 391.19","CHANGEPCT24HOUR":"4.23","CHANGEDAY":"$ -114.76","CHANGEPCTDAY":"-1.18","SUPPLY":"Ƀ 17,013,900.0","MKTCAP":"$ 163.85 B","TOTALVOLUME24H":"Ƀ 329.22 K","TOTALVOLUME24HTO":"$ 3,159.09 M"}}}}
+
+setting context:  GAMEID PLAYERID
+testing { symbol: 'BTC', price: 100 }
+{"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"2","PRICE":9633.66,"LASTUPDATE":1525403472,"LASTVOLUME":0.00400454,"LASTVOLUMETO":38.52767934,"LASTTRADEID":"1525403472.1647","VOLUMEDAY":14259.675713450588,"VOLUMEDAYTO":137163470.75638035,"VOLUME24HOUR":93331.88020762452,"VOLUME24HOURTO":887440356.2027512,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9238.86,"HIGH24HOUR":9831.62,"LOW24HOUR":9163.2,"LASTMARKET":"Kraken","CHANGE24HOUR":394.7999999999993,"CHANGEPCT24HOUR":4.2732544924373705,"CHANGEDAY":-111.32999999999993,"CHANGEPCTDAY":-1.1424331887462165,"SUPPLY":17013900,"MKTCAP":163906127874,"TOTALVOLUME24H":330436.41722387704,"TOTALVOLUME24HTO":3171624850.2747426}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,633.66","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.004005","LASTVOLUMETO":"$ 38.53","LASTTRADEID":"1525403472.1647","VOLUMEDAY":"Ƀ 14,259.7","VOLUMEDAYTO":"$ 137,163,470.8","VOLUME24HOUR":"Ƀ 93,331.9","VOLUME24HOURTO":"$ 887,440,356.2","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,238.86","HIGH24HOUR":"$ 9,831.62","LOW24HOUR":"$ 9,163.20","LASTMARKET":"Kraken","CHANGE24HOUR":"$ 394.80","CHANGEPCT24HOUR":"4.27","CHANGEDAY":"$ -111.33","CHANGEPCTDAY":"-1.14","SUPPLY":"Ƀ 17,013,900.0","MKTCAP":"$ 163.91 B","TOTALVOLUME24H":"Ƀ 330.44 K","TOTALVOLUME24HTO":"$ 3,171.62 M"}}}}
+
