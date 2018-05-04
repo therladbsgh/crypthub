@@ -45,7 +45,7 @@ export function inviteUsers(inviteObj) {
 }
 
 export function setTradingBot(setBotObj) {
-    return Backend.post('game/setTradingBot', setBotObj);
+    return Backend.post('game/setbot', setBotObj);
 }
 
 export function deleteBot(delBotObj) {

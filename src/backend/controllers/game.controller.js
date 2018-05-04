@@ -125,34 +125,37 @@ function create(req, res) {
 
 function getGame(req, res) {
   const { id } = req.params;
+  const username = req.session.user;
+  const populatePath = {
+    path: 'players',
+    populate: {
+      path: 'portfolio transactionHistory transactionCurrent',
+      populate: { path: 'coin symbol' }
+    }
+  };
 
-  Game.findOne({ id })
-    .populate({
-      path: 'players',
-      populate: { path: 'portfolio transactionHistory transactionCurrent', populate: { path: 'coin symbol' } }
-    })
-    .exec((err, game) => {
-      if (err) {
-        res.status(500).json({ err });
-        return;
+  Game.findOne({ id }).populate(populatePath).lean().exec().then((game) => {
+    let gameToReturn = {};
+    let player = {};
+
+    if (game) {
+      gameToReturn = game;
+      if (req.session.user) {
+        game.players.forEach((each) => {
+          if (each.username === req.session.user) {
+            player = each;
+          }
+        });
       }
+    }
 
-      let gameToReturn = {};
-      let player = {};
-
-      if (game) {
-        gameToReturn = game;
-        if (req.session.user) {
-          game.players.forEach((each) => {
-            if (each.username === req.session.user) {
-              player = each;
-            }
-          });
-        }
-      }
-
+    User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
+      player.tradingBots = user.tradingBots;
       res.status(200).json({ game: gameToReturn, player });
     });
+  }).catch((err) => {
+    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
+  });
 }
 
 function addTrade(side, size, coinId, coinPrice, playerId) {
@@ -596,6 +599,18 @@ function getAll(req, res) {
   });
 }
 
+function setBot(req, res) {
+  const { playerId, botId } = req.body;
+  Player.findOne({ _id: playerId }).exec().then((player) => {
+    player.set({ activeBotId: botId });
+    return player.save();
+  }).then(() => {
+    res.status(200).json({ success: true });
+  }).catch((err) => {
+    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
+  });
+}
+
 function inviteUsers(req, res){
     const users = req.body.usernames;
     //console.log(req.body.gameId);
@@ -641,5 +656,6 @@ module.exports = {
   placeOrder,
   cancelOrder,
   getAll,
+  setBot,
   inviteUsers
 };
