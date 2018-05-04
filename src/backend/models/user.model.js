@@ -46,7 +46,7 @@ UserSchema.statics = {
     return this.findOne({ username })
       .populate({ path: 'games tradingBots', populate: { path: 'players' } }).lean().exec().then((user) => {
         user.tradingBots.forEach((bot) => {
-          bot.data = fs.readFileSync(path.join(bot.path, './bot.js'), 'utf8');
+          bot.data = fs.readFileSync(path.join(__dirname, bot.path, './bot.js'), 'utf8');
         });
         return user;
       });

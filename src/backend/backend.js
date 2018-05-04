@@ -13,7 +13,7 @@ const app = express();
 app.use(fileUpload());
 app.use(bodyParser.json());
 
-const frontend = process.env.MODE = 'production' ? 'http://crypthub.s3-website-us-east-1.amazonaws.com' : 'http://localhost:8080';
+const frontend = process.env.MODE === 'production' ? 'http://crypthub.s3-website-us-east-1.amazonaws.com' : 'http://localhost:8080';
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', frontend);

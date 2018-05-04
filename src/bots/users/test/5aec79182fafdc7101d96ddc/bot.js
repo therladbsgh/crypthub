@@ -10,6 +10,7 @@ const api = require('api');
 function trade(prices) {
     // Use console.log to print information you want to see in the debug log
     console.log(prices);
+    console.log("HI");
 
     // Perform trade behavior based on the given prices.
 }

@@ -11,8 +11,8 @@ function upload(req, res) {
   const { name } = file;
 
   const botId = new Types.ObjectId();
-  const userPath = path.join(__dirname, `../../bots/users/${user}`);
-  const botPath = path.join(__dirname, `../../bots/users/${user}/${botId}`);
+  const userPath = `../../bots/users/${user}`;
+  const botPath = `../../bots/users/${user}/${botId}`;
 
   User.getBots(user).then((bots) => {
     for (let i = 0; i < bots.length; i++) {
@@ -22,11 +22,11 @@ function upload(req, res) {
     }
     return Promise.resolve();
   }).then(() => {
-    if (!fs.existsSync(userPath)) {
-      fs.mkdirSync(userPath);
+    if (!fs.existsSync(path.join(__dirname, userPath))) {
+      fs.mkdirSync(path.join(__dirname, userPath));
     }
 
-    fs.mkdirSync(botPath);
+    fs.mkdirSync(path.join(__dirname, botPath));
     return file.mv(path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`));
   }).then(() => {
     const bot = new Bot({
@@ -56,18 +56,18 @@ function create(req, res) {
   const { user } = req.session;
 
   const botId = new Types.ObjectId();
-  const templatePath = path.join(__dirname, '../../bots/support/template.js');
-  const userPath = path.join(__dirname, `../../bots/users/${user}`);
-  const botPath = path.join(__dirname, `../../bots/users/${user}/${botId}`);
-  const botFilePath = path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`);
+  const templatePath = '../../bots/support/template.js';
+  const userPath = `../../bots/users/${user}`;
+  const botPath = `../../bots/users/${user}/${botId}`;
+  const botFilePath = `../../bots/users/${user}/${botId}/bot.js`;
 
-  if (!fs.existsSync(userPath)) {
-    fs.mkdirSync(userPath);
+  if (!fs.existsSync(path.join(__dirname, userPath))) {
+    fs.mkdirSync(path.join(__dirname, userPath));
   }
 
-  fs.mkdirSync(botPath);
-  const code = fs.readFileSync(templatePath, 'utf8');
-  fs.writeFileSync(botFilePath, code);
+  fs.mkdirSync(path.join(__dirname, botPath));
+  const code = fs.readFileSync(path.join(__dirname, templatePath), 'utf8');
+  fs.writeFileSync(path.join(__dirname, botFilePath), code);
 
   const botData = {
     _id: botId,
@@ -92,9 +92,9 @@ function create(req, res) {
 function save(req, res) {
   const { user } = req.session;
   const { botId, data, botName } = req.body;
-  const botFilePath = path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`);
+  const botFilePath = `../../bots/users/${user}/${botId}/bot.js`;
 
-  fs.writeFileSync(botFilePath, data);
+  fs.writeFileSync(path.join(__dirname, botFilePath), data);
   Bot.findOne({ _id: botId }).exec().then((bot) => {
     bot.set({ name: botName });
     return bot.save();
