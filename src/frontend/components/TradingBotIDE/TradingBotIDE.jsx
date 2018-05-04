@@ -76,6 +76,8 @@ export default class UserTradingBots extends Component {
     }
 
     handleDropdownChange(event, { value }) {
+        const { tradingBots } = this.props;
+        
         const bot = _.find(tradingBots, { _id: value});
 
 		this.setState({
