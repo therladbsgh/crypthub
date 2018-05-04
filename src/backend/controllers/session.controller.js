@@ -406,7 +406,6 @@ function ensureAuthenticated(req, res) {
  * @return user name if exists, null otherwise
  */
 function getUser(req, res) {
-  console.log(req.session.user);
   if (req.session.user) {
     User.get(req.session.user).then((result) => {
       result.password = undefined;

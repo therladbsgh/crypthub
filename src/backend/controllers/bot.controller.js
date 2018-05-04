@@ -26,10 +26,7 @@ function upload(req, res) {
       fs.mkdirSync(userPath);
     }
 
-    if (!fs.existsSync(botPath)) {
-      fs.mkdirSync(botPath);
-    }
-
+    fs.mkdirSync(botPath);
     return file.mv(path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`));
   }).then(() => {
     const bot = new Bot({
@@ -47,7 +44,6 @@ function upload(req, res) {
   }).then(() => {
     res.status(200).send({ success: true });
   }).catch((err) => {
-    console.log(err.message);
     if (err.message === '400') {
       res.status(400).send({ err: 'File name already exists', field: null });
     } else {
@@ -57,7 +53,44 @@ function upload(req, res) {
 }
 
 function create(req, res) {
-  console.log(req.body);
+  const { user } = req.session;
+
+  const botId = new Types.ObjectId();
+  const templatePath = path.join(__dirname, '../../bots/support/template.js');
+  const userPath = path.join(__dirname, `../../bots/users/${user}`);
+  const botPath = path.join(__dirname, `../../bots/users/${user}/${botId}`);
+  const botFilePath = path.join(__dirname, `../../bots/users/${user}/${botId}/bot.js`);
+
+  if (!fs.existsSync(userPath)) {
+    fs.mkdirSync(userPath);
+  }
+
+  fs.mkdirSync(botPath);
+  const code = fs.readFileSync(templatePath, 'utf8');
+  fs.writeFileSync(botFilePath, code);
+
+  const botData = {
+    _id: botId,
+    name: `${Math.random().toString(36).substring(7)}.js`,
+    path: botPath
+  };
+
+  const bot = new Bot(botData);
+  bot.save().then(() => {
+    return User.findOne({ username: user }).exec();
+  }).then((userObj) => {
+    userObj.tradingBots.push(botId);
+    return userObj.save();
+  }).then(() => {
+    botData.data = code;
+    res.status(200).send(botData);
+  }).catch((err) => {
+    if (err.message === '400') {
+      res.status(400).send({ err: 'File name already exists', field: null });
+    } else {
+      res.status(500).send({ err: 'Internal server error', field: null });
+    }
+  });
 }
 
 module.exports = {

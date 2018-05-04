@@ -10,8 +10,11 @@ const router = new Router();
  *
  * @param  code - The code file
  *
- * @return 200 on success, 500 on server error, 403 if not logged in
+ * @return 200 on success, 500 on server error, 403 if not logged in,
+ *         400 if bot with same next exists
  */
-router.route('/upload').all(SessionController.authenticate).post(BotController.upload);
+router.route('/upload').post(SessionController.authenticate, BotController.upload);
+
+router.route('/new').get(SessionController.authenticate, BotController.create);
 
 module.exports = router;
