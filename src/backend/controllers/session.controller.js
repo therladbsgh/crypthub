@@ -389,7 +389,7 @@ function ensureAuthenticated(req, res) {
     console.log('trading bot success!');
   })
   .catch(err => {
-    console.log('trading bot error: ', err);
+    // console.log('trading bot error: ', err);
   });
 
 

@@ -742,3 +742,14 @@ setting context:  GAMEID PLAYERID
 testing { symbol: 'BTC', price: 100 }
 {"RAW":{"BTC":{"USD":{"TYPE":"5","MARKET":"CCCAGG","FROMSYMBOL":"BTC","TOSYMBOL":"USD","FLAGS":"2","PRICE":9633.66,"LASTUPDATE":1525403472,"LASTVOLUME":0.00400454,"LASTVOLUMETO":38.52767934,"LASTTRADEID":"1525403472.1647","VOLUMEDAY":14259.675713450588,"VOLUMEDAYTO":137163470.75638035,"VOLUME24HOUR":93331.88020762452,"VOLUME24HOURTO":887440356.2027512,"OPENDAY":9744.99,"HIGHDAY":9746.01,"LOWDAY":9547.21,"OPEN24HOUR":9238.86,"HIGH24HOUR":9831.62,"LOW24HOUR":9163.2,"LASTMARKET":"Kraken","CHANGE24HOUR":394.7999999999993,"CHANGEPCT24HOUR":4.2732544924373705,"CHANGEDAY":-111.32999999999993,"CHANGEPCTDAY":-1.1424331887462165,"SUPPLY":17013900,"MKTCAP":163906127874,"TOTALVOLUME24H":330436.41722387704,"TOTALVOLUME24HTO":3171624850.2747426}}},"DISPLAY":{"BTC":{"USD":{"FROMSYMBOL":"Ƀ","TOSYMBOL":"$","MARKET":"CryptoCompare Index","PRICE":"$ 9,633.66","LASTUPDATE":"Just now","LASTVOLUME":"Ƀ 0.004005","LASTVOLUMETO":"$ 38.53","LASTTRADEID":"1525403472.1647","VOLUMEDAY":"Ƀ 14,259.7","VOLUMEDAYTO":"$ 137,163,470.8","VOLUME24HOUR":"Ƀ 93,331.9","VOLUME24HOURTO":"$ 887,440,356.2","OPENDAY":"$ 9,744.99","HIGHDAY":"$ 9,746.01","LOWDAY":"$ 9,547.21","OPEN24HOUR":"$ 9,238.86","HIGH24HOUR":"$ 9,831.62","LOW24HOUR":"$ 9,163.20","LASTMARKET":"Kraken","CHANGE24HOUR":"$ 394.80","CHANGEPCT24HOUR":"4.27","CHANGEDAY":"$ -111.33","CHANGEPCTDAY":"-1.14","SUPPLY":"Ƀ 17,013,900.0","MKTCAP":"$ 163.91 B","TOTALVOLUME24H":"Ƀ 330.44 K","TOTALVOLUME24HTO":"$ 3,171.62 M"}}}}
 
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
+An unknown error has occurred. This probably is not due to your trading bot - try again later.
