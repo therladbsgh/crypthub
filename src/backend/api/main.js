@@ -18,7 +18,7 @@ function runBot(botPath, logPath, gameId, playerId, prices) {
     console.log = consoleLog;
 }
 
-runBot('../../bots/users/user1/tradingbot1/tradingbot1.js', '../../bots/users/user1/tradingbot1/log.txt', 'gameid', 'playerid', [2, 3, 4]);
+// runBot('../../bots/users/user1/tradingbot1/tradingbot1.js', '../../bots/users/user1/tradingbot1/log.txt', 'gameid', 'playerid', [2, 3, 4]);
 
 module.exports = {
     runBot
