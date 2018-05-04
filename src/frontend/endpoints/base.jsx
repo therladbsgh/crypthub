@@ -1,4 +1,5 @@
 // Should be changed as appropriate
+// const BASE_URI = 'http://127.0.0.1:5000/'
 const BASE_URI = 'http://localhost:5000/';
 
 function handleError(reject, err) {
