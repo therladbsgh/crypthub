@@ -84,9 +84,7 @@ function create(req, res) {
     password
   });
 
-  Coin.findOne({ symbol: 'USD' }, (err, usdCoin) => {
-    if (err) res.status(500).json({ err: 'MongoDB query error' });
-
+  Coin.findOne({ symbol: 'USD' }).exec().then((usdCoin) => {
     const usdAsset = new Asset({
       _id: new Types.ObjectId(),
       coin: usdCoin._id,
@@ -121,7 +119,7 @@ function create(req, res) {
   }).then((gameToReturn) => {
     res.status(200).json({ data: gameToReturn });
   }).catch((err) => {
-    res.status(500).json({ err });
+    res.status(500).json({ err: err.message });
   });
 }
 
