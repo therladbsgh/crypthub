@@ -99,14 +99,39 @@ function save(req, res) {
     bot.set({ name: botName });
     return bot.save();
   }).then(() => {
-    res.status(200).send({ success: true });
+    res.status(200).json({ success: true });
   }).catch(() => {
     res.status(500).json({ err: 'Internal server error', field: null });
+  });
+}
+
+function remove(req, res) {
+  const { botId } = req.body;
+  const username = req.session.user;
+  const botPath = path.join(__dirname, `../../bots/users/${username}/${botId}`);
+
+  Bot.remove({ _id: botId }).then(() => {
+    return User.findOne({ username }).exec();
+  }).then((user) => {
+    const index = user.tradingBots.indexOf(botId);
+    user.tradingBots.splice(index, 1);
+    return user.save();
+  }).then(() => {
+    const files = fs.readdirSync(botPath);
+    files.forEach((file) => {
+      fs.unlinkSync(path.join(botPath, file));
+    });
+    fs.rmdirSync(botPath);
+
+    res.status(200).json({ success: true });
+  }).catch((err) => {
+    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
   });
 }
 
 module.exports = {
   upload,
   create,
-  save
+  save,
+  remove
 };

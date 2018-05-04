@@ -19,4 +19,6 @@ router.route('/new').get(SessionController.authenticate, BotController.create);
 
 router.route('/save').post(SessionController.authenticate, BotController.save);
 
+router.route('/delete').post(SessionController.authenticate, BotController.remove);
+
 module.exports = router;
