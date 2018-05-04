@@ -6,13 +6,13 @@ import { ProfileCardStyle as styles, SharedStyle as sharedStyles } from 'styles'
 export default class ProfileCard extends Component {
     render() {
 		const { player, completed } = this.props;
-		const { name, netWorth, todayReturn, netReturn, currRank, portfolio, buyingPower, shortReserve, transactionCurrent, tradingBots, activeBotId } = player;
-        
+		const { username, netWorth, todayReturn, netReturn, currRank, portfolio, buyingPower, shortReserve, transactionCurrent, tradingBots, activeBotId } = player;
+		
         return (
 			<Card id={sharedStyles.card}>
 				<Card.Content>
 				    <Card.Header className={styles.header}>
-						{name}
+						{username}
 					</Card.Header>
 					<Grid columns={4} className={styles.profile}>
 						<Grid.Row>
@@ -55,7 +55,7 @@ export default class ProfileCard extends Component {
 				</Card.Content>
 				{activeBotId && 
 				<Card.Content extra>
-					<strong>Active Trading Bot: </strong>{_.find(tradingBots, { id: activeBotId }).name}
+					<strong>Active Trading Bot: </strong>{_.find(tradingBots, { _id: activeBotId }).name}
 				</Card.Content>}
 		  	</Card>
 		);
