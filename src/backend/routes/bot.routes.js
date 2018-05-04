@@ -1,6 +1,7 @@
 const { Router } = require('express');
 
 const BotController = require('../controllers/bot.controller');
+const SessionController = require('../controllers/session.controller');
 
 const router = new Router();
 
@@ -11,6 +12,6 @@ const router = new Router();
  *
  * @return User object
  */
-router.route('/upload').post(BotController.upload);
+router.route('/upload').all(SessionController.authenticate).post(BotController.upload);
 
 module.exports = router;

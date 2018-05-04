@@ -65,6 +65,7 @@ function create(req, res) {
   } = req.body;
 
   const game = new Game({
+    _id: new Types.ObjectId(),
     id,
     name,
     description,
@@ -92,37 +93,35 @@ function create(req, res) {
       amount: startingBalance
     });
 
-    usdAsset.save().then((newAsset) => {
-      const player = new Player({
-        _id: new Types.ObjectId(),
-        username: req.session.user,
-        netWorth: startingBalance,
-        numTrades: 0,
-        netReturn: 0,
-        todayReturn: 0,
-        currRank: 1,
-        buyingPower: startingBalance,
-        shortReserve: 0,
-        portfolio: [newAsset._id]
-      });
-
-      player.save().then((newPlayer) => {
-        game.players = [newPlayer._id];
-        game.save().then((newGame) => {
-          User.findOne({ username: req.session.user }, (err2, user) => {
-            user.games.push(newGame._id);
-            user.save().then(() => {
-              Game.findOne({ _id: newGame._id })
-                .populate({ path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } })
-                .exec((err3, gameToReturn) => {
-                  if (err3) res.status(500).json({ err: 'MongoDB query error' });
-                  res.status(200).json({ data: gameToReturn });
-                });
-            });
-          });
-        });
-      });
+    return usdAsset.save();
+  }).then((newAsset) => {
+    const player = new Player({
+      _id: new Types.ObjectId(),
+      username: req.session.user,
+      netWorth: startingBalance,
+      numTrades: 0,
+      netReturn: 0,
+      todayReturn: 0,
+      currRank: 1,
+      buyingPower: startingBalance,
+      shortReserve: 0,
+      portfolio: [newAsset._id]
     });
+
+    return player.save();
+  }).then((newPlayer) => {
+    game.players = [newPlayer._id];
+    return game.save();
+  }).then(() => User.findOne({ username: req.session.user }).exec()).then((user) => {
+    user.games.push(game._id);
+    return user.save();
+  }).then(() => {
+    const populatePath = { path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } };
+    return Game.findOne({ _id: game._id }).populate(populatePath).exec();
+  }).then((gameToReturn) => {
+    res.status(200).json({ data: gameToReturn });
+  }).catch((err) => {
+    res.status(500).json({ err });
   });
 }
 
@@ -608,11 +607,11 @@ function inviteUsers(req, res){
     User.find({ username: { $in: users } }).exec().then(( users) => {
 
       console.log(users.length);
-      
+
       if (users.length == 0){
         return res.status(500).send({err: 'These users do not exist. Please check the usernames you have inputted are correct.', field: 'users'});
       }
-      
+
       users.forEach(function(user){
         console.log(user);
      if (!user){

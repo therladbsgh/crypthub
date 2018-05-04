@@ -2,7 +2,7 @@ const fs = require('fs');
 const util = require('util');
 
 function runBot(botPath, logPath, gameId, playerId, prices) {
-    const consoleLog = console.log;    
+    const consoleLog = console.log;
     try {
         const bot = require(botPath);
         bot.api.setContext(gameId, playerId);
@@ -18,7 +18,7 @@ function runBot(botPath, logPath, gameId, playerId, prices) {
     console.log = consoleLog;
 }
 
-// runBot('../../bots/users/user1/tradingbot1/tradingbot1.js', '../../bots/users/user1/tradingbot1/log.txt', 'gameid', 'playerid', [2, 3, 4]);
+runBot('../../bots/users/test/virus.js/bot.js', './log.txt', 'gameid', 'playerid', [2, 3, 4]);
 
 module.exports = {
     runBot

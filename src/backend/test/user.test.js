@@ -1,6 +1,7 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const assert = chai.assert;
+
+const { assert } = chai;
 
 chai.use(chaiHttp);
 
@@ -30,11 +31,11 @@ describe('Basic user test', () => {
       });
   });
 
-  it ('can be deleted', (done) => {
+  it('can be deleted', (done) => {
     chai.request('http://localhost:5000').post('/users/delete')
       .send({ username: 'Heya' })
       .end((err, res) => {
-        assert(res.status == 200, 'Status code is not 200');
+        assert(res.status === 200, 'Status code is not 200');
         assert(res.body.success, 'JSON not returned');
 
         chai.request('http://localhost:5000').get('/users/Heya')

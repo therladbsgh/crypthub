@@ -8,6 +8,8 @@
     "frontend": "webpack-dev-server --mode development --config webpack/dev.config.js --hot --open",
     "dev": "npm run backend & npm run frontend",
     "test-backend": "mocha src/backend/test/index.js || exit 0",
+    "reset-db": "node src/backend/util/resetModels.js",
+    "reset-db-users": "node src/backend/util/resetUsers.js",
     "build": "webpack --mode production --config webpack/prod.config.js --display-error-details && cp -rf img/ dist/img/",
     "prod": "npm run build && (npm run backend & node server.js)"
   },
