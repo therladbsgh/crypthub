@@ -78,6 +78,8 @@ export default class GameTradingBots extends Component {
         const { tradingBots, activeBotId } = player;
         const { botId } = setBotObj;
 
+        // console.log();
+
         return (
 			<div>
 				<Header as='h2'>Trading Bot Settings</Header>
