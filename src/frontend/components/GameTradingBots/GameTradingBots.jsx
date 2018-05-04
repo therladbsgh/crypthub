@@ -63,7 +63,7 @@ export default class GameTradingBots extends Component {
             err: ''
         });
 
-        GameBackend.setTradingBot(_.set(_.clone(setBotObj), 'botId', ''))
+        GameBackend.setTradingBot(_.set(_.clone(setBotObj), 'botId', null))
 		.then(res => {
             console.log('success! ', res);
             this.setState({ loading: false });
