@@ -10,10 +10,14 @@
     "test-backend": "mocha src/backend/test/index.js || exit 0",
     "reset-db": "node src/backend/util/resetModels.js",
     "reset-db-users": "node src/backend/util/resetUsers.js",
-    "ssh-server": "ssh -i cs132-server-key-pair.pem ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com",
-    "build-server": "ssh -i cs132-server-key-pair.pem ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com \"mv crypthub/node_modules .;rm -rf crypthub;mkdir crypthub;mv node_modules crypthub/;mkdir crypthub/src\" && scp -i cs132-server-key-pair.pem -r dist/ ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub && scp -i cs132-server-key-pair.pem -r src/backend/ ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub/src && scp -i cs132-server-key-pair.pem -r src/bots/ ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub/src && scp -i cs132-server-key-pair.pem server.js ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub && scp -i cs132-server-key-pair.pem package.json ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub",
+    "ssh-server": "ssh -i remote/cs132-server-key-pair.pem ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com",
+    "load-frontend": "node remote/loadFrontend.js",
+    "load-backend": "ssh -i remote/cs132-server-key-pair.pem ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com \"./stop.sh;mv crypthub/node_modules .;rm -rf crypthub;mkdir crypthub;mv node_modules crypthub/;mkdir crypthub/src\" && scp -i remote/cs132-server-key-pair.pem -r src/backend/ ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub/src && scp -i remote/cs132-server-key-pair.pem -r src/bots/ ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub/src && scp -i remote/cs132-server-key-pair.pem package.json ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub",
+    "load-server": "npm run load-backend && npm run load-frontend",
+    "start-server": "ssh -i remote/cs132-server-key-pair.pem ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com \"./stop.sh;./start.sh\"",
     "build": "MODE=production webpack --mode production --config webpack/prod.config.js --display-error-details && cp -rf img/ dist/img/",
     "build-local": "webpack --mode production --config webpack/prod.config.js --display-error-details && cp -rf img/ dist/img/",
+    "start": "MODE=production node src/backend/backend.js",
     "prod-local": "npm run build-local && (npm run backend & node server.js)"
   },
   "main": "./src/frontend/index.jsx",
@@ -54,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "aws-sdk": "^2.233.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
