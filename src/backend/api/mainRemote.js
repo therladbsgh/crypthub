@@ -4,7 +4,6 @@ const axios = require('axios');
 
 function runBot(botPath, logPath, gameId, playerId, prices) {
     const logFile = fs.createWriteStream(logPath, { flags: 'a' });
-    //setTimeout(function(){console.log('yo whatup');}, 20000);
     return new Promise((resolve, reject) => {
         axios.post('http://ec2-52-205-237-224.compute-1.amazonaws.com:8080/compile', {
             language: 4,
