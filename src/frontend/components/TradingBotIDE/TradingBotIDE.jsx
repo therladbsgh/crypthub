@@ -33,6 +33,7 @@ export default class UserTradingBots extends Component {
         super(props);
 
         this.state = {
+            tradingBots: this.props.tradingBots,
             tradingBotObj: {
                 botId: '',
                 botName: '',
@@ -76,9 +77,9 @@ export default class UserTradingBots extends Component {
     }
 
     handleDropdownChange(event, { value }) {
-        const { tradingBots } = this.props;
+        const { tradingBots } = this.state;
         
-        const bot = _.find(tradingBots, { _id: value});
+        const bot = _.find(tradingBots, { _id: value });
 
 		this.setState({
             tradingBotObj: {
@@ -91,8 +92,8 @@ export default class UserTradingBots extends Component {
     }
 
     handleSave(event) {
-        const { tradingBotObj } = this.state;
-        const { botName } = tradingBotObj;
+        const { tradingBots, tradingBotObj } = this.state;
+        const { botId, botName, data } = tradingBotObj;
 
         event.preventDefault();
         this.setState({
@@ -102,10 +103,19 @@ export default class UserTradingBots extends Component {
             errAdd: ''
         });
 
+        if (_.some(tradingBots, bot => bot._id != botId && bot.name == botName)) {
+            return this.setState({
+                loading: false,
+                submitted: true,
+                err: `You already have a trading bot with the name ${botName}.`
+            });
+        }
+
         UserBackend.saveTradingBot(tradingBotObj)
         .then(res => {
             console.log('success! ', res);
             this.setState({
+                tradingBots: _.concat(_.filter(tradingBots, bot => bot._id != botId), { _id: botId, name: botName, data }),
                 loading: false,
                 submitted: true,
                 success: `${botName} has been saved.`
@@ -121,6 +131,8 @@ export default class UserTradingBots extends Component {
     }
 
     handleCreateNew(event) {
+        const { tradingBots } = this.state;
+
         event.preventDefault();
         this.setState({
             loading: true,
@@ -133,6 +145,8 @@ export default class UserTradingBots extends Component {
         .then(res => {
             console.log('success! ', res);
             this.setState({
+                tradingBots: _.concat(tradingBots, res),
+                tradingBotObj: { botId: res._id, botName: res.name, data: res.data },
                 loading: false,
             });
         }, ({ err }) => {
@@ -157,9 +171,9 @@ export default class UserTradingBots extends Component {
     }
 
     render() {
-        const { tradingBots } = this.props;
-        const { tradingBotObj, debugLog, loading, submitted, running, success, err, errAdd } = this.state;
+        const { tradingBots, tradingBotObj, debugLog, loading, submitted, running, success, err, errAdd } = this.state;
         const { botId, botName, data } = tradingBotObj;
+        console.log(tradingBotObj);
 
         return (
 			<div className={styles.top}>
