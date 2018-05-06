@@ -310,7 +310,6 @@ function fillTrade(playerId, trade) {
 }
 
 function dealWithCurrentTransactions(id) {
-  console.log("DEALING WITH TRANSACTIONS");
   const populatePath = { path: 'players', populate: { path: 'transactionCurrent', populate: { path: 'coin' } } };
   const now = Date.now();
   return Game.findOne({ id }).populate(populatePath).exec().then((game) => {
@@ -319,7 +318,6 @@ function dealWithCurrentTransactions(id) {
     return Coin.get().then((coins) => {
       const promiseLog = [];
       coins.forEach((coin) => {
-        console.log(`REACHED COIN ${coin}`);
         const tr = axios.get('https://min-api.cryptocompare.com/data/histominute?' +
                   `fsym=${coin}&tsym=USD&e=CCCAGG&limit=${minutes}`).then((res) => {
           if (res.data.Response !== 'Success') {
@@ -458,7 +456,6 @@ function getGame(req, res) {
   update(id).then(() => {
     return Game.findOne({ id }).populate(populatePath).lean().exec();
   }).then((game) => {
-    console.log("DONE");
     let gameToReturn = {};
     let player = {};
 
@@ -473,10 +470,14 @@ function getGame(req, res) {
       }
     }
 
-    User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
-      player.tradingBots = user.tradingBots;
+    if (!(Object.keys(player).length === 0 && player.constructor === Object)) {
+      User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
+        player.tradingBots = user.tradingBots;
+        res.status(200).json({ game: gameToReturn, player });
+      });
+    } else {
       res.status(200).json({ game: gameToReturn, player });
-    });
+    }
   }).catch((err) => {
     console.log(err);
     res.status(500).json({ err: 'Internal server error', traceback: err.message, field: null });
@@ -671,7 +672,7 @@ function calulate2ELO(winnerELO, loserELO, draw){
   var winnerExpected = winnerTransformed/(winnerTransformed + loserTransformed);
   var loserExpected = loserTransformed/(winnerTransformed + loserTransformed);
 
-  // set actual score based on winner and loser 
+  // set actual score based on winner and loser
 
   var actualWinnerScore = 1;
   var actualLoserScore = 0;
@@ -715,14 +716,14 @@ function calculateFullELO(req, res){
   var ELOArray = [];
 
   for (var i in players){
-    // treat the player above this player as one that has won 
+    // treat the player above this player as one that has won
     var playerELO = players[i].ELO
 
-    // if a player above it exists 
+    // if a player above it exists
     if (players[i-1]){
-      // if players have drawn 
+      // if players have drawn
       if (player[i-1].ELO == playerELO){
-        //draw has occured 
+        //draw has occured
         var drawArray = calulate2ELO(player[i-1].ELO, playerELO, 1);
         var drawerELO = drawArray[1];
         break;
@@ -738,17 +739,17 @@ function calculateFullELO(req, res){
 
     }
 
-    // if the player below it exists 
+    // if the player below it exists
     if (player[i+1]){
-          // if players have drawn 
+          // if players have drawn
       if (player[i+1].ELO == playerELO){
-        //draw has occured 
+        //draw has occured
         var drawArray = calulate2ELO(player[i-1].ELO, playerELO, 1);
         var drawELO = drawArray[1];
         break;
       }
 
-      // treat the player below it as the one that has lost 
+      // treat the player below it as the one that has lost
       var playerLostELO = players[i+1].ELO;
       //player[i] hsa won aganist player[i+1]
       var wonArray = calulate2ELO(playerELO, playerLostELO, 0);
