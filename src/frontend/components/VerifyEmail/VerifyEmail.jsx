@@ -26,9 +26,11 @@ class VerifyEmail extends Component {
     }
 
     componentWillMount() {
-        const params = queryString.parse(this.props.location.search);
+        const { history, location } = this.props;
+
+        const params = queryString.parse(location.search);
         const { token, email } = params;
-        if (!token || !email) return this.props.history.push('/pagenotfound');
+        if (!token || !email) return history.push('/pagenotfound');
 
 
         UserBackend.getUsername()
@@ -52,7 +54,7 @@ class VerifyEmail extends Component {
             });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert(`Error: ${err}`);
+			history.push({ pathname: '/error', error: true });
         });
     }
 

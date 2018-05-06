@@ -39,7 +39,7 @@ class Signup extends Component {
 			}
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert(`Error: ${err}`);
+			history.push({ pathname: '/error', error: true });
         });
 	}
 

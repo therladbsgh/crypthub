@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Container, Header, Table, Icon, Form, Pagination, Loader, Dimmer } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar, Searchbar } from 'components';
@@ -7,7 +8,7 @@ import { GlobalRankingsStyle as styles, SharedStyle as sharedStyles } from 'styl
 
 const numPerPage = 10;
 
-export default class GlobalRankings extends Component {
+class GlobalRankings extends Component {
     constructor(props) {
 		super(props);
 		this.state = {
@@ -23,6 +24,7 @@ export default class GlobalRankings extends Component {
     }
     
     componentWillMount() {
+        const { history } = this.props;
 		UserBackend.getUsername()
 		.then(resUsername => {
 			console.log('success! ', resUsername);
@@ -36,11 +38,11 @@ export default class GlobalRankings extends Component {
                 });
             }, ({ err }) => {
                 console.log('error! ', err);
-                alert(`Error: ${err}`);
+                history.push({ pathname: '/error', error: true });
             });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert(`Error: ${err}`);
+			history.push({ pathname: '/error', error: true });
         });
     }
     
@@ -111,3 +113,5 @@ export default class GlobalRankings extends Component {
         );
     }
 }
+
+export default withRouter(GlobalRankings);

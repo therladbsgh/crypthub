@@ -41,12 +41,12 @@ class UserSettings extends Component {
                     this.setState({ username: resUsername.username, email: resEmail.email, hasMounted: true });
                 }, ({ err }) => {
                     console.log('error! ', err);
-                    alert(`Error: ${err}`);
+                    history.push({ pathname: '/error', error: true });
                 });
 			}
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert(`Error: ${err}`);
+			history.push({ pathname: '/error', error: true });
         });
     }
     

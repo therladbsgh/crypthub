@@ -30,12 +30,12 @@ class UserPage extends Component {
                     this.setState({ user: resUser.user, allGames: resGames.games, hasMounted: true });
                 }, ({ err }) => {
                     console.log('error! ', err);
-                    alert(`Error: ${err}`);
+                    history.push({ pathname: '/error', error: true });
                 });
 			}
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert(`Error: ${err}`);
+			history.push({ pathname: '/error', error: true });
         });
 	}
     

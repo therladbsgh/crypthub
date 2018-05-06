@@ -18,6 +18,7 @@ export default class UserTradingBots extends Component {
         };
 
         this.handleUpload = this.handleUpload.bind(this);
+        this.updateTradingBots = this.updateTradingBots.bind(this);
     }
 
     handleUpload(event) {
@@ -64,26 +65,44 @@ export default class UserTradingBots extends Component {
         });
     }
 
+    updateTradingBots(newTradingBots) {
+        this.setState({
+            tradingBots: newTradingBots
+        });
+    }
+
     render() {
         const { tradingBots, loading, submitted, err } = this.state;
 
         return (
 			<div>
-                <Header as='h2'>Upload a Trading Bot</Header>
+                <Header as='h2' id={styles.bot}>Create/Edit Trading Bots</Header>
+                <Link to='/docs'>Find the API Documentation here.</Link>
                 {submitted &&
                 <Message error={!!err} success={!err} header={err ? 'Error' : 'Success'} content={err || 'Trading bot uploaded!'} />}
-                {loading ? <Button primary disabled loading content='Upload File' />
+                {loading ? 
+                <Form>
+                    <br />
+                    <Form.Field>
+                        <label>Upload a Trading Bot</label>
+                        <Button primary disabled loading content='Upload File' />
+                    </Form.Field>
+                </Form>
                 :
-                <div>
-                    <label htmlFor='file-upload' className='ui icon button primary' >
-                        <Icon name='upload' className={styles.icon} />
-                        Upload File
-                    </label>
-                    <input type='file' id='file-upload' className={sharedStyles.hide} onChange={this.handleUpload} />
-                </div>}
-				<Header as='h2' id={styles.bot}>Create/Edit Trading Bots</Header>
-                <Link to='/docs'>Find the API Documentation here.</Link>
-                <TradingBotIDE tradingBots={tradingBots} uploaded={submitted && !err} />
+                <Form>
+                    {!submitted && <br />}
+                    <Form.Field>
+                        <label>Upload a Trading Bot</label>
+                        <div>
+                            <label htmlFor='file-upload' className='ui icon button primary' >
+                                <Icon name='upload' className={styles.icon} />
+                                Upload File
+                            </label>
+                            <input type='file' id='file-upload' className={sharedStyles.hide} onChange={this.handleUpload} />
+                        </div>
+                    </Form.Field>
+                </Form>}
+                <TradingBotIDE tradingBots={tradingBots} uploaded={submitted && !err} updateTradingBots={this.updateTradingBots} />
 			</div>
         );
     }

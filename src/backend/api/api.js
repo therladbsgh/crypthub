@@ -88,13 +88,13 @@ function cancelOrder(orderId) {
             err(reject, `cancelOrder: First argument (orderId) must be a string. Found: ${orderId}`);
         }
 
-        resolve(true);
+        resolve();
     });
 }
 
 function cancelAll() {
     return new Promise((resolve, reject) => {
-        resolve(true);
+        resolve();
     });
 }
 
