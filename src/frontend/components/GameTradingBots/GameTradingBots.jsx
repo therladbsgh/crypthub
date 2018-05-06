@@ -8,7 +8,7 @@ export default class GameTradingBots extends Component {
     constructor(props) {
         super(props);
         const { gameId, player } = this.props;
-        const { _id, activeBotId } = player;
+        const { _id, activeBotId, activeBotLog } = player;
 
         this.state = {
             setBotObj: {
@@ -16,7 +16,8 @@ export default class GameTradingBots extends Component {
                 playerId: _id,
                 botId: ''
             },
-            activeBotId: activeBotId,
+            activeBotId,
+            activeBotLog,
             loading: false,
             err: ''
         };
@@ -60,6 +61,7 @@ export default class GameTradingBots extends Component {
                     botId: ''
                 },
                 activeBotId: botId,
+                activeBotLog: '',
                 loading: false
             });
 		}, ({ err }) => {
@@ -91,7 +93,7 @@ export default class GameTradingBots extends Component {
 
     render() {
         const { player } = this.props;
-        const { setBotObj, activeBotId, loading, err } = this.state;
+        const { setBotObj, activeBotId, activeBotLog, loading, err } = this.state;
         const { tradingBots } = player;
         const { botId } = setBotObj;
 
@@ -124,7 +126,7 @@ export default class GameTradingBots extends Component {
                 <Header as='h2'>Debug Log</Header>
                 <Form>
                     <Form.Field>
-                        <TextArea className={styles.debugLog} name='debugLog' value={'debug log here'} />
+                        <TextArea className={styles.debugLog} name='activeBotLog' value={activeBotLog} />
                     </Form.Field>
                 </Form>
 			</div>
