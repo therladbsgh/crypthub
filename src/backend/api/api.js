@@ -120,7 +120,7 @@ function getCompletedOrders() {
 
 function getPortfolio() {
     return new Promise((resolve, reject) => {
-        resolve([{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508 }]);
+        resolve([{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508, currPrice: 9500 }]);
     });
 }
 
