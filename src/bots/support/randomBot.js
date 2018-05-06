@@ -31,7 +31,7 @@ function trade(prices) {
                 const upperBound = cash / currPrice;
                 const size = _.round(_.random(lowerBound, upperBound), 8);
                 api.placeOrder('market', 'buy', size, currPrice, symbol, true);
-                cash -= size * currPrice;
+                cash = _.round(cash - size * currPrice, 2);
             }
         });
 
