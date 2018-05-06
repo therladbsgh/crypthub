@@ -65,6 +65,7 @@ function create(req, res) {
   } = req.body;
 
   const game = new Game({
+    _id: new Types.ObjectId(),
     id,
     name,
     description,
@@ -83,79 +84,78 @@ function create(req, res) {
     password
   });
 
-  Coin.findOne({ symbol: 'USD' }, (err, usdCoin) => {
-    if (err) res.status(500).json({ err: 'MongoDB query error' });
-
+  Coin.findOne({ symbol: 'USD' }).exec().then((usdCoin) => {
     const usdAsset = new Asset({
       _id: new Types.ObjectId(),
       coin: usdCoin._id,
       amount: startingBalance
     });
 
-    usdAsset.save().then((newAsset) => {
-      const player = new Player({
-        _id: new Types.ObjectId(),
-        username: req.session.user,
-        netWorth: startingBalance,
-        numTrades: 0,
-        netReturn: 0,
-        todayReturn: 0,
-        currRank: 1,
-        buyingPower: startingBalance,
-        shortReserve: 0,
-        portfolio: [newAsset._id]
-      });
-
-      player.save().then((newPlayer) => {
-        game.players = [newPlayer._id];
-        game.save().then((newGame) => {
-          User.findOne({ username: req.session.user }, (err2, user) => {
-            user.games.push(newGame._id);
-            user.save().then(() => {
-              Game.findOne({ _id: newGame._id })
-                .populate({ path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } })
-                .exec((err3, gameToReturn) => {
-                  if (err3) res.status(500).json({ err: 'MongoDB query error' });
-                  res.status(200).json({ data: gameToReturn });
-                });
-            });
-          });
-        });
-      });
+    return usdAsset.save();
+  }).then((newAsset) => {
+    const player = new Player({
+      _id: new Types.ObjectId(),
+      username: req.session.user,
+      netWorth: startingBalance,
+      numTrades: 0,
+      netReturn: 0,
+      todayReturn: 0,
+      currRank: 1,
+      buyingPower: startingBalance,
+      shortReserve: 0,
+      portfolio: [newAsset._id]
     });
+
+    return player.save();
+  }).then((newPlayer) => {
+    game.players = [newPlayer._id];
+    return game.save();
+  }).then(() => User.findOne({ username: req.session.user }).exec()).then((user) => {
+    user.games.push(game._id);
+    return user.save();
+  }).then(() => {
+    const populatePath = { path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } };
+    return Game.findOne({ _id: game._id }).populate(populatePath).exec();
+  }).then((gameToReturn) => {
+    res.status(200).json({ data: gameToReturn });
+  }).catch((err) => {
+    res.status(500).json({ err: err.message });
   });
 }
 
 function getGame(req, res) {
   const { id } = req.params;
+  const username = req.session.user;
+  const populatePath = {
+    path: 'players',
+    populate: {
+      path: 'portfolio transactionHistory transactionCurrent',
+      populate: { path: 'coin symbol' }
+    }
+  };
 
-  Game.findOne({ id })
-    .populate({
-      path: 'players',
-      populate: { path: 'portfolio transactionHistory transactionCurrent', populate: { path: 'coin symbol' } }
-    })
-    .exec((err, game) => {
-      if (err) {
-        res.status(500).json({ err });
-        return;
+  Game.findOne({ id }).populate(populatePath).lean().exec().then((game) => {
+    let gameToReturn = {};
+    let player = {};
+
+    if (game) {
+      gameToReturn = game;
+      if (req.session.user) {
+        game.players.forEach((each) => {
+          if (each.username === req.session.user) {
+            player = each;
+          }
+        });
       }
+    }
 
-      let gameToReturn = {};
-      let player = {};
-
-      if (game) {
-        gameToReturn = game;
-        if (req.session.user) {
-          game.players.forEach((each) => {
-            if (each.username === req.session.user) {
-              player = each;
-            }
-          });
-        }
-      }
-
+    User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
+      player.tradingBots = user.tradingBots;
       res.status(200).json({ game: gameToReturn, player });
     });
+  }).catch((err) => {
+    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
+  });
 }
 
 function addTrade(side, size, coinId, coinPrice, playerId) {
@@ -599,6 +599,18 @@ function getAll(req, res) {
   });
 }
 
+function setBot(req, res) {
+  const { playerId, botId } = req.body;
+  Player.findOne({ _id: playerId }).exec().then((player) => {
+    player.set({ activeBotId: botId });
+    return player.save();
+  }).then(() => {
+    res.status(200).json({ success: true });
+  }).catch((err) => {
+    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
+  });
+}
+
 function inviteUsers(req, res){
     const users = req.body.usernames;
     //console.log(req.body.gameId);
@@ -608,11 +620,11 @@ function inviteUsers(req, res){
     User.find({ username: { $in: users } }).exec().then(( users) => {
 
       console.log(users.length);
-      
+
       if (users.length == 0){
         return res.status(500).send({err: 'These users do not exist. Please check the usernames you have inputted are correct.', field: 'users'});
       }
-      
+
       users.forEach(function(user){
         console.log(user);
      if (!user){
@@ -778,5 +790,6 @@ module.exports = {
   placeOrder,
   cancelOrder,
   getAll,
+  setBot,
   inviteUsers
 };

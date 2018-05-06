@@ -10,29 +10,13 @@ import { UserBackend } from 'endpoints';
 import { DeleteBotModal } from 'components';
 import { TradingBotIDEStyle as styles } from 'styles';
 
-// const tradingBots = [
-//     {
-//         _id: 'id1',
-//         name: 'tradingBot1',
-//         data: 'trading bot 1 code goes here'
-//     },
-//     {
-//         _id: 'id2',
-//         name: 'tradingBot2',
-//         data: 'trading bot 2 code goes here'
-//     },
-//     {
-//         _id: 'id3',
-//         name: 'tradingBot3',
-//         data: 'trading bot 3 code goes here'
-//     }
-// ];
-
 export default class UserTradingBots extends Component {
     constructor(props) {
         super(props);
+        const { tradingBots } = this.props;
 
         this.state = {
+            tradingBots,
             tradingBotObj: {
                 botId: '',
                 botName: '',
@@ -51,8 +35,25 @@ export default class UserTradingBots extends Component {
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleCreateNew = this.handleCreateNew.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
         this.runBot = this.runBot.bind(this);
         this.stopBot = this.stopBot.bind(this);
+    }
+
+    componentWillReceiveProps(newProps) {
+        const { tradingBots, uploaded } = newProps;
+
+        if (uploaded) {
+            const newBot = tradingBots[tradingBots.length - 1];
+            return this.setState({
+                tradingBots,
+                tradingBotObj: {
+                    botId: newBot._id,
+                    botName: newBot.name,
+                    data: newBot.data
+                }
+            });
+        }
     }
 
     handleChange(event) {
@@ -76,7 +77,9 @@ export default class UserTradingBots extends Component {
     }
 
     handleDropdownChange(event, { value }) {
-        const bot = _.find(tradingBots, { _id: value});
+        const { tradingBots } = this.state;
+        
+        const bot = _.find(tradingBots, { _id: value });
 
 		this.setState({
             tradingBotObj: {
@@ -89,8 +92,8 @@ export default class UserTradingBots extends Component {
     }
 
     handleSave(event) {
-        const { tradingBotObj } = this.state;
-        const { botName } = tradingBotObj;
+        const { tradingBots, tradingBotObj } = this.state;
+        const { botId, botName, data } = tradingBotObj;
 
         event.preventDefault();
         this.setState({
@@ -100,10 +103,19 @@ export default class UserTradingBots extends Component {
             errAdd: ''
         });
 
+        if (_.some(tradingBots, bot => bot._id != botId && bot.name == botName)) {
+            return this.setState({
+                loading: false,
+                submitted: true,
+                err: `You already have a trading bot with the name ${botName}.`
+            });
+        }
+
         UserBackend.saveTradingBot(tradingBotObj)
         .then(res => {
             console.log('success! ', res);
             this.setState({
+                tradingBots: _.concat(_.filter(tradingBots, bot => bot._id != botId), { _id: botId, name: botName, data }),
                 loading: false,
                 submitted: true,
                 success: `${botName} has been saved.`
@@ -119,6 +131,8 @@ export default class UserTradingBots extends Component {
     }
 
     handleCreateNew(event) {
+        const { tradingBots } = this.state;
+
         event.preventDefault();
         this.setState({
             loading: true,
@@ -131,6 +145,8 @@ export default class UserTradingBots extends Component {
         .then(res => {
             console.log('success! ', res);
             this.setState({
+                tradingBots: _.concat(tradingBots, res),
+                tradingBotObj: { botId: res._id, botName: res.name, data: res.data },
                 loading: false,
             });
         }, ({ err }) => {
@@ -139,6 +155,19 @@ export default class UserTradingBots extends Component {
                 loading: false,
                 errAdd: err
             });
+        });
+    }
+
+    handleDelete(botId) {
+        const { tradingBots, tradingBotObj } = this.state;
+
+        this.setState({
+            tradingBots: _.filter(tradingBots, bot => bot._id != botId),
+            tradingBotObj: {
+                botId: '',
+                botName: '',
+                data: ''
+            }
         });
     }
 
@@ -155,8 +184,7 @@ export default class UserTradingBots extends Component {
     }
 
     render() {
-        const { tradingBots } = this.props;
-        const { tradingBotObj, debugLog, loading, submitted, running, success, err, errAdd } = this.state;
+        const { tradingBots, tradingBotObj, debugLog, loading, submitted, running, success, err, errAdd } = this.state;
         const { botId, botName, data } = tradingBotObj;
 
         return (
@@ -207,7 +235,7 @@ export default class UserTradingBots extends Component {
                     <Message success header='Success!' content={success} />
 					<Message error header='Error' content={err} />
                     <Button icon='save' type='submit' positive disabled={!botId || running} content={'Save'} />
-                    <DeleteBotModal botId={botId} disabled={!botId || running} />
+                    <DeleteBotModal handleDelete={this.handleDelete} botId={botId} disabled={!botId || running} />
                     <Button icon='play' type='button' primary disabled={!botId || running} onClick={this.runBot} content={'Run'} />
                     <Button icon='stop' type='button' negative disabled={!botId || !running} onClick={this.stopBot} content={'Stop'} />
                 </Form>

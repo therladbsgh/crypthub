@@ -62,6 +62,10 @@ export function saveTradingBot(tradingBotObj) {
     return Backend.post('bot/save', tradingBotObj);
 }
 
+export function deleteBot(delBotObj) {
+    return Backend.post('bot/delete', delBotObj);
+}
+
 export function newTradingBot() {
     return Backend.get('bot/new');
 }

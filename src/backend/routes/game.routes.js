@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const GameController = require('../controllers/game.controller');
+const SessionController = require('../controllers/session.controller');
 
 const router = new Router();
 
@@ -33,13 +34,15 @@ router.route('/validate').post(GameController.validate);
  */
 router.route('/create').post(GameController.create);
 
-router.route('/get/:id').get(GameController.getGame);
+router.route('/get/:id').get(SessionController.authenticate, GameController.getGame);
 
 router.route('/placeorder').post(GameController.placeOrder);
 
 router.route('/cancelorder').post(GameController.cancelOrder);
 
 router.route('/getall').get(GameController.getAll);
+
+router.route('/setbot').post(SessionController.authenticate, GameController.setBot);
 
 router.route('/inviteUsers').post(GameController.inviteUsers);
 

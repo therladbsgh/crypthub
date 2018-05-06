@@ -35,7 +35,8 @@ const PlayerType = {
     transactionCurrent: Array.of.TradeType,
     transactionHistory: Array.of.TradeType,
     tradingBots: Array.of.TradingBotType,
-    activeBotId: String
+    activeBotId: String,
+    activeBotLog: String
 };
 
 const AssetType = {
@@ -74,5 +75,6 @@ const UserType = {
 const TradingBotType = {
     _id: String,
     name: String,
-    data: String
+    data: String,
+    log: String
 };

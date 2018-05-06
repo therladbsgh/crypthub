@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
 const { Schema } = mongoose;
 const UserSchema = new mongoose.Schema({
@@ -31,7 +33,7 @@ const UserSchema = new mongoose.Schema({
     default: 1000
   },
   tradingBots: {
-    type: [String],
+    type: [{ type: Schema.Types.ObjectId, ref: 'Bot' }],
     default: []
   }
 });
@@ -42,7 +44,13 @@ UserSchema.statics = {
    */
   get(username) {
     return this.findOne({ username })
-      .populate({ path: 'games', populate: { path: 'players' } }).exec().then(user => user);
+      .populate({ path: 'games tradingBots', populate: { path: 'players' } }).lean()
+      .exec().then(user => user);
+  },
+
+  getBots(username) {
+    return this.findOne({ username })
+      .populate({ path: 'tradingBots' }).exec().then(user => user.tradingBots);
   }
 };
 

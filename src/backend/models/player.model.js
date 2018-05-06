@@ -49,6 +49,18 @@ const PlayerSchema = new Schema({
   transactionCurrent: {
     type: [{ type: Schema.Types.ObjectId, ref: 'Trade' }],
     default: []
+  },
+  eloDelta: {
+    type: Number,
+    default: 0
+  },
+  activeBotId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Bot'
+  },
+  activeBotLog: {
+    type: String,
+    default: ''
   }
 });
 

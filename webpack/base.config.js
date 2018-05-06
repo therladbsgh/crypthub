@@ -6,40 +6,41 @@ const htmlPlugin = new HtmlWebpackPlugin({
 	filename: "index.html"
 });
 
-// Change this as necessary for react routing to work correctly
-const PUBLIC_PATH = 'http://localhost:8080';
+const PUBLIC_PATH = process.env.MODE == 'production' ? '' : 'http://localhost:8080';
 
 module.exports = {
-	entry: "./src/frontend/index.jsx",
-	output: {
-		publicPath: PUBLIC_PATH
-	},
-	devServer: {
-		historyApiFallback: true
-	},
-	module: {
-		rules: [
-	  		{
-				test: /\.js|.jsx?$/,
-				exclude: /node_modules/,
-				use: {
-		  			loader: "babel-loader"
+
+	// return {
+		entry: "./src/frontend/index.jsx",
+		output: {
+			publicPath: PUBLIC_PATH
+		},
+		devServer: {
+			historyApiFallback: true
+		},
+		module: {
+			rules: [
+				{
+					test: /\.js|.jsx?$/,
+					exclude: /node_modules/,
+					use: {
+						loader: "babel-loader"
+					}
 				}
+			]
+		},
+		resolve: {
+			extensions: ['.js', '.jsx', '.scss'],
+			alias: {
+				"components": path.join(__dirname, '../src/frontend/components'),
+				"styles": path.join(__dirname, '../src/frontend/stylesheets'),
+				"mocks": path.join(__dirname, '../src/common/mocks'),
+				"endpoints": path.join(__dirname, '../src/frontend/endpoints'),
+				"docs": path.join(__dirname, '../src/common/docs')
 			}
+		},
+		plugins: [
+			htmlPlugin
 		]
-	},
-	resolve: {
-		extensions: ['.js', '.jsx', '.scss'],
-		alias: {
-			"components": path.join(__dirname, '../src/frontend/components'),
-			"styles": path.join(__dirname, '../src/frontend/stylesheets'),
-			"mocks": path.join(__dirname, '../src/common/mocks'),
-			"endpoints": path.join(__dirname, '../src/frontend/endpoints'),
-			"docs": path.join(__dirname, '../src/common/docs'),
-			"api": path.join(__dirname, '../src/backend/api/api.js')
-		}
-	},
-  	plugins: [
-		htmlPlugin
-	]
+	// }
 };

@@ -11,6 +11,7 @@ export default class UserTradingBots extends Component {
         super(props);
 
         this.state = {
+            tradingBots: this.props.tradingBots,
             loading: false,
             submitted: false,
             err: ''
@@ -20,6 +21,7 @@ export default class UserTradingBots extends Component {
     }
 
     handleUpload(event) {
+        const { tradingBots } = this.state;
         const file = event.target.files[0]
 
         this.setState({
@@ -28,35 +30,42 @@ export default class UserTradingBots extends Component {
             err: ''
         });
 
-        console.log(file);
         if (!_.includes(file.type, 'javascript')) {
-            this.setState({
+            return this.setState({
                 loading: false,
                 submitted: true,
                 err: 'The file must be a javascript file.'
             });
-        } else {
-            UserBackend.uploadTradingBot({ file })
-            .then(res => {
-                console.log('success! ', res);
-                this.setState({
-                    loading: false,
-                    submitted: true
-                });
-            }, ({ err }) => {
-                console.log('error! ', err);
-                this.setState({
-                    loading: false,
-                    submitted: true,
-                    err
-                });
+        }
+
+        if (_.some(tradingBots, { name: file.name })) {
+            return this.setState({
+                loading: false,
+                submitted: true,
+                err: `You already have a trading bot with the name ${file.name}.`
             });
         }
+
+        UserBackend.uploadTradingBot({ file })
+        .then(res => {
+            console.log('success! ', res);
+            this.setState({
+                tradingBots: _.concat(tradingBots, res),
+                loading: false,
+                submitted: true
+            });
+        }, ({ err }) => {
+            console.log('error! ', err);
+            this.setState({
+                loading: false,
+                submitted: true,
+                err
+            });
+        });
     }
 
     render() {
-        const { tradingBots } = this.props;
-        const { loading, submitted, err } = this.state;
+        const { tradingBots, loading, submitted, err } = this.state;
 
         return (
 			<div>
@@ -74,7 +83,7 @@ export default class UserTradingBots extends Component {
                 </div>}
 				<Header as='h2' id={styles.bot}>Create/Edit Trading Bots</Header>
                 <Link to='/docs'>Find the API Documentation here.</Link>
-                <TradingBotIDE tradingBots={tradingBots} />
+                <TradingBotIDE tradingBots={tradingBots} uploaded={submitted && !err} />
 			</div>
         );
     }

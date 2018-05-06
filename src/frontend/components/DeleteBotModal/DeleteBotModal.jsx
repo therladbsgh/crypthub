@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { Modal, Button, Message, Icon } from 'semantic-ui-react';
-import { GameBackend } from 'endpoints';
+import { UserBackend } from 'endpoints';
 import { DeleteBotModalStyle as styles } from 'styles';
 
 export default class DeleteBotModal extends Component {
@@ -13,7 +13,7 @@ export default class DeleteBotModal extends Component {
 			loading: false,
 			err: ''
 		};
-    
+
         this.open = this.open.bind(this);
         this.close = this.close.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,23 +32,24 @@ export default class DeleteBotModal extends Component {
     }
 
 	handleSubmit(event) {
-        const { botId} = this.props;
+        const { handleDelete, botId } = this.props;
 
         this.setState({
             loading: true,
             err: ''
         });
 
-		GameBackend.deleteBot({ botId })
+		UserBackend.deleteBot({ botId })
 		.then(res => {
-			console.log('success! ', res);
+            console.log('success! ', res);
+            handleDelete(botId);
             this.close();
 		}, ({ err }) => {
 			console.log('error! ', err);
 			this.setState({ loading: false, err });
         });
     }
-    
+
     render() {
         const { botId, disabled } = this.props;
         const { open, loading, err } = this.state;
