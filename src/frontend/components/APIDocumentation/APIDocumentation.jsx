@@ -6,7 +6,7 @@ import { APIDocumentation as docs } from 'docs';
 import { Navbar } from 'components'; 
 import { APIDocumentationStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
-export default class APIDocumentation extends Component {
+class APIDocumentation extends Component {
 	constructor(props) {
 		super(props);
 
@@ -24,7 +24,7 @@ export default class APIDocumentation extends Component {
             this.setState({ username: res.username, hasMounted: true });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert(`Error: ${err}`);
+			history.push({ pathname: '/error', error: true });
         });
 	}
 
@@ -80,3 +80,5 @@ export default class APIDocumentation extends Component {
 		);
   	}
 }
+
+export default withRouter(APIDocumentation);
