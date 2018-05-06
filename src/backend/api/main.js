@@ -4,18 +4,33 @@ const requireFromString = require('require-from-string');
 
 const api = require('./api.js');
 const Bot = require('../models/bot.model');
+const Player = require('../models/player.model');
+
+function parseLog(messages) {
+  const strings = [];
+  messages.forEach((message) => {
+    if (typeof message === 'object') {
+      strings.push(JSON.stringify(message));
+    } else {
+      strings.push(message);
+    }
+  });
+  return strings;
+}
 
 function runBot(botId, gameId, playerId, prices) {
   const consoleLog = console.log;
-  try {
-    Bot.findOne({ _id: botId }).exec().then((botModel) => {
-      const bot = requireFromString(botModel.data);
+  Bot.findOne({ _id: botId }).exec().then((botModel) => {
+    const bot = requireFromString(botModel.data);
+    bot.api = api;
+    bot.api.clearContext();
+    bot.api.setContext(gameId, playerId);
 
-      bot.api = api;
-      bot.api.setContext(gameId, playerId);
+    Player.findOne({ _id: playerId }).exec().then((player) => {
+      let log = player.activeBotLog;
 
-      let log = '';
-      console.log = (...messages) => {
+      console.log = (...messageList) => {
+        const messages = parseLog(messageList);
         if (log.length === 0) {
           log = messages.join(' ');
         } else {
@@ -23,14 +38,17 @@ function runBot(botId, gameId, playerId, prices) {
         }
       };
 
-      bot.trade(prices);
-
-      botModel.set({ log });
-      botModel.save();
+      try {
+        bot.trade(prices);
+      } catch (e) {
+        console.log(`ERROR: ${e}`);
+      }
+      player.set({ activeBotLog: log });
+      player.save();
     });
-  } catch (e) {
-    consoleLog(`ERROR: ${e}`);
-  }
+  }).catch((err) => {
+    consoleLog(err.message);
+  });
   console.log = consoleLog;
 }
 
