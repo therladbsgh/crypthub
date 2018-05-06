@@ -649,6 +649,140 @@ function inviteUsers(req, res){
 
 }
 
+
+function calulate2ELO(winnerELO, loserELO, draw){
+
+  var Kvalue = 30;
+  // two players with ELO winnerELO and loserELO
+
+  //calculate transformed ELO R(1) and R(2)
+
+  var winnerTransformed = Math.pow(10,(winnerELO/400));
+  var loserTransformed = Math.pow(10,(loserELO/400));
+
+  // calculate expected score E(1) and E(2)
+
+  var winnerExpected = winnerTransformed/(winnerTransformed + loserTransformed);
+  var loserExpected = loserTransformed/(winnerTransformed + loserTransformed);
+
+  // set actual score based on winner and loser 
+
+  var actualWinnerScore = 1;
+  var actualLoserScore = 0;
+
+  // calculate actual ELO
+
+  if (draw){
+    var actualWinnerELO = winnerELO + Kvalue*(.5-winnerExpected);
+    var actualLoserELO = loserELO + Kvalue*(.5-winnerExpected);
+    return [actualWinnerELO,actualLoserELO];
+
+  }
+
+else{
+
+  var actualWinnerELO = winnerELO + Kvalue*(1-winnerExpected);
+  var actualLoserELO = loserELO + Kvalue*(0-loserExpected);
+
+  return [actualWinnerELO, actualLoserELO];
+}
+}
+
+
+
+function calculateFullELO(req, res){
+
+//   CASE-1 : Suppose Player 1 wins:
+// rating1 = rating1 + k*(actual – expected) = 1200+30(1 – 0.76) = 1207.2;
+// rating2 = rating2 + k*(actual – expected) = 1000+30(0 – 0.24) = 992.8;
+
+// Case-2 : Suppose Player 2 wins:
+// rating1 = rating1 + k*(actual – expected) = 1200+30(0 – 0.76) = 1177.2;
+// rating2 = rating2 + k*(actual – expected) = 1000+30(1 – 0.24) = 1022.8;
+
+  // array of all players in order of rank
+  var players = req.body.players;
+
+  var winnerELO = 0;
+  var loserELO = 0;
+  var drawerELO = 0;
+  var ELOArray = [];
+
+  for (var i in players){
+    // treat the player above this player as one that has won 
+    var playerELO = players[i].ELO
+
+    // if a player above it exists 
+    if (players[i-1]){
+      // if players have drawn 
+      if (player[i-1].ELO == playerELO){
+        //draw has occured 
+        var drawArray = calulate2ELO(player[i-1].ELO, playerELO, 1);
+        var drawerELO = drawArray[1];
+        break;
+      }
+
+      // players[i-1] has won aganist player[i]
+      var playerWonELO = players[i-1].ELO;
+
+      var lostArray = calulate2ELO(playerWon, playerELO, 0);
+      // wonArray contains the actualWinner ELO and the actualLosterELO
+     var loserELO = lostArray[1];
+
+
+    }
+
+    // if the player below it exists 
+    if (player[i+1]){
+          // if players have drawn 
+      if (player[i+1].ELO == playerELO){
+        //draw has occured 
+        var drawArray = calulate2ELO(player[i-1].ELO, playerELO, 1);
+        var drawELO = drawArray[1];
+        break;
+      }
+
+      // treat the player below it as the one that has lost 
+      var playerLostELO = players[i+1].ELO;
+      //player[i] hsa won aganist player[i+1]
+      var wonArray = calulate2ELO(playerELO, playerLostELO, 0);
+
+      var winnerELO = wonArray[0];
+
+    }
+
+    if (drawerELO){
+      player[i].ELO = drawerELO;
+    }
+
+    else{
+      //ELO equals average of the the win and loss
+      if (!player[i-1]){
+        var realELO  = winnerELO;
+        player[i].ELO = realELO;
+      }
+      else if(!player[i+1]){
+        var realELO = loserELO;
+        player[i].ELO = realELO;
+      }
+      else{
+    var realELO = (winnerELO + loserELO)/2
+      player[i].ELO = realELO;
+  }
+  }
+
+
+
+    // treat the player below this player as one that has lost
+  }
+
+  return players;
+
+}
+
+
+
+
 module.exports = {
   validate,
   create,
