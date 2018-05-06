@@ -17,6 +17,7 @@ function runBot(botPath, logPath, gameId, playerId, prices) {
         .then(res => {
             const { status, data } = res;
             const { output, errors } = data;
+
             if (status == '200') {
                 if (!!output) {
                     logFile.write(output + '\n');
