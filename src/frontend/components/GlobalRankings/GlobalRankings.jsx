@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { Container, Header, Table, Icon, Form, Pagination } from 'semantic-ui-react';
+import { Container, Header, Table, Icon, Form, Pagination, Loader, Dimmer } from 'semantic-ui-react';
 import { UserBackend } from 'endpoints';
 import { Navbar, Searchbar } from 'components';
 import { GlobalRankingsStyle as styles, SharedStyle as sharedStyles } from 'styles';
@@ -57,6 +57,8 @@ export default class GlobalRankings extends Component {
     
     render() {
         const { username, users, results, activePage, hasMounted } = this.state;
+
+        if (!hasMounted) return <Dimmer active><Loader size='massive'>Loading Global Rankings...</Loader></Dimmer>;
 
         const resultUsers = results[0] === 'RESET' ? users : _.filter(users, u => _.some(results, _.mapKeys(_.mapValues(u, v => String(v)), (v, k) => k.toLowerCase())));
         const upper = activePage * numPerPage;

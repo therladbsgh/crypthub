@@ -1,4 +1,11 @@
 const _ = require('lodash');
+const request = require('request');
+
+function test() {
+	request.get('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD', function(error, response, body) {
+        console.log(body);
+    });
+}
 
 const context = {
     gameId: '',
