@@ -13,6 +13,12 @@ const context = {
     set: false
 };
 
+function clearContext() {
+    context.gameId = '';
+    context.playerId = '';
+    context.set = false;
+}
+
 function setContext(gameId, playerId) {
     if (context.set) {
         throw { message: 'setContext: Illegal call of setContext.' };
@@ -38,16 +44,16 @@ function placeOrder(type, side, size, price, coin, GTC) {
         }
 
         if (!_.isNumber(size)) {
-            err(reject, `placeOrder: Third argument (size) must be a number. Found: ${size}`);        
+            err(reject, `placeOrder: Third argument (size) must be a number. Found: ${size}`);
         }
 
         if (size <= 0) {
-            err(reject, `placeOrder: Third argument (size) must be greater than 0. Found: ${size}`);  
+            err(reject, `placeOrder: Third argument (size) must be greater than 0. Found: ${size}`);
         }
 
         const numPlacesSize = Number(size.toString().split('e-')[1]);
         if (numPlacesSize && numPlacesSize > 8) {
-            err(reject, `placeOrder: Third argument (size) must have no more than 8 decimal places. Found: ${size}`);          
+            err(reject, `placeOrder: Third argument (size) must have no more than 8 decimal places. Found: ${size}`);
         }
 
         if (type != 'market') {
@@ -67,7 +73,7 @@ function placeOrder(type, side, size, price, coin, GTC) {
         }
 
         if (!_.includes(['BTC', 'ETH'], coin)) {
-            err(reject, `placeOrder: Fifth argument (coin) must be one of 'BTC' or 'ETH'. Found: ${coin}`);        
+            err(reject, `placeOrder: Fifth argument (coin) must be one of 'BTC' or 'ETH'. Found: ${coin}`);
         }
 
         if (type != 'market') {
@@ -83,7 +89,7 @@ function placeOrder(type, side, size, price, coin, GTC) {
 function cancelOrder(orderId) {
     return new Promise((resolve, reject) => {
         if (!_.isString(orderId)) {
-            err(reject, `cancelOrder: First argument (orderId) must be a string. Found: ${orderId}`);        
+            err(reject, `cancelOrder: First argument (orderId) must be a string. Found: ${orderId}`);
         }
 
         resolve();
@@ -99,7 +105,7 @@ function cancelAll() {
 function getOrder(orderId) {
     return new Promise((resolve, reject) => {
         if (!_.isString(orderId)) {
-            err(`getOrder: First argument (orderId) must be a string. Found: ${orderId}`);        
+            err(`getOrder: First argument (orderId) must be a string. Found: ${orderId}`);
         }
 
         resolve({ orderId: 'orderid' });
@@ -128,6 +134,7 @@ function getPortfolio() {
 
 module.exports = {
     setContext,
+    clearContext,
     placeOrder,
     cancelOrder,
     cancelAll,

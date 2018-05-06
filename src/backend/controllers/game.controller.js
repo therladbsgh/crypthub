@@ -2,6 +2,8 @@ const { Types } = require('mongoose');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 
+const api = require('../api/main.js');
+
 const Game = require('../models/game.model');
 const Player = require('../models/player.model');
 const Coin = require('../models/coin.model');
@@ -263,6 +265,35 @@ function updatePrices() {
   });
 }
 
+function getPriceHistoryContext(id) {
+  const populatePath = { path: 'players', populate: { path: 'transactionCurrent', populate: { path: 'coin' } } };
+  const now = Date.now();
+  let realLastUpdated;
+  return Game.findOne({ id }).populate(populatePath).exec().then((game) => {
+    realLastUpdated = game.lastUpdated;
+    game.set({ lastUpdated: now });
+    return game.save();
+  }).then((game) => {
+    const minutes = Math.ceil((now - realLastUpdated.getTime()) / 60000);
+    const prices = {};
+
+    return Coin.get().then((coins) => {
+      const promiseLog = [];
+      coins.forEach((coin) => {
+        const tr = axios.get('https://min-api.cryptocompare.com/data/histominute?' +
+                  `fsym=${coin}&tsym=USD&e=CCCAGG&limit=${minutes}`).then((res) => {
+          prices[coin] = res.data.Data.map(x => x.close);
+          return Promise.resolve();
+        });
+        promiseLog.push(tr);
+      });
+      return Promise.all(promiseLog).then(() => {
+        return Promise.resolve({ game: game.toObject(), prices });
+      });
+    });
+  });
+}
+
 function fillTrade(playerId, trade) {
   const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
   return Player.findOne({ _id: playerId }).populate(populatePath).exec().then((player) => {
@@ -309,64 +340,69 @@ function fillTrade(playerId, trade) {
   });
 }
 
-function dealWithCurrentTransactions(id) {
-  const populatePath = { path: 'players', populate: { path: 'transactionCurrent', populate: { path: 'coin' } } };
-  const now = Date.now();
-  return Game.findOne({ id }).populate(populatePath).exec().then((game) => {
-    const minutes = Math.ceil((now - game.lastUpdated.getTime()) / 60000);
+function dealWithCurrentTransactions(id, game, prices) {
+  const coins = Object.keys(prices);
+  const promiseLog = [];
 
-    return Coin.get().then((coins) => {
-      const promiseLog = [];
-      coins.forEach((coin) => {
-        const tr = axios.get('https://min-api.cryptocompare.com/data/histominute?' +
-                  `fsym=${coin}&tsym=USD&e=CCCAGG&limit=${minutes}`).then((res) => {
-          if (res.data.Response !== 'Success') {
-            return Promise.reject(new Error('History price fetch error'));
+  coins.forEach((coin) => {
+    const data = prices[coin];
+    data.forEach((price) => {
+      game.players.forEach((player) => {
+        player.transactionCurrent.forEach((trade) => {
+          if ((((trade.type === 'limit' && trade.side === 'buy') ||
+                (trade.type === 'stop' && trade.side === 'sell')) &&
+               price <= trade.price && trade.coin.symbol === coin) ||
+              (((trade.type === 'limit' && trade.side === 'sell') ||
+                (trade.type === 'stop' && trade.side === 'buy')) &&
+               price >= trade.price && trade.coin.symbol === coin)) {
+            promiseLog.push(fillTrade(player._id, trade));
+            player.transactionCurrent = player.transactionCurrent.filter(each => each !== trade);
+            player.transactionHistory.push(trade._id);
           }
-
-          const fillLog = [];
-          const data = res.data.Data.map(x => x.close);
-          data.forEach((price) => {
-            game.players.forEach((player) => {
-              player.transactionCurrent.forEach((trade) => {
-                if ((((trade.type === 'limit' && trade.side === 'buy') ||
-                      (trade.type === 'stop' && trade.side === 'sell')) &&
-                     price <= trade.price) ||
-                    (((trade.type === 'limit' && trade.side === 'sell') ||
-                      (trade.type === 'stop' && trade.side === 'buy')) &&
-                     price >= trade.price)) {
-                  fillLog.push(fillTrade(player._id, trade));
-                  player.transactionCurrent = player.transactionCurrent.filter(each => each !== trade);
-                  player.transactionHistory.push(trade._id);
-                }
-              });
-            });
-          });
-          return Promise.all(fillLog);
         });
-        promiseLog.push(tr);
       });
-      return Promise.all(promiseLog).then(() => {
-        const userPromises = [];
-        game.players.forEach((p) => {
-          const userP = Player.findOne({ _id: p._id }).exec().then((player) => {
-            player.transactionCurrent = p.transactionCurrent;
-            player.transactionHistory = p.transactionHistory;
-            return player.save();
-          });
-          userPromises.push(userP);
-        });
-        return Promise.all(userPromises);
-      });
-    }).then(() => {
-      game.set({ lastUpdated: now });
-      return game.save();
     });
+  });
+  return Promise.all(promiseLog).then(() => {
+    const userPromises = [];
+    game.players.forEach((p) => {
+      const userP = Player.findOne({ _id: p._id }).exec().then((player) => {
+        player.transactionCurrent = p.transactionCurrent;
+        player.transactionHistory = p.transactionHistory;
+        return player.save();
+      });
+      userPromises.push(userP);
+    });
+    return Promise.all(userPromises);
   });
 }
 
+function runAllBots(game, prices) {
+  const coins = Object.keys(prices);
+  const histLength = prices[coins[0]].length;
+
+  for (let i = 0; i < histLength; i++) {
+    const currCoins = [];
+    coins.forEach((coin) => {
+      currCoins.push({ symbol: coin, price: prices[coin][i] });
+    });
+
+    game.players.forEach((player) => {
+      if (player.activeBotId) {
+        api.runBot(player.activeBotId, game._id, player._id, currCoins);
+      }
+    });
+  }
+}
+
 function update(id) {
-  return updatePrices().then(() => dealWithCurrentTransactions(id));
+  return updatePrices().then(() => {
+    return getPriceHistoryContext(id);
+  }).then((data) => {
+    return dealWithCurrentTransactions(id, data.game, data.prices).then(() => {
+      return runAllBots(data.game, data.prices);
+    });
+  });
 }
 
 function futureTrade(type, side, username, price, symbol, size, GTC) {
@@ -453,9 +489,11 @@ function getGame(req, res) {
     }
   };
 
-  Game.findOne({ id }).populate(populatePath).lean().exec().then((game) => {
-    if (game) {
+  Game.findOne({ id }).exec().then((gameExists) => {
+    if (gameExists) {
       update(id).then(() => {
+        return Game.findOne({ id }).populate(populatePath).lean().exec();
+      }).then((game) => {
         const gameToReturn = game;
         let player = {};
 
