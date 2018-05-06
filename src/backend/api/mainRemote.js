@@ -3,11 +3,14 @@ const util = require('util');
 const axios = require('axios');
 
 function runBot(botPath, logPath, gameId, playerId, prices) {
-    const logFile = fs.createWriteStream(logPath, { flags: 'a' });
+    // const logFile = fs.createWriteStream(logPath, { flags: 'a' });
+    const logFile = {
+        write: console.log
+    };
     return new Promise((resolve, reject) => {
         axios.post('http://ec2-52-205-237-224.compute-1.amazonaws.com:8080/compile', {
             language: 4,
-            code: "const api = require('./api.js');function trade(prices) {console.log('testing', prices[0]);api.test();} module.exports = {api,trade};",
+            code: "const api = require('./api.js');function trade(prices) {console.log('testing', prices[0]);api.placeOrder().then(res => console.log('RESULT:', res)).catch(err => console.log('ERROR:', err));} module.exports = {api,trade};",
             stdin: JSON.stringify([{ symbol: 'BTC', price: 100}, { symbol: 'ETH', price: 200}]),
             additional: gameId + '*' + playerId
         })
