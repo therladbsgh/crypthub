@@ -21,7 +21,7 @@ export const methods = [
 			{
 				name: 'price',
 				type: 'number',
-				description: "The price per coin value you wish to trade at. Must be greater than 0 and have no more than 2 decimal places."
+				description: "The price per coin value you wish to trade at. Must be greater than 0 and have no more than 2 decimal places. If the order is a market order, then this parameter is ignored."
 			},
 			{
 				name: 'coin',
@@ -31,7 +31,7 @@ export const methods = [
 			{
 				name: 'GTC',
 				type: 'boolean',
-				description: "Indicates whether or not this order is Good 'Till Cancelled. If false, then the order will expire in 24 hours."
+				description: "Indicates whether or not this order is Good 'Till Cancelled. If false, then the order will expire in 24 hours. If the order is a market order, then this parameter is ignored."
 			}
 		],
 		return: {

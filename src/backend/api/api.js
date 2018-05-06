@@ -50,26 +50,30 @@ function placeOrder(type, side, size, price, coin, GTC) {
             err(reject, `placeOrder: Third argument (size) must have no more than 8 decimal places. Found: ${size}`);          
         }
 
-        if (!_.isNumber(price)) {
-            err(reject, `placeOrder: Fourth argument (price) must be a number. Found: ${price}`);
-        }
+        if (type != 'market') {
+            if (!_.isNumber(price)) {
+                err(reject, `placeOrder: Fourth argument (price) must be a number. Found: ${price}`);
+            }
 
-        if (price <= 0) {
-            err(reject, `placeOrder: Fourth argument (price) must be greater than 0. Found: ${price}`);  
-        }
+            if (price <= 0) {
+                err(reject, `placeOrder: Fourth argument (price) must be greater than 0. Found: ${price}`);  
+            }
 
-        const numPlacesPriceE = Number(price.toString().split('e-')[1]);
-        const decimal = price.toString().split('.')[1];
-        if (numPlacesPriceE ? numPlacesPriceE > 2 : decimal && decimal.length > 2) {
-            err(reject, `placeOrder: Fourth argument (price) must have no more than 2 decimal places. Found: ${price}`);          
+            const numPlacesPriceE = Number(price.toString().split('e-')[1]);
+            const decimal = price.toString().split('.')[1];
+            if (numPlacesPriceE ? numPlacesPriceE > 2 : decimal && decimal.length > 2) {
+                err(reject, `placeOrder: Fourth argument (price) must have no more than 2 decimal places. Found: ${price}`);          
+            }
         }
 
         if (!_.includes(['BTC', 'ETH'], coin)) {
             err(reject, `placeOrder: Fifth argument (coin) must be one of 'BTC' or 'ETH'. Found: ${coin}`);        
         }
 
-        if (!_.isBoolean(GTC)) {
-            err(reject, `placeOrder: Sixth argument (GTC) must be a boolean. Found: ${GTC}`);        
+        if (type != 'market') {
+            if (!_.isBoolean(GTC)) {
+                err(reject, `placeOrder: Sixth argument (GTC) must be a boolean. Found: ${GTC}`);        
+            }
         }
 
         resolve('id');
