@@ -123,41 +123,6 @@ function create(req, res) {
   });
 }
 
-function getGame(req, res) {
-  const { id } = req.params;
-  const username = req.session.user;
-  const populatePath = {
-    path: 'players',
-    populate: {
-      path: 'portfolio transactionHistory transactionCurrent',
-      populate: { path: 'coin symbol' }
-    }
-  };
-
-  Game.findOne({ id }).populate(populatePath).lean().exec().then((game) => {
-    let gameToReturn = {};
-    let player = {};
-
-    if (game) {
-      gameToReturn = game;
-      if (req.session.user) {
-        game.players.forEach((each) => {
-          if (each.username === req.session.user) {
-            player = each;
-          }
-        });
-      }
-    }
-
-    User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
-      player.tradingBots = user.tradingBots;
-      res.status(200).json({ game: gameToReturn, player });
-    });
-  }).catch((err) => {
-    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
-  });
-}
-
 function addTrade(side, size, coinId, coinPrice, playerId) {
   const trade = new Trade({
     _id: new Types.ObjectId(),
@@ -276,29 +241,25 @@ function simpleSell(username, symbol, size) {
   });
 }
 
-function updateSinglePrice(symbol) {
-  const queryUrl = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${symbol}&tsyms=USD`;
-  return axios.get(queryUrl).then((res) => {
-    const data = res.data.RAW[symbol].USD;
-
-    return Coin.findOne({ symbol }).exec().then((coin) => {
-      coin.set({ currPrice: parseFloat(data.PRICE) });
-      coin.set({ todayReturn: parseFloat(data.CHANGEPCT24HOUR) });
-      return coin.save();
-    });
-  });
-}
-
 function updatePrices() {
   return Coin.get().then((coins) => {
-    const promiseLog = [];
-    coins.forEach((coin) => {
-      if (coin !== 'USD') {
-        promiseLog.push(updateSinglePrice(coin));
-      }
-    });
+    const syms = coins.join(',');
+    const queryUrl = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${syms}&tsyms=USD`;
+    return axios.get(queryUrl).then((res) => {
+      const data = res.data.RAW;
+      const promiseLog = [];
 
-    return Promise.all(promiseLog);
+      coins.forEach((coin) => {
+        const coinData = data[coin].USD;
+        const coinUpdatePromise = Coin.findOne({ symbol: coin }).exec().then((coinModel) => {
+          coinModel.set({ currPrice: parseFloat(coinData.PRICE) });
+          coinModel.set({ todayReturn: parseFloat(coinData.CHANGEPCT24HOUR) });
+          return coinModel.save();
+        });
+        promiseLog.push(coinUpdatePromise);
+      });
+      return Promise.all(promiseLog);
+    });
   });
 }
 
@@ -349,13 +310,16 @@ function fillTrade(playerId, trade) {
 }
 
 function dealWithCurrentTransactions(id) {
+  console.log("DEALING WITH TRANSACTIONS");
   const populatePath = { path: 'players', populate: { path: 'transactionCurrent', populate: { path: 'coin' } } };
+  const now = Date.now();
   return Game.findOne({ id }).populate(populatePath).exec().then((game) => {
-    const minutes = Math.ceil((Date.now() - game.lastUpdated.getTime()) / 60000);
+    const minutes = Math.ceil((now - game.lastUpdated.getTime()) / 60000);
 
     return Coin.get().then((coins) => {
       const promiseLog = [];
       coins.forEach((coin) => {
+        console.log(`REACHED COIN ${coin}`);
         const tr = axios.get('https://min-api.cryptocompare.com/data/histominute?' +
                   `fsym=${coin}&tsym=USD&e=CCCAGG&limit=${minutes}`).then((res) => {
           if (res.data.Response !== 'Success') {
@@ -396,6 +360,9 @@ function dealWithCurrentTransactions(id) {
         });
         return Promise.all(userPromises);
       });
+    }).then(() => {
+      game.set({ lastUpdated: now });
+      return game.save();
     });
   });
 }
@@ -474,6 +441,45 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
       player.transactionCurrent.push(newTrade._id);
       return player.save();
     });
+  });
+}
+
+function getGame(req, res) {
+  const { id } = req.params;
+  const username = req.session.user;
+  const populatePath = {
+    path: 'players',
+    populate: {
+      path: 'portfolio transactionHistory transactionCurrent',
+      populate: { path: 'coin symbol' }
+    }
+  };
+
+  update(id).then(() => {
+    return Game.findOne({ id }).populate(populatePath).lean().exec();
+  }).then((game) => {
+    console.log("DONE");
+    let gameToReturn = {};
+    let player = {};
+
+    if (game) {
+      gameToReturn = game;
+      if (req.session.user) {
+        game.players.forEach((each) => {
+          if (each.username === req.session.user) {
+            player = each;
+          }
+        });
+      }
+    }
+
+    User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
+      player.tradingBots = user.tradingBots;
+      res.status(200).json({ game: gameToReturn, player });
+    });
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).json({ err: 'Internal server error', traceback: err.message, field: null });
   });
 }
 
