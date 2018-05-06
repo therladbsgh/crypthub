@@ -651,7 +651,7 @@ function cancelOrder(req, res) {
 }
 
 function getAll(req, res) {
-  Game.find({}).populate('players').exec().then((games) => {
+  Game.find({ completed: false }).populate('players').exec().then((games) => {
     res.status(200).json({ games });
   });
 }
