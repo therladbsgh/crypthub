@@ -20,9 +20,9 @@ export default class UserTradingBots extends Component {
             tradingBotObj: {
                 botId: '',
                 botName: '',
-                data: ''
+                data: '',
+                log: ''
             },
-            debugLog: '',
             loading: false,
             submitted: false,
             success: '',
@@ -50,7 +50,8 @@ export default class UserTradingBots extends Component {
                 tradingBotObj: {
                     botId: newBot._id,
                     botName: newBot.name,
-                    data: newBot.data
+                    data: newBot.data,
+                    log: newBot.log
                 }
             });
         }
@@ -83,17 +84,17 @@ export default class UserTradingBots extends Component {
 
 		this.setState({
             tradingBotObj: {
-                ...this.state.tradingBotObj,
                 botId: value,
                 botName: bot.name,
-                data: bot.data
+                data: bot.data,
+                log: bot.log
             }
         });
     }
 
     handleSave(event) {
         const { tradingBots, tradingBotObj } = this.state;
-        const { botId, botName, data } = tradingBotObj;
+        const { botId, botName, data, log } = tradingBotObj;
 
         event.preventDefault();
         this.setState({
@@ -115,7 +116,7 @@ export default class UserTradingBots extends Component {
         .then(res => {
             console.log('success! ', res);
             this.setState({
-                tradingBots: _.concat(_.filter(tradingBots, bot => bot._id != botId), { _id: botId, name: botName, data }),
+                tradingBots: _.concat(_.filter(tradingBots, bot => bot._id != botId), { _id: botId, name: botName, data, log }),
                 loading: false,
                 submitted: true,
                 success: `${botName} has been saved.`
@@ -146,7 +147,7 @@ export default class UserTradingBots extends Component {
             console.log('success! ', res);
             this.setState({
                 tradingBots: _.concat(tradingBots, res),
-                tradingBotObj: { botId: res._id, botName: res.name, data: res.data },
+                tradingBotObj: { botId: res._id, botName: res.name, data: res.data, log: res.log },
                 loading: false,
             });
         }, ({ err }) => {
@@ -184,8 +185,8 @@ export default class UserTradingBots extends Component {
     }
 
     render() {
-        const { tradingBots, tradingBotObj, debugLog, loading, submitted, running, success, err, errAdd } = this.state;
-        const { botId, botName, data } = tradingBotObj;
+        const { tradingBots, tradingBotObj, loading, submitted, running, success, err, errAdd } = this.state;
+        const { botId, botName, data, log } = tradingBotObj;
 
         return (
 			<div className={styles.top}>
@@ -229,7 +230,7 @@ export default class UserTradingBots extends Component {
                         </Form.Field>
                         <Form.Field width={6}>
                             <label>Debug Log</label>
-							<TextArea className={styles.debugLog} autoHeight name='debugLog' value={debugLog} />
+							<TextArea className={styles.debugLog} autoHeight name='log' value={log} />
                         </Form.Field>
                     </Form.Group>
                     <Message success header='Success!' content={success} />

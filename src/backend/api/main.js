@@ -18,7 +18,7 @@ function runBot(botPath, logPath, gameId, playerId, prices) {
     console.log = consoleLog;
 }
 
-runBot('../../bots/users/test/virus.js/bot.js', './log.txt', 'gameid', 'playerid', [2, 3, 4]);
+// runBot('../../bots/users/test/virus.js/bot.js', './log.txt', 'gameid', 'playerid', [2, 3, 4]);
 
 module.exports = {
     runBot
