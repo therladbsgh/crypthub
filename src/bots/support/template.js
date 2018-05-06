@@ -1,5 +1,5 @@
 // Use the api to call the functions as specified in the API Docs.
-let api;
+const api = require('./api.js');
 
 /*
  * Our support code operates by calling this trade function every time there are new prices.
