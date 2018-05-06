@@ -10,9 +10,13 @@ const BotSchema = new Schema({
     type: String,
     required: true
   },
-  path: {
+  data: {
     type: String,
     required: true
+  },
+  log: {
+    type: String,
+    default: ''
   }
 });
 
