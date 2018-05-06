@@ -13,12 +13,6 @@ const context = {
     set: false
 };
 
-function clearContext() {
-    context.gameId = '';
-    context.playerId = '';
-    context.set = false;
-}
-
 function setContext(gameId, playerId) {
     if (context.set) {
         throw { message: 'setContext: Illegal call of setContext.' };
@@ -134,7 +128,6 @@ function getPortfolio() {
 
 module.exports = {
     setContext,
-    clearContext,
     placeOrder,
     cancelOrder,
     cancelAll,
