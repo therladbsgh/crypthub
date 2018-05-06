@@ -93,6 +93,7 @@ export default class UserTradingBots extends Component {
     }
 
     handleSave(event) {
+        const { updateTradingBots } = this.props;
         const { tradingBots, tradingBotObj } = this.state;
         const { botId, botName, data, log } = tradingBotObj;
 
@@ -115,12 +116,14 @@ export default class UserTradingBots extends Component {
         UserBackend.saveTradingBot(tradingBotObj)
         .then(res => {
             console.log('success! ', res);
+            const newTradingBots = _.concat(_.filter(tradingBots, bot => bot._id != botId), { _id: botId, name: botName, data, log });
             this.setState({
-                tradingBots: _.concat(_.filter(tradingBots, bot => bot._id != botId), { _id: botId, name: botName, data, log }),
+                tradingBots: newTradingBots,
                 loading: false,
                 submitted: true,
                 success: `${botName} has been saved.`
             });
+            updateTradingBots(newTradingBots);
         }, ({ err }) => {
             console.log('error! ', err);
             this.setState({
@@ -132,6 +135,7 @@ export default class UserTradingBots extends Component {
     }
 
     handleCreateNew(event) {
+        const { updateTradingBots } = this.props;
         const { tradingBots } = this.state;
 
         event.preventDefault();
@@ -145,11 +149,13 @@ export default class UserTradingBots extends Component {
         UserBackend.newTradingBot()
         .then(res => {
             console.log('success! ', res);
+            const newTradingBots = _.concat(tradingBots, res);
             this.setState({
-                tradingBots: _.concat(tradingBots, res),
+                tradingBots: newTradingBots,
                 tradingBotObj: { botId: res._id, botName: res.name, data: res.data, log: res.log },
                 loading: false,
             });
+            updateTradingBots(newTradingBots);
         }, ({ err }) => {
             console.log('error! ', err);
             this.setState({
@@ -160,16 +166,19 @@ export default class UserTradingBots extends Component {
     }
 
     handleDelete(botId) {
+        const { updateTradingBots } = this.props;
         const { tradingBots, tradingBotObj } = this.state;
 
+        const newTradingBots = _.filter(tradingBots, bot => bot._id != botId);
         this.setState({
-            tradingBots: _.filter(tradingBots, bot => bot._id != botId),
+            tradingBots: newTradingBots,
             tradingBotObj: {
                 botId: '',
                 botName: '',
                 data: ''
             }
         });
+        updateTradingBots(newTradingBots);
     }
 
     runBot() {
