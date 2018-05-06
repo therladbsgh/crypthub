@@ -50,8 +50,7 @@ export default class UserTradingBots extends Component {
         .then(res => {
             console.log('success! ', res);
             this.setState({
-                //tradingBots: _.concat(tradingBots, res),
-                tradingBots: tradingBots,
+                tradingBots: _.concat(tradingBots, res),
                 loading: false,
                 submitted: true
             });

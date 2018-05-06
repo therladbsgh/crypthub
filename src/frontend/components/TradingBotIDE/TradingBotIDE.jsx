@@ -53,6 +53,7 @@ export default class UserTradingBots extends Component {
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleCreateNew = this.handleCreateNew.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
         this.runBot = this.runBot.bind(this);
         this.stopBot = this.stopBot.bind(this);
     }
@@ -62,7 +63,8 @@ export default class UserTradingBots extends Component {
 
         if (uploaded) {
             const newBot = tradingBots[tradingBots.length - 1];
-            this.setState({
+            return this.setState({
+                tradingBots,
                 tradingBotObj: {
                     botId: newBot._id,
                     botName: newBot.name,
@@ -174,6 +176,19 @@ export default class UserTradingBots extends Component {
         });
     }
 
+    handleDelete(botId) {
+        const { tradingBots, tradingBotObj } = this.state;
+
+        this.setState({
+            tradingBots: _.filter(tradingBots, bot => bot._id != botId),
+            tradingBotObj: {
+                botId: '',
+                botName: '',
+                data: ''
+            }
+        });
+    }
+
     runBot() {
         this.setState({
             running: true
@@ -238,7 +253,7 @@ export default class UserTradingBots extends Component {
                     <Message success header='Success!' content={success} />
 					<Message error header='Error' content={err} />
                     <Button icon='save' type='submit' positive disabled={!botId || running} content={'Save'} />
-                    <DeleteBotModal botId={botId} disabled={!botId || running} />
+                    <DeleteBotModal handleDelete={this.handleDelete} botId={botId} disabled={!botId || running} />
                     <Button icon='play' type='button' primary disabled={!botId || running} onClick={this.runBot} content={'Run'} />
                     <Button icon='stop' type='button' negative disabled={!botId || !running} onClick={this.stopBot} content={'Stop'} />
                 </Form>

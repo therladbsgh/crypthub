@@ -32,7 +32,7 @@ export default class DeleteBotModal extends Component {
     }
 
 	handleSubmit(event) {
-        const { botId} = this.props;
+        const { handleDelete, botId } = this.props;
 
         this.setState({
             loading: true,
@@ -41,7 +41,8 @@ export default class DeleteBotModal extends Component {
 
 		UserBackend.deleteBot({ botId })
 		.then(res => {
-			console.log('success! ', res);
+            console.log('success! ', res);
+            handleDelete(botId);
             this.close();
 		}, ({ err }) => {
 			console.log('error! ', err);
