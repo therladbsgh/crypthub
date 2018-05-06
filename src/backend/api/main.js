@@ -1,25 +1,39 @@
 const fs = require('fs');
 const util = require('util');
+const requireFromString = require('require-from-string');
 
-function runBot(botPath, logPath, gameId, playerId, prices) {
-    const consoleLog = console.log;
-    try {
-        const bot = require(botPath);
-        bot.api.setContext(gameId, playerId);
+const api = require('./api.js');
+const Bot = require('../models/bot.model');
 
-        const logFile = fs.createWriteStream(logPath, { flags: 'a' });
-        console.log = (...messages) => logFile.write(util.format.apply(null, messages) + '\n');
+function runBot(botId, gameId, playerId, prices) {
+  const consoleLog = console.log;
+  try {
+    Bot.findOne({ _id: botId }).exec().then((botModel) => {
+      const bot = requireFromString(botModel.data);
 
-        bot.trade(prices);
-    } catch (e) {
-        console.log('[ERROR]', e.message);
-    }
+      bot.api = api;
+      bot.api.setContext(gameId, playerId);
 
-    console.log = consoleLog;
+      let log = '';
+      console.log = (...messages) => {
+        if (log.length === 0) {
+          log = messages.join(' ');
+        } else {
+          log += `\n${messages.join(' ')}`;
+        }
+      };
+
+      bot.trade(prices);
+
+      botModel.set({ log });
+      botModel.save();
+    });
+  } catch (e) {
+    consoleLog(`ERROR: ${e}`);
+  }
+  console.log = consoleLog;
 }
 
-// runBot('../../bots/users/test/virus.js/bot.js', './log.txt', 'gameid', 'playerid', [2, 3, 4]);
-
 module.exports = {
-    runBot
+  runBot
 };

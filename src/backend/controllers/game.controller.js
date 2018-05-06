@@ -453,34 +453,32 @@ function getGame(req, res) {
     }
   };
 
-  update(id).then(() => {
-    return Game.findOne({ id }).populate(populatePath).lean().exec();
-  }).then((game) => {
-    let gameToReturn = {};
-    let player = {};
-
+  Game.findOne({ id }).populate(populatePath).lean().exec().then((game) => {
     if (game) {
-      gameToReturn = game;
-      if (req.session.user) {
-        game.players.forEach((each) => {
-          if (each.username === req.session.user) {
-            player = each;
-          }
-        });
-      }
-    }
+      update(id).then(() => {
+        const gameToReturn = game;
+        let player = {};
 
-    if (!(Object.keys(player).length === 0 && player.constructor === Object)) {
-      User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
-        player.tradingBots = user.tradingBots;
-        res.status(200).json({ game: gameToReturn, player });
+        if (req.session.user) {
+          game.players.forEach((each) => {
+            if (each.username === req.session.user) {
+              player = each;
+            }
+          });
+        }
+
+        if (!(Object.keys(player).length === 0 && player.constructor === Object)) {
+          User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
+            player.tradingBots = user.tradingBots;
+            res.status(200).json({ game: gameToReturn, player });
+          });
+        } else {
+          res.status(200).json({ game: gameToReturn, player });
+        }
       });
     } else {
-      res.status(200).json({ game: gameToReturn, player });
+      res.status(200).json({ game: {}, player: {} });
     }
-  }).catch((err) => {
-    console.log(err);
-    res.status(500).json({ err: 'Internal server error', traceback: err.message, field: null });
   });
 }
 
