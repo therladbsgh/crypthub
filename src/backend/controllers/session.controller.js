@@ -383,14 +383,14 @@ function forgot(req, res){
  */
 function ensureAuthenticated(req, res) {
   // THIS IS FOR TESTING -- LEAVE UNTIL REMOTE STUFF WORKS
-  // const mainRemote = require('../api/mainRemote.js');
-  // mainRemote.runBot('./src/bots/users/user1/tradingbot1/tradingbot1.js', './src/bots/users/user1/tradingbot1/log.txt', 'GAMEID', 'PLAYERID', [2, 3, 4])
-  // .then(res => {
-  //   console.log('trading bot success!');
-  // })
-  // .catch(err => {
-  //   // console.log('trading bot error: ', err);
-  // });
+  const mainRemote = require('../api/mainRemote.js');
+  mainRemote.runBot('./src/bots/users/user1/tradingbot1/tradingbot1.js', './src/bots/users/user1/tradingbot1/log.txt', 'GAMEID', 'PLAYERID', [2, 3, 4])
+  .then(res => {
+    console.log('trading bot success!');
+  })
+  .catch(err => {
+    console.log('trading bot error: ', err);
+  });
 
 
   if (req.session.user) {

@@ -31,9 +31,10 @@ import { TradingBotIDEStyle as styles } from 'styles';
 export default class UserTradingBots extends Component {
     constructor(props) {
         super(props);
+        const { tradingBots } = this.props;
 
         this.state = {
-            tradingBots: this.props.tradingBots,
+            tradingBots,
             tradingBotObj: {
                 botId: '',
                 botName: '',
@@ -54,6 +55,21 @@ export default class UserTradingBots extends Component {
         this.handleCreateNew = this.handleCreateNew.bind(this);
         this.runBot = this.runBot.bind(this);
         this.stopBot = this.stopBot.bind(this);
+    }
+
+    componentWillReceiveProps(newProps) {
+        const { tradingBots, uploaded } = newProps;
+
+        if (uploaded) {
+            const newBot = tradingBots[tradingBots.length - 1];
+            this.setState({
+                tradingBotObj: {
+                    botId: newBot._id,
+                    botName: newBot.name,
+                    data: newBot.data
+                }
+            });
+        }
     }
 
     handleChange(event) {
@@ -173,7 +189,6 @@ export default class UserTradingBots extends Component {
     render() {
         const { tradingBots, tradingBotObj, debugLog, loading, submitted, running, success, err, errAdd } = this.state;
         const { botId, botName, data } = tradingBotObj;
-        console.log(tradingBotObj);
 
         return (
 			<div className={styles.top}>

@@ -7,7 +7,7 @@ function runBot(botPath, logPath, gameId, playerId, prices) {
     return new Promise((resolve, reject) => {
         axios.post('http://ec2-52-205-237-224.compute-1.amazonaws.com:8080/compile', {
             language: 4,
-            code: "const api = require('./api.js');function trade(prices) {console.log('testing', prices[0]);api.test();} module.exports = {api:api,trade:trade};",
+            code: "const api = require('./api.js');function trade(prices) {console.log('testing', prices[0]);api.test();} module.exports = {api,trade};",
             stdin: JSON.stringify([{ symbol: 'BTC', price: 100}, { symbol: 'ETH', price: 200}]),
             additional: gameId + '*' + playerId
         })

@@ -7,13 +7,16 @@ import { GameTradingBotsStyle as styles } from 'styles';
 export default class GameTradingBots extends Component {
     constructor(props) {
         super(props);
+        const { gameId, player } = this.props;
+        const { _id, activeBotId } = player;
 
         this.state = {
             setBotObj: {
-                gameId: this.props.gameId,
-                playerId: this.props.player._id,
+                gameId: gameId,
+                playerId: _id,
                 botId: ''
             },
+            activeBotId: activeBotId,
             loading: false,
             err: ''
         };
@@ -33,11 +36,20 @@ export default class GameTradingBots extends Component {
     }
 
     handleSave() {
-        const { setBotObj } = this.state;
+        const { setBotObj, activeBotId } = this.state;
+        const { botId } = setBotObj;
+
         this.setState({
             loading: true,
             err: ''
         });
+
+        if (activeBotId == botId) {
+            return this.setState({
+                loading: false,
+                err: 'This bot is already active.'
+            });
+        }
 
         GameBackend.setTradingBot(setBotObj)
 		.then(res => {
@@ -47,6 +59,7 @@ export default class GameTradingBots extends Component {
                     ...setBotObj,
                     botId: ''
                 },
+                activeBotId: botId,
                 loading: false
             });
 		}, ({ err }) => {
@@ -66,7 +79,10 @@ export default class GameTradingBots extends Component {
         GameBackend.setTradingBot(_.set(_.clone(setBotObj), 'botId', null))
 		.then(res => {
             console.log('success! ', res);
-            this.setState({ loading: false });
+            this.setState({
+                activeBotId: '',
+                loading: false
+            });
 		}, ({ err }) => {
 			console.log('error! ', err);
 			this.setState({ loading: false, err });
@@ -75,8 +91,8 @@ export default class GameTradingBots extends Component {
 
     render() {
         const { player } = this.props;
-        const { setBotObj, loading, err } = this.state;
-        const { tradingBots, activeBotId } = player;
+        const { setBotObj, activeBotId, loading, err } = this.state;
+        const { tradingBots } = player;
         const { botId } = setBotObj;
 
         return (
@@ -94,7 +110,7 @@ export default class GameTradingBots extends Component {
                             <label>Trading Bot to Make Active</label>
                             <Dropdown placeholder='Trading bot to make active' search selection options={_.map(tradingBots, t => ({ text: t.name, value: t._id }))} value={botId} onChange={this.handleChange} />
                             <br /><br />
-                            <Button icon='save' positive onClick={this.handleSave} content='Save Changes' />
+                            <Button disabled={!botId} icon='save' positive onClick={this.handleSave} content='Save Changes' />
                         </Form.Field>
                     </Form.Group>
                     <Form.Field width={10}>
