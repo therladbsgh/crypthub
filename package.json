@@ -14,7 +14,7 @@
     "load-frontend": "node remote/loadFrontend.js",
     "load-backend": "ssh -i remote/cs132-server-key-pair.pem ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com \"./stop.sh;mv crypthub/node_modules .;rm -rf crypthub;mkdir crypthub;mv node_modules crypthub/;mkdir crypthub/src\" && scp -i remote/cs132-server-key-pair.pem -r src/backend/ ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub/src && scp -i remote/cs132-server-key-pair.pem -r src/bots/ ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub/src && scp -i remote/cs132-server-key-pair.pem package.json ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com:~/crypthub",
     "load-server": "npm run load-backend && npm run load-frontend",
-    "stop-server": "ssh -i remote/cs132-server-key-pair.pem ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com \"./stop.sh\"",    
+    "stop-server": "ssh -i remote/cs132-server-key-pair.pem ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com \"./stop.sh\"",
     "restart-server": "ssh -i remote/cs132-server-key-pair.pem ec2-user@ec2-34-229-105-203.compute-1.amazonaws.com \"./stop.sh;./start.sh\"",
     "build": "MODE=production webpack --mode production --config webpack/prod.config.js --display-error-details && cp -rf img/ dist/img/",
     "build-local": "webpack --mode production --config webpack/prod.config.js --display-error-details && cp -rf img/ dist/img/",
@@ -117,6 +117,7 @@
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "require-from-string": "^2.0.2",
     "semantic-ui-react": "^0.79.0",
     "sinon": "^5.0.2",
     "sinon-chai": "^3.0.0"
