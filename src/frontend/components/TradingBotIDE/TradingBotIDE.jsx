@@ -10,24 +10,6 @@ import { UserBackend } from 'endpoints';
 import { DeleteBotModal } from 'components';
 import { TradingBotIDEStyle as styles } from 'styles';
 
-// const tradingBots = [
-//     {
-//         _id: 'id1',
-//         name: 'tradingBot1',
-//         data: 'trading bot 1 code goes here'
-//     },
-//     {
-//         _id: 'id2',
-//         name: 'tradingBot2',
-//         data: 'trading bot 2 code goes here'
-//     },
-//     {
-//         _id: 'id3',
-//         name: 'tradingBot3',
-//         data: 'trading bot 3 code goes here'
-//     }
-// ];
-
 export default class UserTradingBots extends Component {
     constructor(props) {
         super(props);
