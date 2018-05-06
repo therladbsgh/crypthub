@@ -555,7 +555,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message, field: null });
+        res.status(400).json({ err: err1.message });
       });
     } else if (type === 'market' && side === 'sell') {
       // Regular sell
@@ -564,7 +564,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message, field: null });
+        res.status(400).json({ err: err1.message });
       });
     } else if (type === 'short' && side === 'buy') {
       // Short buying
@@ -575,7 +575,7 @@ function placeOrder(req, res) {
       futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message, field: null });
+        res.status(400).json({ err: err1.message });
       });
     } else {
       // Wrong argument
@@ -664,7 +664,7 @@ function setBot(req, res) {
   }).then(() => {
     res.status(200).json({ success: true });
   }).catch((err) => {
-    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
+    res.status(500).json({ err: 'Internal server error', traceback: err });
   });
 }
 
