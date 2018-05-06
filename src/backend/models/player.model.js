@@ -57,6 +57,10 @@ const PlayerSchema = new Schema({
   activeBotId: {
     type: Schema.Types.ObjectId,
     ref: 'Bot'
+  },
+  activeBotLog: {
+    type: String,
+    default: ''
   }
 });
 

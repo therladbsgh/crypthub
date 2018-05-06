@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema({
   tradingBots: {
     type: [{ type: Schema.Types.ObjectId, ref: 'Bot' }],
     default: []
-  },
+  }
 });
 
 UserSchema.statics = {

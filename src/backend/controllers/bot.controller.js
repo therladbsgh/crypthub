@@ -7,8 +7,6 @@ const User = require('../models/user.model');
 
 function upload(req, res) {
   const file = req.files.code;
-  console.log(file);
-  console.log(file.data.toString('utf8'));
   const { user } = req.session;
   const { name } = file;
 
@@ -16,7 +14,8 @@ function upload(req, res) {
   const botData = {
     _id: botId,
     name,
-    data: file.data.toString('utf8')
+    data: file.data.toString('utf8'),
+    log: ''
   };
 
   User.getBots(user).then((bots) => {
@@ -55,7 +54,8 @@ function create(req, res) {
   const botData = {
     _id: botId,
     name: `${Math.random().toString(36).substring(7)}.js`,
-    data: code
+    data: code,
+    log: ''
   };
 
   const bot = new Bot(botData);
@@ -73,7 +73,6 @@ function create(req, res) {
 }
 
 function save(req, res) {
-  const { user } = req.session;
   const { botId, data, botName } = req.body;
 
   Bot.findOne({ _id: botId }).exec().then((bot) => {
