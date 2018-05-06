@@ -37,7 +37,7 @@ class APIDocumentation extends Component {
 			<div className={sharedStyles.container}>
 				<Navbar username={username} />
 				<Container id={styles.container}>
-					<div className={styles.note}>*Note that all of the following methods return a promise. This promise will either resolve to produce the result as described, or will reject an object that contains a 'message' parameter corresponding to the error that occurred.</div>
+					<div className={styles.note}>*Note that all of the following methods return a promise. This promise will either resolve to produce the result as described, or will reject to produce an object that contains a 'message' parameter corresponding to the error that occurred.</div>
 					{_.map(methods, (m, index) =>
 						<div key={index}>
 							<Header as='h1'>{m.name}</Header>
