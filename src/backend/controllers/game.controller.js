@@ -775,6 +775,8 @@ else{
 
 function calculateFullELO(players){
 
+
+
   if (players.length == 0){
     return 'no players inputted';
   }
@@ -853,9 +855,10 @@ function calculateFullELO(players){
       }
 
      }
-
+     
+     player[i].eloDelta = ELOArray[i] - player[i].ELO;
   }
-  console.log(ELOArray);
+  //console.log(ELOArray);
   //TODO
   // modify players ELOs given the ELOArray
   return players;
