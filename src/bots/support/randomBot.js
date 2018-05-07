@@ -1,5 +1,5 @@
 // Use the api to call the functions as specified in the API Docs.
-let api;
+const api = require('./api.js');
 
 // We support usage of some node modules such as lodash
 const _ = require('lodash');
@@ -20,26 +20,39 @@ function trade(prices) {
     // Get your portfolio (an array of all your assets, including your cash asset)
     api.getPortfolio()
     .then(portfolio => {
+        console.log('Our portfolio is: ', portfolio);
+
         // Find the amount of cash you have
-        let cash = _.find(portfolio, { symbol: 'USD' }).amount;
+        var cash = _.find(portfolio, { symbol: 'USD' }).amount;
 
         // For each coin in the prices array, buy a random amount that you can afford
         _.forEach(prices, coin => {
-            const { symbol, currPrice } = coin;
+            const symbol = coin.symbol;
+            const price = coin.price;
             const lowerBound = minSize;
-            if (cash >= lowerBound * currPrice) {
-                const upperBound = cash / currPrice;
+
+            if (cash >= lowerBound * price) {
+                const upperBound = cash / price;
                 const size = _.round(_.random(lowerBound, upperBound), 8);
-                api.placeOrder('market', 'buy', size, currPrice, symbol, true);
-                cash -= size * currPrice;
+                api.placeOrder('market', 'buy', size, price, symbol, true)
+                .then(() => {
+                    console.log(`Market order to buy ${size} ${symbol} at ${price} has been executed.`);
+                    cash = _.round(cash - size * price, 2);
+                });
             }
         });
 
         // For each of your non-cash assets, sell a random amount
         _.forEach(_.filter(portfolio, asset => asset.symbol != 'USD'), asset => {
-            const { symbol, amount } = asset;
+            const symbol = asset.symbol;
+            const amount = asset.amount;
+            const price = asset.currPrice;
+
             const size = _.round(_.random(minSize, amount), 8);
-            api.placeOrder('market', 'sell', size, currPrice, symbol, true);
+            api.placeOrder('market', 'sell', size, price, symbol, true)
+            .then(() => {
+                console.log(`Market order to sell ${size} ${symbol} at ${price} has been executed.`);
+            });
         });
     });
 }

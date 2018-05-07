@@ -13,12 +13,6 @@ const context = {
     set: false
 };
 
-function clearContext() {
-    context.gameId = '';
-    context.playerId = '';
-    context.set = false;
-}
-
 function setContext(gameId, playerId) {
     if (context.set) {
         throw { message: 'setContext: Illegal call of setContext.' };
@@ -126,7 +120,7 @@ function getCompletedOrders() {
 
 function getPortfolio() {
     return new Promise((resolve, reject) => {
-        resolve([{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508 }]);
+        resolve([{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508, currPrice: 9500 }]);
     });
 }
 
@@ -134,7 +128,6 @@ function getPortfolio() {
 
 module.exports = {
     setContext,
-    clearContext,
     placeOrder,
     cancelOrder,
     cancelAll,

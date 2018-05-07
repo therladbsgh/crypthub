@@ -11,7 +11,7 @@ const Asset = require('../models/asset.model');
 const User = require('../models/user.model');
 const Trade = require('../models/trade.model');
 
-const url = 'localhost:8080';
+const url = process.env.MODE === 'production' ? 'crypthub.s3-website-us-east-1.amazonaws.com' : 'localhost:8080';
 
 
 /**
@@ -31,7 +31,7 @@ function validate(req, res) {
     }
 
     if (game) {
-      res.status(400).json({ err: 'Name already exists' });
+      res.status(400).json({ err: 'A game with this id already exists.', field: 'id' });
       return;
     }
 
@@ -163,7 +163,7 @@ function simpleBuy(username, symbol, size) {
     if (!sym) {
       return Coin.findOne({ symbol }).exec().then((coin) => {
         if (usd.amount < size * coin.currPrice) {
-          return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+          return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
         }
 
         sym = {
@@ -188,7 +188,7 @@ function simpleBuy(username, symbol, size) {
     }
 
     if (usd.amount < size * sym.coin.currPrice) {
-      return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+      return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
     }
 
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
@@ -220,7 +220,7 @@ function simpleSell(username, symbol, size) {
     });
 
     if (!sym || sym.amount < size) {
-      return Promise.reject(new Error('Not enough coin to sell'));
+      return Promise.reject({ message: `You don\'t have enough ${symbol} to place this order.`, field: 'size' });
     }
 
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
@@ -326,7 +326,7 @@ function fillTrade(playerId, trade) {
         amount: trade.size
       });
       return asset.save().then(() => {
-        player.portfolio.append(asset._id);
+        player.portfolio.push(asset._id);
         return player.save();
       });
     }
@@ -438,21 +438,21 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
       coinId = coin._id;
 
       if (side === 'sell' && (!sym || sym.amount < size)) {
-        return Promise.reject(new Error('Not enough coin to sell'));
+        return Promise.reject({ message: `You don\'t have enough ${symbol} to place this order.`, field: 'size' });
       }
 
       if (side === 'buy' && (usd.amount < size * price)) {
-        return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+        return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
       }
 
       if (((type === 'limit' && side === 'buy') || (type === 'stop' && side === 'sell')) &&
           coin.currPrice < price) {
-        return Promise.reject(new Error('Cannot specify price above current market price'));
+        return Promise.reject({ message: 'The price cannot be above the current market price.', field: 'price' });
       }
 
       if (((type === 'limit' && side === 'sell') || (type === 'stop' && side === 'buy')) &&
           coin.currPrice > price) {
-        return Promise.reject(new Error('Cannot specify price below current market price'));
+        return Promise.reject({ message: 'The price cannot be below the current market price.', field: 'price' });
       }
 
       if (side === 'buy') {
@@ -555,7 +555,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message, field: null });
+        res.status(400).json({ err: err1.message, field: err1.field });
       });
     } else if (type === 'market' && side === 'sell') {
       // Regular sell
@@ -564,7 +564,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message, field: null });
+        res.status(400).json({ err: err1.message, field: err1.field });
       });
     } else if (type === 'short' && side === 'buy') {
       // Short buying
@@ -575,7 +575,7 @@ function placeOrder(req, res) {
       futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message, field: null });
+        res.status(400).json({ err: err1.message, field: err1.field });
       });
     } else {
       // Wrong argument
@@ -656,7 +656,7 @@ function cancelOrder(req, res) {
 }
 
 function getAll(req, res) {
-  Game.find({}).populate('players').exec().then((games) => {
+  Game.find({ completed: false }).populate('players').exec().then((games) => {
     res.status(200).json({ games });
   });
 }
@@ -669,7 +669,7 @@ function setBot(req, res) {
   }).then(() => {
     res.status(200).json({ success: true });
   }).catch((err) => {
-    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
+    res.status(500).json({ err: 'Internal server error', traceback: err });
   });
 }
 
@@ -711,33 +711,32 @@ function inviteUsers(req, res){
 
 }
 
-
 function calulate2ELO(winnerELO, loserELO, draw){
 
-  var Kvalue = 30;
-  // two players with ELO winnerELO and loserELO
-
-  //calculate transformed ELO R(1) and R(2)
+  var Kvalue = 300;
+ 
 
   var winnerTransformed = Math.pow(10,(winnerELO/400));
   var loserTransformed = Math.pow(10,(loserELO/400));
+  //console.log(winnerTransformed);
+  //console.log(loserTransformed);
 
-  // calculate expected score E(1) and E(2)
 
   var winnerExpected = winnerTransformed/(winnerTransformed + loserTransformed);
   var loserExpected = loserTransformed/(winnerTransformed + loserTransformed);
+  //console.log(winnerExpected);
+  //console.log(loserExpected);
 
-  // set actual score based on winner and loser
 
   var actualWinnerScore = 1;
   var actualLoserScore = 0;
 
-  // calculate actual ELO
+
 
   if (draw){
-    var actualWinnerELO = winnerELO + Kvalue*(.5-winnerExpected);
-    var actualLoserELO = loserELO + Kvalue*(.5-winnerExpected);
-    return [actualWinnerELO,actualLoserELO];
+    var actualDrawWinnerELO = winnerELO + Kvalue*(.5-winnerExpected);
+    var actualDrawLoserELO = loserELO + Kvalue*(.5-winnerExpected);
+    return [actualDrawWinnerELO,actualDrawLoserELO];
 
   }
 
@@ -750,97 +749,95 @@ else{
 }
 }
 
+function calculateFullELO(players){
 
-
-function calculateFullELO(req, res){
-
-//   CASE-1 : Suppose Player 1 wins:
-// rating1 = rating1 + k*(actual – expected) = 1200+30(1 – 0.76) = 1207.2;
-// rating2 = rating2 + k*(actual – expected) = 1000+30(0 – 0.24) = 992.8;
-
-// Case-2 : Suppose Player 2 wins:
-// rating1 = rating1 + k*(actual – expected) = 1200+30(0 – 0.76) = 1177.2;
-// rating2 = rating2 + k*(actual – expected) = 1000+30(1 – 0.24) = 1022.8;
-
-  // array of all players in order of rank
-  var players = req.body.players;
-
+  if (players.length == 0){
+    return 'no players inputted';
+  }
+  // check
+  
   var winnerELO = 0;
   var loserELO = 0;
   var drawerELO = 0;
   var ELOArray = [];
 
   for (var i in players){
-    // treat the player above this player as one that has won
-    var playerELO = players[i].ELO
+ 
+    var playerELO = players[i];
+    var index = players.indexOf(playerELO);
+    var topIndex = index-1;
+    var bottomIndex = index+1;
 
-    // if a player above it exists
-    if (players[i-1]){
-      // if players have drawn
-      if (player[i-1].ELO == playerELO){
-        //draw has occured
-        var drawArray = calulate2ELO(player[i-1].ELO, playerELO, 1);
-        var drawerELO = drawArray[1];
-        break;
+  
+    if (topIndex >= 0 && topIndex < players.length - 1){
+     
+      // if players have drawn 
+      if (players[topIndex] == playerELO){
+        var drawArray = calulate2ELO(players[topIndex], playerELO, 1);
+        drawerELO = drawArray[1];
+        
       }
+      else{
 
-      // players[i-1] has won aganist player[i]
-      var playerWonELO = players[i-1].ELO;
-
-      var lostArray = calulate2ELO(playerWon, playerELO, 0);
-      // wonArray contains the actualWinner ELO and the actualLosterELO
-     var loserELO = lostArray[1];
-
+      var playerWonELO = players[topIndex];
+      var lostArray = calulate2ELO(playerWonELO, playerELO, 0);
+      var loserELO = lostArray[1];
+    }
 
     }
 
-    // if the player below it exists
-    if (player[i+1]){
-          // if players have drawn
-      if (player[i+1].ELO == playerELO){
-        //draw has occured
-        var drawArray = calulate2ELO(player[i-1].ELO, playerELO, 1);
-        var drawELO = drawArray[1];
-        break;
-      }
+   
+    
 
-      // treat the player below it as the one that has lost
-      var playerLostELO = players[i+1].ELO;
-      //player[i] hsa won aganist player[i+1]
+    if (bottomIndex > 0 && bottomIndex <= players.length - 1 ){
+      
+        // if players have drawn 
+      if (players[bottomIndex] == playerELO){
+        var drawArray = calulate2ELO(players[bottomIndex], playerELO, 1);
+        drawerELO = drawArray[1];
+        
+      }
+      else{
+      var playerLostELO = players[bottomIndex];
       var wonArray = calulate2ELO(playerELO, playerLostELO, 0);
-
       var winnerELO = wonArray[0];
+    }
 
     }
+  
 
     if (drawerELO){
-      player[i].ELO = drawerELO;
+
+      ELOArray[i] = Math.round(drawerELO);
     }
 
     else{
-      //ELO equals average of the the win and loss
-      if (!player[i-1]){
-        var realELO  = winnerELO;
-        player[i].ELO = realELO;
+
+      if (topIndex < 0){
+        var realELO  = Math.round(winnerELO);
+        ELOArray[i] = realELO;
       }
-      else if(!player[i+1]){
-        var realELO = loserELO;
-        player[i].ELO = realELO;
+
+      else if(bottomIndex > players.length-1){
+        var realELO = Math.round(loserELO);
+        ELOArray[i] = realELO;
       }
+
       else{
-    var realELO = (winnerELO + loserELO)/2
-      player[i].ELO = realELO;
+      var realELO = Math.round((winnerELO + loserELO)/2)
+      ELOArray[i] = realELO;
+      }
+
+     }
+
   }
-  }
-
-
-
-    // treat the player below this player as one that has lost
-  }
-
+  console.log(ELOArray);
+  //TODO 
+  // modify players ELOs given the ELOArray 
   return players;
 
 }
+
 
 
 
@@ -853,5 +850,6 @@ module.exports = {
   cancelOrder,
   getAll,
   setBot,
-  inviteUsers
+  inviteUsers,
+  calculateFullELO
 };

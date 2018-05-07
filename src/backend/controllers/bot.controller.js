@@ -37,9 +37,9 @@ function upload(req, res) {
     res.status(200).json(botData);
   }).catch((err) => {
     if (err.message === '400') {
-      res.status(400).send({ err: 'File name already exists', field: null });
+      res.status(400).send({ err: 'File name already exists' });
     } else {
-      res.status(500).send({ err: 'Internal server error', field: null });
+      res.status(500).send({ err: 'Internal server error' });
     }
   });
 }
@@ -68,7 +68,7 @@ function create(req, res) {
     botData.data = code;
     res.status(200).send(botData);
   }).catch(() => {
-    res.status(500).send({ err: 'Internal server error', field: null });
+    res.status(500).send({ err: 'Internal server error' });
   });
 }
 
@@ -82,7 +82,7 @@ function save(req, res) {
   }).then(() => {
     res.status(200).json({ success: true });
   }).catch(() => {
-    res.status(500).json({ err: 'Internal server error', field: null });
+    res.status(500).json({ err: 'Internal server error' });
   });
 }
 
@@ -99,7 +99,7 @@ function remove(req, res) {
   }).then(() => {
     res.status(200).json({ success: true });
   }).catch((err) => {
-    res.status(500).json({ err: 'Internal server error', traceback: err, field: null });
+    res.status(500).json({ err: 'Internal server error', traceback: err });
   });
 }
 

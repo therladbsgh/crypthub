@@ -3,7 +3,9 @@ const User = require('../models/user.model');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const Token = require('../models/token.model');
-const url = 'localhost:8080';
+
+const url = process.env.MODE === 'production' ? 'crypthub.s3-website-us-east-1.amazonaws.com' : 'localhost:8080';
+
 
 
 /**
@@ -244,7 +246,7 @@ function logout(req, res) {
  */
 function authenticate(req, res, next) {
   if (!req.session.user) {
-    res.status(403).json({ err: 'Not logged in' });
+    res.status(403).json({ err: 'Your session has expired. Please log in again.', field: 'session-expired' });
   } else {
     next();
   }
