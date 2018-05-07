@@ -44,14 +44,27 @@ function create(req, res) {
 }
 
 function remove(req, res) {
-  const username = req.body.username;
+  // remove trading bots 
+  // find user by session
 
-  User.remove({ username }).exec().then(() => {
-    res.status(200).json({ success: true });
-  }).catch(() => {
-    res.status(500).json({ err: 'MongoDB removal error' });
-  })
+//   const username = req.body.username;
+
+//   User.remove({ username }).exec().then(() => {
+//     res.status(200).json({ success: true });
+//   }).catch(() => {
+//     res.status(500).json({ err: 'MongoDB removal error' });
+//   })
+
+
+
 }
+
+
+
+
+
+
+
 
 module.exports = {
   get,
