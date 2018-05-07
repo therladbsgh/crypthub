@@ -879,10 +879,10 @@ function calculateFullELO(playersz){
 }
 
 function joinGame(req,res){
-  //if there is password make sure that the passwords match 
-  //create a new player object
-  // add defualt parameters
-  // add player object to game and save
+
+
+
+  
 }
 
 
@@ -898,5 +898,6 @@ module.exports = {
   getAll,
   setBot,
   inviteUsers,
+  joinGame,
   calculateFullELO
 };
