@@ -17,6 +17,8 @@ class GamePage extends Component {
             users: [],
             hasMounted: false
         };
+
+        this.updateGame = this.updateGame.bind(this);
     }
 
     componentWillMount() {
@@ -58,7 +60,12 @@ class GamePage extends Component {
 			console.log('error! ', err);
 			history.push({ pathname: '/error', error: true });
         });
-	}
+    }
+    
+    updateGame(game) {
+        const { thisPlayer } = this.state;
+        this.setState({ game, thisPlayer: _.find(game.players, { _id: thisPlayer._id }) });
+    }
 
   	render() {
         const { game, thisPlayer, usernameUser, coins, users, hasMounted } = this.state;
@@ -134,7 +141,7 @@ class GamePage extends Component {
                 </div>,
                 <Grid key='3'>
                     <Grid.Column width={3} id={styles.gridPadding}>
-                        <TradeCard game={game} playerId={thisPlayer._id} coins={coins} />
+                        <TradeCard game={game} playerId={thisPlayer._id} coins={coins} updateGame={this.updateGame} />
                     </Grid.Column>
                     <Grid.Column width={13} id={styles.gridPadding}>
                         <Tab className='thirteen wide column' panes={panes} renderActiveOnly={false} />

@@ -572,6 +572,18 @@ async function getGame(req, res) {
   });
 }
 
+function getFullGameObj(id) {
+  const populatePath = {
+    path: 'players',
+    populate: {
+      path: 'portfolio transactionHistory transactionCurrent',
+      populate: { path: 'coin symbol' }
+    }
+  };
+
+  return Game.findOne({ id }).populate(populatePath).lean().exec();
+}
+
 function placeOrder(req, res) {
   console.log(req.body);
   const {
@@ -591,7 +603,9 @@ function placeOrder(req, res) {
       simpleBuy(playerId, symbol, size).then((data) => {
         return addTrade(side, size, data.id, data.price, data.player);
       }).then(() => {
-        res.status(200).json({ success: true });
+        getFullGameObj(gameId).then(game => {
+          res.status(200).json({ game });
+        });
       }).catch((err1) => {
         res.status(400).json({ err: err1.message, field: err1.field });
       });
@@ -600,7 +614,9 @@ function placeOrder(req, res) {
       simpleSell(playerId, symbol, size).then((data) => {
         return addTrade(side, size, data.id, data.price, data.player);
       }).then(() => {
-        res.status(200).json({ success: true });
+        getFullGameObj(gameId).then(game => {
+          res.status(200).json({ game });
+        });
       }).catch((err1) => {
         res.status(400).json({ err: err1.message, field: err1.field });
       });
@@ -611,7 +627,9 @@ function placeOrder(req, res) {
     } else if (type === 'limit' || type === 'stop') {
       // Limit buy / sell or stop buy / sell
       futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
-        res.status(200).json({ success: true });
+        getFullGameObj(gameId).then(game => {
+          res.status(200).json({ game });
+        });
       }).catch((err1) => {
         res.status(400).json({ err: err1.message, field: err1.field });
       });
