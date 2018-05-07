@@ -643,11 +643,6 @@ function cancelOrder(req, res) {
       });
     }
 
-    if (!symAsset) {
-
-    }
-
-
     return Asset.findOne({ _id: symAsset }).exec().then((asset) => {
       asset.set({ amount: asset.amount + trade.size });
       return asset.save();
