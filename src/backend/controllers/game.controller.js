@@ -387,7 +387,7 @@ function dealWithCurrentTransactions(id, game, prices) {
   return Promise.resolve();
 }
 
-function runAllBots(game, prices) {
+async function runAllBots(game, prices) {
   const coins = Object.keys(prices);
   console.log(prices);
   const histLength = prices[coins[0]].length;
@@ -398,11 +398,12 @@ function runAllBots(game, prices) {
       currCoins.push({ symbol: coin, price: prices[coin][i] });
     });
 
-    game.players.forEach((player) => {
+    for (let j = 0; j < game.players.length; j++) {
+      const player = game.players[j];
       if (player.activeBotId) {
-        api.runBot(player.activeBotId, game._id, player._id, currCoins);
+        await api.runBot(player.activeBotId, game._id, player._id, currCoins);
       }
-    });
+    }
   }
 }
 
@@ -412,7 +413,8 @@ function update(id) {
   }).then((data) => {
     if (Object.keys(data.prices).length > 0) {
       return dealWithCurrentTransactions(id, data.game, data.prices).then(() => {
-        return runAllBots(data.game, data.prices);
+        runAllBots(data.game, data.prices);
+        return Promise.resolve();
       });
     }
     return Promise.resolve();
@@ -665,6 +667,7 @@ function setBot(req, res) {
   const { playerId, botId } = req.body;
   Player.findOne({ _id: playerId }).exec().then((player) => {
     player.set({ activeBotId: botId });
+    player.set({ activeBotLog: '' });
     return player.save();
   }).then(() => {
     res.status(200).json({ success: true });
@@ -714,7 +717,7 @@ function inviteUsers(req, res){
 function calulate2ELO(winnerELO, loserELO, draw){
 
   var Kvalue = 300;
- 
+
 
   var winnerTransformed = Math.pow(10,(winnerELO/400));
   var loserTransformed = Math.pow(10,(loserELO/400));
@@ -755,27 +758,27 @@ function calculateFullELO(players){
     return 'no players inputted';
   }
   // check
-  
+
   var winnerELO = 0;
   var loserELO = 0;
   var drawerELO = 0;
   var ELOArray = [];
 
   for (var i in players){
- 
+
     var playerELO = players[i];
     var index = players.indexOf(playerELO);
     var topIndex = index-1;
     var bottomIndex = index+1;
 
-  
+
     if (topIndex >= 0 && topIndex < players.length - 1){
-     
-      // if players have drawn 
+
+      // if players have drawn
       if (players[topIndex] == playerELO){
         var drawArray = calulate2ELO(players[topIndex], playerELO, 1);
         drawerELO = drawArray[1];
-        
+
       }
       else{
 
@@ -786,16 +789,16 @@ function calculateFullELO(players){
 
     }
 
-   
-    
+
+
 
     if (bottomIndex > 0 && bottomIndex <= players.length - 1 ){
-      
-        // if players have drawn 
+
+        // if players have drawn
       if (players[bottomIndex] == playerELO){
         var drawArray = calulate2ELO(players[bottomIndex], playerELO, 1);
         drawerELO = drawArray[1];
-        
+
       }
       else{
       var playerLostELO = players[bottomIndex];
@@ -804,7 +807,7 @@ function calculateFullELO(players){
     }
 
     }
-  
+
 
     if (drawerELO){
 
@@ -832,8 +835,8 @@ function calculateFullELO(players){
 
   }
   console.log(ELOArray);
-  //TODO 
-  // modify players ELOs given the ELOArray 
+  //TODO
+  // modify players ELOs given the ELOArray
   return players;
 
 }
