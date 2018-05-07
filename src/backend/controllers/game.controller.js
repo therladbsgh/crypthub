@@ -147,7 +147,7 @@ function addTrade(side, size, coinId, coinPrice, playerId) {
   });
 }
 
-function simpleBuy(username, symbol, size) {
+function simpleBuy(username, symbol, size, commission) {
   const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
   return Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
     let usd;
@@ -163,8 +163,8 @@ function simpleBuy(username, symbol, size) {
 
     if (!sym) {
       return Coin.findOne({ symbol }).exec().then((coin) => {
-        if (usd.amount < size * coin.currPrice) {
-          return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
+        if (usd.amount - commission < size * coin.currPrice) {
+          return Promise.reject({ message: 'You don\'t have enough buying power (accounting for commission) to place this order.', field: null });
         }
 
         sym = {
@@ -176,7 +176,7 @@ function simpleBuy(username, symbol, size) {
         const asset = new Asset(sym);
         return asset.save();
       }).then(() => Asset.findOne({ _id: usd._id }).exec()).then((usdAsset) => {
-        usdAsset.set({ amount: usdAsset.amount - (size * sym.coin.currPrice) });
+        usdAsset.set({ amount: usdAsset.amount - (size * sym.coin.currPrice) - commission });
         return usdAsset.save();
       }).then(() => {
         player.portfolio.push(sym._id);
@@ -188,15 +188,15 @@ function simpleBuy(username, symbol, size) {
       }));
     }
 
-    if (usd.amount < size * sym.coin.currPrice) {
-      return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
+    if (usd.amount - commission < size * sym.coin.currPrice) {
+      return Promise.reject({ message: 'You don\'t have enough buying power (accounting for commission) to place this order.', field: null });
     }
 
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
       asset.set({ amount: asset.amount + size });
       return asset.save();
-    }).then(() => Asset.findOne({ _id: usd._id }).exec()).then((usdAsset) => {
-      usdAsset.set({ amount: usdAsset.amount - (size * sym.coin.currPrice) });
+    }).then(() => Asset.findOne({ _id: usd._id }).exec()).then((usdAsset) => {   
+      usdAsset.set({ amount: usdAsset.amount - (size * sym.coin.currPrice) - commission });
       return usdAsset.save();
     }).then(() => Promise.resolve({
       id: sym.coin._id,
@@ -206,7 +206,7 @@ function simpleBuy(username, symbol, size) {
   });
 }
 
-function simpleSell(username, symbol, size) {
+function simpleSell(username, symbol, size, commission) {
   const populatePath = { path: 'portfolio', populate: { path: 'coin' } };
   return Player.findOne({ _id: username }).populate(populatePath).exec().then((player) => {
     let usd;
@@ -220,8 +220,8 @@ function simpleSell(username, symbol, size) {
       }
     });
 
-    if (!sym || sym.amount < size) {
-      return Promise.reject({ message: `You don\'t have enough ${symbol} to place this order.`, field: 'size' });
+    if (!sym || sym.amount < size || usd.amount - commission < 0) {
+      return Promise.reject({ message: `You don\'t have enough ${symbol} and/or USD (accounting for commission) to place this order.`, field: 'size' });
     }
 
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
@@ -234,7 +234,7 @@ function simpleSell(username, symbol, size) {
       asset.set({ amount: asset.amount - size });
       return asset.save();
     }).then(() => Asset.findOne({ _id: usd._id }).exec()).then((usdAsset) => {
-      usdAsset.set({ amount: usdAsset.amount + (size * sym.coin.currPrice) });
+      usdAsset.set({ amount: usdAsset.amount - commission + (size * sym.coin.currPrice) });
       return usdAsset.save();
     }).then(() => Promise.resolve({
       id: sym.coin._id,
@@ -528,45 +528,52 @@ async function placeOrder(req, res) {
   }
 
   update(gameId).then(() => {
-    if (type === 'market' && side === 'buy') {
-      // Regular buy
-      simpleBuy(playerId, symbol, size).then((data) => {
-        return addTrade(side, size, data.id, data.price, data.player);
-      }).then(() => {
-        getFullGameObj(gameId).then(game => {
-          res.status(200).json({ game });
+    Game.findOne({ id: gameId }).lean().exec()
+    .then(gameBefore => {
+      const commission = gameBefore.commissionValue;
+      if (type === 'market' && side === 'buy') {
+        // Regular buy
+        simpleBuy(playerId, symbol, size, commission).then((data) => {
+          return addTrade(side, size, data.id, data.price, data.player);
+        }).then(() => {
+          getFullGameObj(gameId).then(game => {
+            res.status(200).json({ game });
+          });
+        }).catch((err1) => {
+          res.status(400).json({ err: err1.message, field: err1.field });
         });
-      }).catch((err1) => {
-        res.status(400).json({ err: err1.message, field: err1.field });
-      });
-    } else if (type === 'market' && side === 'sell') {
-      // Regular sell
-      simpleSell(playerId, symbol, size).then((data) => {
-        return addTrade(side, size, data.id, data.price, data.player);
-      }).then(() => {
-        getFullGameObj(gameId).then(game => {
-          res.status(200).json({ game });
+      } else if (type === 'market' && side === 'sell') {
+        // Regular sell
+        simpleSell(playerId, symbol, size, commission).then((data) => {
+          return addTrade(side, size, data.id, data.price, data.player);
+        }).then(() => {
+          getFullGameObj(gameId).then(game => {
+            res.status(200).json({ game });
+          });
+        }).catch((err1) => {
+          res.status(400).json({ err: err1.message, field: err1.field });
         });
-      }).catch((err1) => {
-        res.status(400).json({ err: err1.message, field: err1.field });
-      });
-    } else if (type === 'short' && side === 'buy') {
-      // Short buying
-    } else if (type === 'short' && side === 'sell') {
-      // Short selling
-    } else if (type === 'limit' || type === 'stop') {
-      // Limit buy / sell or stop buy / sell
-      futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
-        getFullGameObj(gameId).then(game => {
-          res.status(200).json({ game });
+      } else if (type === 'short' && side === 'buy') {
+        // Short buying
+      } else if (type === 'short' && side === 'sell') {
+        // Short selling
+      } else if (type === 'limit' || type === 'stop') {
+        // Limit buy / sell or stop buy / sell
+        futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
+          getFullGameObj(gameId).then(game => {
+            res.status(200).json({ game });
+          });
+        }).catch((err1) => {
+          res.status(400).json({ err: err1.message, field: err1.field });
         });
-      }).catch((err1) => {
-        res.status(400).json({ err: err1.message, field: err1.field });
-      });
-    } else {
-      // Wrong argument
-      res.status(400).json({ error: 'Wrong arguments' });
-    }
+      } else {
+        // Wrong argument
+        res.status(400).json({ err: 'Wrong arguments' });
+      }
+    })
+    .catch(err => {
+      res.status(400).json({ err: 'Internal server error' });      
+    });
   }).catch((err) => {
     res.status(400).json({ err: err.message });
   });
