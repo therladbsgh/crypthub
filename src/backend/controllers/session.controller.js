@@ -3,7 +3,9 @@ const User = require('../models/user.model');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const Token = require('../models/token.model');
-const url = 'localhost:8080';
+
+const url = process.env.MODE === 'production' ? 'crypthub.s3-website-us-east-1.amazonaws.com' : 'localhost:8080';
+
 
 
 /**

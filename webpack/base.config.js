@@ -9,8 +9,6 @@ const htmlPlugin = new HtmlWebpackPlugin({
 const PUBLIC_PATH = process.env.MODE == 'production' ? '' : 'http://localhost:8080';
 
 module.exports = {
-
-	// return {
 		entry: "./src/frontend/index.jsx",
 		output: {
 			publicPath: PUBLIC_PATH
@@ -42,5 +40,4 @@ module.exports = {
 		plugins: [
 			htmlPlugin
 		]
-	// }
 };
