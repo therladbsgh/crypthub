@@ -115,7 +115,7 @@ class GameSettings extends Component {
                 <LeaveModal key='3' gameId={id} username={username} />
                 :
                 username ?
-                <JoinModal key='3' size='medium' isPrivate={isPrivate} gameId={id} username={username} />
+                <JoinModal key='3' size='medium' isPrivate={isPrivate} gameId={id} />
                 :
                 <Button key='3' icon='user add' size='medium' primary onClick={() => this.props.history.push({ pathname:'/login', redirected: true })} content='Join Game' />]}
 				<Header as='h2'>About This Game</Header>

@@ -90,6 +90,17 @@ router.route('/saveEmail').post(SessionController.saveEmail);
 */
 router.route('/savePassword').post(SessionController.savePassword);
 
+// *
+//  * Deletes user
+//  *
+//  * @param username - The username
+//  *
+//  * @return { success: true } on success, { err: message } otherwise
+ 
+router.route('/delete').get(SessionController.deleteUser);
+
+
+
 
 
 module.exports = router;

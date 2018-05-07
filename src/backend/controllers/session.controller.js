@@ -4,7 +4,12 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const Token = require('../models/token.model');
 
+//const url = 'localhost:8080';
+const Bot = require('../models/bot.model');
+
+
 const url = process.env.MODE === 'production' ? 'crypthub.s3-website-us-east-1.amazonaws.com' : 'localhost:8080';
+
 
 
 
@@ -265,6 +270,7 @@ function confirmToken (req, res, next) {
     var newToken = tokened.substring(1,33);
 
 
+
     Token.findOne({ token: newToken}, function (err, token) {
 
 
@@ -301,14 +307,17 @@ function confirmToken (req, res, next) {
 *@return
 */
 
-function resendToken(req, res, next) {
-
+function resendToken(req, res) {
+  //console.log('here');
 
     var email = req.query.email;
 
 
     User.findOne({ email: email }, function (err, user) {
+
+
         if (!user) return res.status(400).send({ err: 'We were unable to find a user with that email.', field: 'invalid-username' });
+
         if (user.isVerified) return res.status(400).send({ err: 'This account has already been verified. Please log in.', field: 'already-verified' });
 
         // Create a verification token, save it, and send email
@@ -321,16 +330,18 @@ function resendToken(req, res, next) {
             // Send the email
               var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
           });
-        var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token',
+        var mailoptions = {from: 'crypthubtech@gmail.com', to: user.email, subject: 'Account Verification Token',
         text: 'Hello,\n\n' + 'Please verify your CryptHub account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email='+ email + '\n'};
-            transporter.sendMail(mailOptions, function (err) {
-                if (err) { return res.status(500).send({ msg: err.message }); }
-                res.status(200).send('A verification email has been sent to ' + user.email + '.');
+            transporter.sendMail(mailoptions, function (err) {
+
+                if (err) { return res.status(500).send({ msg: 'unable to send email', field: 'invalid-email' }); }
+                
+                res.status(200).send({msg: 'A verification email has been sent to ' + user.email + '.'});
             });
         });
 
     });
-};
+}
 
 function forgot(req, res){
 // query database by email
@@ -426,11 +437,12 @@ function getUser(req, res) {
  * @return user name if exists, null otherwise
  */
 function getAllUsers(req, res) {
-  User.find({}).exec().then((users) => {
+  User.find({$query: {}, $orderby: {ELO: 1}}).exec().then((users) => {
     if (!users) {
       res.status(500).send({ err: 'Can not find users', field: 'users' });
       return;
     }
+    
     res.status(200).send({ users });
   });
 }
@@ -537,6 +549,54 @@ else {
 }
 
 
+function deleteUser(req, res){
+
+if (req.session.user){
+  User.get(req.session.user).then((user) => {
+
+    if (!user){``
+      console.log('here1');
+      return res.status(500).send({err: 'Can not find user', field: 'user'});
+    }
+   
+    tradingBots = user.tradingBots; 
+
+    tradingBots.forEach((bot) =>{
+      Bot.remove({bot}).exec().then(() =>{
+        console.log('bot removed');
+      }).catch(() =>{
+        console.log('here2');
+        res.status(500).json({err: 'MongoDB removal error, field: trading-bot'});
+      })
+    });
+
+
+
+    console.log(tradingBots);
+
+    User.remove({username: req.session.user}, function(err){
+      if(err){
+        console.log(err);
+        console.log('here5');
+        res.status(500).send({err: 'MongoDB removal error', field: 'MongoDB'});
+      }
+      console.log('made it');
+      logout(req,res);
+    });
+
+
+  });
+}
+
+
+else {
+  console.log('here4')
+  return res.status(500).send({err: 'User session does not exist. Please log in and try again', field: 'session'});
+}
+}
+
+
+
 
 
 
@@ -556,6 +616,7 @@ module.exports = {
   getUserEmail,
   saveEmail,
   savePassword,
+  deleteUser,
   ensureAuthenticated
 
 };
