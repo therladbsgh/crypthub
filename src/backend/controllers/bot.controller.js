@@ -4,6 +4,7 @@ const { Types } = require('mongoose');
 
 const Bot = require('../models/bot.model');
 const User = require('../models/user.model');
+const Player = require('../models/player.model');
 
 function upload(req, res) {
   const file = req.files.code;
@@ -96,6 +97,15 @@ function remove(req, res) {
     const index = user.tradingBots.indexOf(botId);
     user.tradingBots.splice(index, 1);
     return user.save();
+  }).then(() => {
+    return Player.find({ activeBotId: botId }).exec();
+  }).then((players) => {
+    const promiseLog = [];
+    players.forEach((player) => {
+      player.set({ activeBotId: null });
+      promiseLog.push(player.save());
+    });
+    return Promise.all(promiseLog);
   }).then(() => {
     res.status(200).json({ success: true });
   }).catch((err) => {
