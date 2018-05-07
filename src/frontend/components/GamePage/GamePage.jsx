@@ -89,7 +89,7 @@ class GamePage extends Component {
         );
         const GamePortfolioPane = inGame && (
             <Tab.Pane id={styles.tab} key='tab3'>
-                <GamePortfolio gameId={id} player={thisPlayer} completed={completed} />
+                <GamePortfolio gameId={id} player={thisPlayer} completed={completed} updateGame={this.updateGame} />
             </Tab.Pane>
         );
         const GameComparePane = playerPortfolioPublic && (

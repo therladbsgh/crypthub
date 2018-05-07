@@ -625,7 +625,9 @@ function cancelOrder(req, res) {
       return asset.save();
     });
   }).then(() => {
-    res.status(200).json({ success: true });
+    getFullGameObj(gameId).then(game => {
+      res.status(200).json({ game });
+    });
   });
 }
 
