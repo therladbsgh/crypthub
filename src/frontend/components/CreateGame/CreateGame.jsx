@@ -96,7 +96,7 @@ class CreateGame extends Component {
 	
 	handleReview() {
 		const { gameObj } = this.state;
-		const { id, name, created, start, end, startingBalance, commissionValue, isPrivate, password, passwordConfirm } = gameObj;
+		const { id, name, created, start, end, startingBalance, commissionValue, description, isPrivate, password, passwordConfirm } = gameObj;
 
 		this.setState({
 			errMsg: '',
@@ -141,6 +141,14 @@ class CreateGame extends Component {
                 loading: false,
                 errMsg: 'Trade commission must have a value.',
                 errField: 'commissionValue'
+            });
+		}
+
+		if (description === '') {
+            return this.setState({
+                loading: false,
+                errMsg: 'Description must have a value.',
+                errField: 'description'
             });
 		}
 

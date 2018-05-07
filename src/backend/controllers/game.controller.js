@@ -31,7 +31,7 @@ function validate(req, res) {
     }
 
     if (game) {
-      res.status(400).json({ err: 'Name already exists' });
+      res.status(400).json({ err: 'A game with this id already exists.', field: 'id' });
       return;
     }
 
@@ -326,7 +326,7 @@ function fillTrade(playerId, trade) {
         amount: trade.size
       });
       return asset.save().then(() => {
-        player.portfolio.append(asset._id);
+        player.portfolio.push(asset._id);
         return player.save();
       });
     }
