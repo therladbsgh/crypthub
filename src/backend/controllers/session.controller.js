@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const Token = require('../models/token.model');
 
-const url = 'localhost:8080';
+//const url = 'localhost:8080';
 const Bot = require('../models/bot.model');
 
 
