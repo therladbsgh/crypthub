@@ -53,7 +53,7 @@ export default class ProfileCard extends Component {
 						</Grid.Row>
 					</Grid>
 				</Card.Content>
-				{activeBotId && 
+				{activeBotId && tradingBots &&
 				<Card.Content extra>
 					<strong>Active Trading Bot: </strong>{_.find(tradingBots, { _id: activeBotId }).name}
 				</Card.Content>}

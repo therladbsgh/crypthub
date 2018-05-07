@@ -46,4 +46,6 @@ router.route('/setbot').post(SessionController.authenticate, GameController.setB
 
 router.route('/inviteUsers').post(GameController.inviteUsers);
 
+router.route('/joinGame').post(GameController.joinGame);
+
 module.exports = router;

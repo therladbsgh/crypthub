@@ -129,7 +129,7 @@ export default class TradeModal extends Component {
 	}
 
 	handleSubmit(event) {
-        const { gameId, playerId } = this.props;
+        const { gameId, playerId, updateGame } = this.props;
 		const { tradeObj } = this.state;
 		const { size, price } = tradeObj;
 
@@ -166,7 +166,8 @@ export default class TradeModal extends Component {
 		GameBackend.placeOrder(tradeObjSend)
 		.then(res => {
 			console.log('success! ', res);
-			this.setState({ loading: false, success: true });
+            this.setState({ loading: false, success: true });
+            updateGame(res.game);
 		}, ({ err, field }) => {
 			console.log('error! ', err);
 			this.setState({ loading: false, errMsg: err, errField: field });
