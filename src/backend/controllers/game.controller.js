@@ -855,8 +855,64 @@ async function getGame(req, res) {
   }
 }
 
-function joinGame(req, res) {
+async function joinGame(req, res) {
+  const { gameId, password } = req.body;
+  try {
+    const game = await Game.findOne({ id: gameId }).exec();
 
+    if (!game) {
+      res.status(404).json({ err: 'Cannot find game', field: null });
+      return;
+    }
+
+    if (game.isPrivate && game.password !== password) {
+      res.status(403).json({ err: 'Password does not match.', field: null });
+      return;
+    }
+
+    const usdCoin = await Coin.findOne({ symbol: 'USD' }).exec();
+    const usdAsset = new Asset({
+      _id: new Types.ObjectId(),
+      coin: usdCoin._id,
+      amount: game.startingBalance
+    });
+    await usdAsset.save();
+
+    const players = game.players.sort((a, b) => a.netWorth - b.netWorth);
+    let currRank = 1;
+    for (let i = 0; i < players.length; i++) {
+      const currPlayer = players[i];
+      if (currPlayer.netWorth > game.startingBalance) {
+        currRank += 1;
+      } else {
+        break;
+      }
+    }
+
+    const player = new Player({
+      _id: new Types.ObjectId(),
+      username: req.session.user,
+      netWorth: game.startingBalance,
+      numTrades: 0,
+      netReturn: 0,
+      todayReturn: 0,
+      currRank,
+      buyingPower: game.startingBalance,
+      shortReserve: 0,
+      portfolio: [usdAsset._id]
+    });
+
+    game.players.push(player._id);
+    await player.save();
+    await game.save();
+
+    const populatePath = { path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } };
+    const gameToReturn = await Game.findOne({ id: gameId }).populate(populatePath).exec();
+    res.status(200).json({ data: gameToReturn });
+
+  } catch (e) {
+    res.status(500).json({ err: 'Internal server error', traceback: e.message, field: null });
+  }
 }
 
 module.exports = {
