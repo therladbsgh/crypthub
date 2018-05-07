@@ -195,7 +195,7 @@ function simpleBuy(username, symbol, size, commission) {
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
       asset.set({ amount: asset.amount + size });
       return asset.save();
-    }).then(() => Asset.findOne({ _id: usd._id }).exec()).then((usdAsset) => {   
+    }).then(() => Asset.findOne({ _id: usd._id }).exec()).then((usdAsset) => {
       usdAsset.set({ amount: usdAsset.amount - (size * sym.coin.currPrice) - commission });
       return usdAsset.save();
     }).then(() => Promise.resolve({
@@ -528,15 +528,14 @@ async function placeOrder(req, res) {
   }
 
   update(gameId).then(() => {
-    Game.findOne({ id: gameId }).lean().exec()
-    .then(gameBefore => {
+    Game.findOne({ id: gameId }).lean().exec().then((gameBefore) => {
       const commission = gameBefore.commissionValue;
       if (type === 'market' && side === 'buy') {
         // Regular buy
         simpleBuy(playerId, symbol, size, commission).then((data) => {
           return addTrade(side, size, data.id, data.price, data.player);
         }).then(() => {
-          getFullGameObj(gameId).then(game => {
+          getFullGameObj(gameId).then((game) => {
             res.status(200).json({ game });
           });
         }).catch((err1) => {
@@ -547,7 +546,7 @@ async function placeOrder(req, res) {
         simpleSell(playerId, symbol, size, commission).then((data) => {
           return addTrade(side, size, data.id, data.price, data.player);
         }).then(() => {
-          getFullGameObj(gameId).then(game => {
+          getFullGameObj(gameId).then((game) => {
             res.status(200).json({ game });
           });
         }).catch((err1) => {
@@ -560,7 +559,7 @@ async function placeOrder(req, res) {
       } else if (type === 'limit' || type === 'stop') {
         // Limit buy / sell or stop buy / sell
         futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
-          getFullGameObj(gameId).then(game => {
+          getFullGameObj(gameId).then((game) => {
             res.status(200).json({ game });
           });
         }).catch((err1) => {
@@ -570,9 +569,8 @@ async function placeOrder(req, res) {
         // Wrong argument
         res.status(400).json({ err: 'Wrong arguments' });
       }
-    })
-    .catch(err => {
-      res.status(400).json({ err: 'Internal server error' });      
+    }).catch((err) => {
+      res.status(400).json({ err: 'Internal server error', traceback: err.message });
     });
   }).catch((err) => {
     res.status(400).json({ err: err.message });
@@ -916,7 +914,54 @@ async function joinGame(req, res) {
     const populatePath = { path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } };
     const gameToReturn = await Game.findOne({ id: gameId }).populate(populatePath).exec();
     res.status(200).json({ data: gameToReturn });
+  } catch (e) {
+    res.status(500).json({ err: 'Internal server error', traceback: e.message, field: null });
+  }
+}
 
+async function leaveGame(req, res) {
+  const { gameId, username } = req.body;
+  try {
+    const populatePath = { path: 'players', populate: { path: 'portfolio transactionCurrent transactionHistory' } };
+    const game = await Game.findOne({ id: gameId }).populate(populatePath).exec();
+
+    if (!game) {
+      res.status(404).json({ err: 'Cannot find game', field: null });
+      return;
+    }
+
+    const player = game.players.find(p => p.username === username);
+    const { currRank } = player;
+
+    let promiseLog = [];
+    player.transactionHistory.forEach((trade) => {
+      promiseLog.push(Trade.remove({ _id: trade._id }));
+    });
+    player.transactionCurrent.forEach((trade) => {
+      promiseLog.push(Trade.remove({ _id: trade._id }));
+    });
+    player.portfolio.forEach((asset) => {
+      promiseLog.push(Asset.remove({ _id: asset._id }));
+    });
+    await Promise.all(promiseLog);
+    await Player.remove({ username });
+
+    promiseLog = [];
+    game.players.forEach((p) => {
+      if (p.currRank > currRank) {
+        p.set({ currRank: p.currRank - 1 });
+        promiseLog.push(p.save());
+      }
+    });
+    await Promise.all(promiseLog);
+
+    const tmpGame = await Game.findOne({ id: gameId }).exec();
+    tmpGame.players = tmpGame.players.filter(p => p._id !== player._id);
+    await tmpGame.save();
+
+    const newPopulatePath = { path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } };
+    const gameToReturn = await Game.findOne({ id: gameId }).populate(newPopulatePath).exec();
+    res.status(200).json({ data: gameToReturn });
   } catch (e) {
     res.status(500).json({ err: 'Internal server error', traceback: e.message, field: null });
   }
@@ -932,5 +977,6 @@ module.exports = {
   setBot,
   inviteUsers,
   joinGame,
+  leaveGame,
   calculateFullELO
 };
