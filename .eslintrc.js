@@ -14,6 +14,10 @@ module.exports = {
       "comma-dangle": ["error", {
         "functions": "ignore"
       }],
-      "newline-per-chained-call": 0
+      "newline-per-chained-call": 0,
+      "prefer-destructuring": ["error", {
+        "array": false,
+        "object": true
+      }]
     }
 };

@@ -495,83 +495,6 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
   });
 }
 
-async function getGame(req, res) {
-  const { id } = req.params;
-  const username = req.session.user;
-  const populatePath = {
-    path: 'players',
-    populate: {
-      path: 'portfolio transactionHistory transactionCurrent',
-      populate: { path: 'coin symbol' }
-    }
-  };
-
-  Game.findOne({ id }).exec().then((thisGame) => {
-    if (thisGame && !thisGame.completed) {
-      update(id).then(() => {
-        return Game.findOne({ id }).populate(populatePath).exec();
-      }).then((game) => {
-        let player = {};
-
-        if (req.session.user) {
-          game.players.forEach((each) => {
-            if (each.username === req.session.user) {
-              player = each;
-            }
-          });
-        }
-
-        if (new Date() >= new Date(game.end)) {
-          User.find({ username: { $in: _.map(game.players, 'username') } }).exec()
-          .then(( users ) => {
-            const playersWithELO = _.sortBy(_.map(game.players, p => _.set(p, 'ELO', _.find(users, { username: p.username }).ELO)), p => p.currRank);
-            // _.forEach(calculateFullELO(playersWithELO), p => {
-            //   Player.findOne({ _id: p._id }).exec().then(pl => {
-            //     pl.eloDelta = p.eloDelta;
-            //     pl.save();
-            //   });
-            // });
-            console.log('got here');
-            _.forEach(calculateFullELO(playersWithELO), p =>  {await (p.save())});
-            console.log('got here 2');
-
-            game.completed = true;
-            await (game.save());
-            return res.status(200).json({ game: game.toObject(), player });
-          });
-        }
-
-        const gameToReturn = game.toObject();
-        if (!(Object.keys(player).length === 0 && player.constructor === Object)) {
-          User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
-            const playerToReturn = player.toObject();
-            playerToReturn.tradingBots = user.tradingBots;
-            res.status(200).json({ game: gameToReturn, player: playerToReturn });
-          });
-        } else {
-          res.status(200).json({ game: gameToReturn, player });
-        }
-      });
-    } else if (thisGame && thisGame.completed) {
-      Game.findOne({ id }).populate(populatePath).lean().exec()
-      .then(game => {
-        let player = {};
-
-        if (req.session.user) {
-          game.players.forEach((each) => {
-            if (each.username === req.session.user) {
-              player = each;
-            }
-          });
-        }
-        res.status(200).json({ game, player });
-      });   
-    } else {
-      res.status(200).json({ game: {}, player: {} });
-    }
-  });
-}
-
 function placeOrder(req, res) {
   console.log(req.body);
   const {
@@ -745,148 +668,162 @@ function inviteUsers(req, res){
 
 }
 
-function calulate2ELO(winnerELO, loserELO, draw){
+function calulate2ELO(winnerELO, loserELO, draw) {
+  const Kvalue = 300;
 
-  var Kvalue = 300;
+  const winnerTransformed = 10 ** (winnerELO / 400);
+  const loserTransformed = 10 ** (loserELO / 400);
 
+  const winnerExpected = winnerTransformed / (winnerTransformed + loserTransformed);
+  const loserExpected = loserTransformed / (winnerTransformed + loserTransformed);
 
-  var winnerTransformed = Math.pow(10,(winnerELO/400));
-  var loserTransformed = Math.pow(10,(loserELO/400));
-
-
-
-  var winnerExpected = winnerTransformed/(winnerTransformed + loserTransformed);
-  var loserExpected = loserTransformed/(winnerTransformed + loserTransformed);
-
-
-
-  var actualWinnerScore = 1;
-  var actualLoserScore = 0;
-
-
-
-  if (draw){
-    var actualDrawWinnerELO = winnerELO + Kvalue*(.5-winnerExpected);
-    var actualDrawLoserELO = loserELO + Kvalue*(.5-winnerExpected);
-    return [actualDrawWinnerELO,actualDrawLoserELO];
-
+  if (draw) {
+    const actualDrawWinnerELO = winnerELO + (Kvalue * (0.5 - winnerExpected));
+    const actualDrawLoserELO = loserELO + (Kvalue * (0.5 - winnerExpected));
+    return [actualDrawWinnerELO, actualDrawLoserELO];
   }
 
-else{
-
-  var actualWinnerELO = winnerELO + Kvalue*(1-winnerExpected);
-  var actualLoserELO = loserELO + Kvalue*(0-loserExpected);
+  const actualWinnerELO = winnerELO + (Kvalue * (1 - winnerExpected));
+  const actualLoserELO = loserELO + (Kvalue * (0 - loserExpected));
 
   return [actualWinnerELO, actualLoserELO];
 }
-}
 
-function calculateFullELO(playersz){
-  var players = [];
+function calculateFullELO(playersz) {
+  const players = [];
 
-  for (var i in playersz){
-    players[i] = playersz[i].ELO;
-  }
-  
-  if (players.length == 1){
+  playersz.forEach((player) => {
+    players.push(player.ELO);
+  });
+
+  if (players.length === 1 || players.length === 0) {
     return playersz;
   }
 
-
-  if (players.length == 0){
-    return playersz;
-  }
   // check
+  let winnerELO = 0;
+  let loserELO = 0;
+  let drawerELO = 0;
+  const ELOArray = [];
 
-  var winnerELO = 0;
-  var loserELO = 0;
-  var drawerELO = 0;
-  var ELOArray = [];
+  for (let i = 0; i < playersz.length; i++) {
+    const playerELO = players[i];
+    const index = players.indexOf(playerELO);
+    const topIndex = index - 1;
+    const bottomIndex = index + 1;
 
-  for (var i in players){
-    
-    var playerELO = players[i];
-    var index = players.indexOf(playerELO);
-    var topIndex = index-1;
-    var bottomIndex = index+1;
-
-
-    if (topIndex >= 0 && topIndex < players.length - 1){
-
+    if (topIndex >= 0 && topIndex < players.length - 1) {
       // if players have drawn
-      if (players[topIndex] == playerELO){
-        var drawArray = calulate2ELO(players[topIndex], playerELO, 1);
+      if (players[topIndex] === playerELO) {
+        const drawArray = calulate2ELO(players[topIndex], playerELO, 1);
         drawerELO = drawArray[1];
-
+      } else {
+        const playerWonELO = players[topIndex];
+        const lostArray = calulate2ELO(playerWonELO, playerELO, 0);
+        loserELO = lostArray[1];
       }
-      else{
-
-      var playerWonELO = players[topIndex];
-      var lostArray = calulate2ELO(playerWonELO, playerELO, 0);
-      var loserELO = lostArray[1];
     }
 
-    }
-
-
-
-
-    if (bottomIndex > 0 && bottomIndex <= players.length - 1 ){
-
-        // if players have drawn
-      if (players[bottomIndex] == playerELO){
-        var drawArray = calulate2ELO(players[bottomIndex], playerELO, 1);
+    if (bottomIndex > 0 && bottomIndex <= players.length - 1) {
+      // if players have drawn
+      if (players[bottomIndex] === playerELO) {
+        const drawArray = calulate2ELO(players[bottomIndex], playerELO, 1);
         drawerELO = drawArray[1];
-
+      } else {
+        const playerLostELO = players[bottomIndex];
+        const wonArray = calulate2ELO(playerELO, playerLostELO, 0);
+        winnerELO = wonArray[0];
       }
-
-      else{
-      var playerLostELO = players[bottomIndex];
-      var wonArray = calulate2ELO(playerELO, playerLostELO, 0);
-      var winnerELO = wonArray[0];
     }
 
-    }
-
-
-    if (drawerELO){
-
+    if (drawerELO) {
       ELOArray[i] = Math.round(drawerELO);
+    } else if (topIndex < 0) {
+      const realELO = Math.round(winnerELO);
+      console.log(winnerELO);
+      console.log(realELO);
+      ELOArray[i] = realELO;
+    } else if (bottomIndex > players.length - 1) {
+      const realELO = Math.round(loserELO);
+      console.log(loserELO);
+      console.log(realELO);
+      ELOArray[i] = realELO;
+    } else {
+      const realELO = Math.round((winnerELO + loserELO) / 2);
+      ELOArray[i] = realELO;
     }
 
-    else{
-
-      if (topIndex < 0){
-        var realELO  = Math.round(winnerELO);
-        console.log(winnerELO);
-        console.log(realELO);
-        ELOArray[i] = realELO;
-      }
-
-      else if(bottomIndex > players.length-1){
-        var realELO = Math.round(loserELO);
-        console.log(loserELO);
-        console.log(realELO);
-        ELOArray[i] = realELO;
-      }
-
-      else{
-      var realELO = Math.round((winnerELO + loserELO)/2)
-      ELOArray[i] = realELO;
-      }
-
-     }
-     
-     playersz[i].eloDelta = ELOArray[i] - players[i];
+    playersz[i].eloDelta = ELOArray[i] - players[i];
   }
 
   return playersz;
-
 }
 
+async function getGame(req, res) {
+  const { id } = req.params;
+  const username = req.session.user;
+  const populatePath = {
+    path: 'players',
+    populate: {
+      path: 'portfolio transactionHistory transactionCurrent',
+      populate: { path: 'coin symbol' }
+    }
+  };
 
+  const thisGame = await Game.findOne({ id }).exec();
+  if (thisGame && !thisGame.completed) {
+    await update(id);
+    const game = await Game.findOne({ id }).populate(populatePath).exec();
 
+    let gameToReturn = game;
+    let player;
+    if (req.session.user) {
+      game.players.forEach((each) => {
+        if (each.username === req.session.user) {
+          player = each;
+        }
+      });
+    }
 
+    if (new Date() >= new Date(game.end)) {
+      const users = await User.find({ username: { $in: _.map(game.players, 'username') } }).exec();
+      const playersWithELO = _.sortBy(_.map(game.players, p => _.set(p, 'ELO', _.find(users, { username: p.username }).ELO)), p => p.currRank);
+      const fullElo = calculateFullELO(playersWithELO);
+
+      const promiseLog = [];
+      for (let i = 0; i < fullElo.length; i++) {
+        promiseLog.push(fullElo[i].save());
+      }
+      await Promise.all(promiseLog);
+
+      game.completed = true;
+      gameToReturn = await game.save();
+    }
+
+    gameToReturn = gameToReturn.toObject();
+    if (player) {
+      const user = await User.findOne({ username }).populate('tradingBots').lean().exec();
+      const playerToReturn = player.toObject();
+      playerToReturn.tradingBots = user.tradingBots;
+      res.status(200).json({ game: gameToReturn, player: playerToReturn });
+    } else {
+      res.status(200).json({ game: gameToReturn, player: {} });
+    }
+  } else if (thisGame && thisGame.completed) {
+    const game = await Game.findOne({ id }).populate(populatePath).exec();
+    let player = {};
+    if (req.session.user) {
+      game.players.forEach((each) => {
+        if (each.username === req.session.user) {
+          player = each;
+        }
+      });
+    }
+    res.status(200).json({ game, player });
+  } else {
+    res.status(200).json({ game: {}, player: {} });
+  }
+}
 
 module.exports = {
   validate,
