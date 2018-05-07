@@ -706,7 +706,132 @@ function inviteUsers(req, res){
 
 }
 
+function calulate2ELO(winnerELO, loserELO, draw){
 
+  var Kvalue = 300;
+ 
+
+  var winnerTransformed = Math.pow(10,(winnerELO/400));
+  var loserTransformed = Math.pow(10,(loserELO/400));
+  //console.log(winnerTransformed);
+  //console.log(loserTransformed);
+
+
+  var winnerExpected = winnerTransformed/(winnerTransformed + loserTransformed);
+  var loserExpected = loserTransformed/(winnerTransformed + loserTransformed);
+  //console.log(winnerExpected);
+  //console.log(loserExpected);
+
+
+  var actualWinnerScore = 1;
+  var actualLoserScore = 0;
+
+
+
+  if (draw){
+    var actualDrawWinnerELO = winnerELO + Kvalue*(.5-winnerExpected);
+    var actualDrawLoserELO = loserELO + Kvalue*(.5-winnerExpected);
+    return [actualDrawWinnerELO,actualDrawLoserELO];
+
+  }
+
+else{
+
+  var actualWinnerELO = winnerELO + Kvalue*(1-winnerExpected);
+  var actualLoserELO = loserELO + Kvalue*(0-loserExpected);
+
+  return [actualWinnerELO, actualLoserELO];
+}
+}
+
+function calculateFullELO(players){
+
+  if (players.length == 0){
+    return 'no players inputted';
+  }
+  // check
+  
+  var winnerELO = 0;
+  var loserELO = 0;
+  var drawerELO = 0;
+  var ELOArray = [];
+
+  for (var i in players){
+ 
+    var playerELO = players[i];
+    var index = players.indexOf(playerELO);
+    var topIndex = index-1;
+    var bottomIndex = index+1;
+
+  
+    if (topIndex >= 0 && topIndex < players.length - 1){
+     
+      // if players have drawn 
+      if (players[topIndex] == playerELO){
+        var drawArray = calulate2ELO(players[topIndex], playerELO, 1);
+        drawerELO = drawArray[1];
+        
+      }
+      else{
+
+      var playerWonELO = players[topIndex];
+      var lostArray = calulate2ELO(playerWonELO, playerELO, 0);
+      var loserELO = lostArray[1];
+    }
+
+    }
+
+   
+    
+
+    if (bottomIndex > 0 && bottomIndex <= players.length - 1 ){
+      
+        // if players have drawn 
+      if (players[bottomIndex] == playerELO){
+        var drawArray = calulate2ELO(players[bottomIndex], playerELO, 1);
+        drawerELO = drawArray[1];
+        
+      }
+      else{
+      var playerLostELO = players[bottomIndex];
+      var wonArray = calulate2ELO(playerELO, playerLostELO, 0);
+      var winnerELO = wonArray[0];
+    }
+
+    }
+  
+
+    if (drawerELO){
+
+      ELOArray[i] = Math.round(drawerELO);
+    }
+
+    else{
+
+      if (topIndex < 0){
+        var realELO  = Math.round(winnerELO);
+        ELOArray[i] = realELO;
+      }
+
+      else if(bottomIndex > players.length-1){
+        var realELO = Math.round(loserELO);
+        ELOArray[i] = realELO;
+      }
+
+      else{
+      var realELO = Math.round((winnerELO + loserELO)/2)
+      ELOArray[i] = realELO;
+      }
+
+     }
+
+  }
+  console.log(ELOArray);
+  //TODO 
+  // modify players ELOs given the ELOArray 
+  return players;
+
+}
 
 
 
