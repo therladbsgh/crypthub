@@ -777,10 +777,16 @@ else{
 
 function calculateFullELO(playersz){
   var players = [];
+
   for (var i in playersz){
     players[i] = playersz[i].ELO;
   }
-  console.log(players);
+  
+  if (players.length == 1){
+    return;
+  }
+
+
   if (players.length == 0){
     return 'no players inputted';
   }
