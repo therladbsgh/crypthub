@@ -11,7 +11,7 @@ const Asset = require('../models/asset.model');
 const User = require('../models/user.model');
 const Trade = require('../models/trade.model');
 
-const url = 'localhost:8080';
+const url = process.env.MODE === 'production' ? 'crypthub.s3-website-us-east-1.amazonaws.com' : 'localhost:8080';
 
 
 /**
@@ -31,7 +31,7 @@ function validate(req, res) {
     }
 
     if (game) {
-      res.status(400).json({ err: 'Name already exists' });
+      res.status(400).json({ err: 'A game with this id already exists.', field: 'id' });
       return;
     }
 
@@ -163,7 +163,7 @@ function simpleBuy(username, symbol, size) {
     if (!sym) {
       return Coin.findOne({ symbol }).exec().then((coin) => {
         if (usd.amount < size * coin.currPrice) {
-          return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+          return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
         }
 
         sym = {
@@ -188,7 +188,7 @@ function simpleBuy(username, symbol, size) {
     }
 
     if (usd.amount < size * sym.coin.currPrice) {
-      return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+      return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
     }
 
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
@@ -220,7 +220,7 @@ function simpleSell(username, symbol, size) {
     });
 
     if (!sym || sym.amount < size) {
-      return Promise.reject(new Error('Not enough coin to sell'));
+      return Promise.reject({ message: `You don\'t have enough ${symbol} to place this order.`, field: 'size' });
     }
 
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
@@ -326,7 +326,7 @@ function fillTrade(playerId, trade) {
         amount: trade.size
       });
       return asset.save().then(() => {
-        player.portfolio.append(asset._id);
+        player.portfolio.push(asset._id);
         return player.save();
       });
     }
@@ -387,7 +387,7 @@ function dealWithCurrentTransactions(id, game, prices) {
   return Promise.resolve();
 }
 
-function runAllBots(game, prices) {
+async function runAllBots(game, prices) {
   const coins = Object.keys(prices);
   console.log(prices);
   const histLength = prices[coins[0]].length;
@@ -398,11 +398,12 @@ function runAllBots(game, prices) {
       currCoins.push({ symbol: coin, price: prices[coin][i] });
     });
 
-    game.players.forEach((player) => {
+    for (let j = 0; j < game.players.length; j++) {
+      const player = game.players[j];
       if (player.activeBotId) {
-        api.runBot(player.activeBotId, game._id, player._id, currCoins);
+        await api.runBot(player.activeBotId, game._id, player._id, currCoins);
       }
-    });
+    }
   }
 }
 
@@ -412,7 +413,8 @@ function update(id) {
   }).then((data) => {
     if (Object.keys(data.prices).length > 0) {
       return dealWithCurrentTransactions(id, data.game, data.prices).then(() => {
-        return runAllBots(data.game, data.prices);
+        runAllBots(data.game, data.prices);
+        return Promise.resolve();
       });
     }
     return Promise.resolve();
@@ -438,21 +440,21 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
       coinId = coin._id;
 
       if (side === 'sell' && (!sym || sym.amount < size)) {
-        return Promise.reject(new Error('Not enough coin to sell'));
+        return Promise.reject({ message: `You don\'t have enough ${symbol} to place this order.`, field: 'size' });
       }
 
       if (side === 'buy' && (usd.amount < size * price)) {
-        return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+        return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
       }
 
       if (((type === 'limit' && side === 'buy') || (type === 'stop' && side === 'sell')) &&
           coin.currPrice < price) {
-        return Promise.reject(new Error('Cannot specify price above current market price'));
+        return Promise.reject({ message: 'The price cannot be above the current market price.', field: 'price' });
       }
 
       if (((type === 'limit' && side === 'sell') || (type === 'stop' && side === 'buy')) &&
           coin.currPrice > price) {
-        return Promise.reject(new Error('Cannot specify price below current market price'));
+        return Promise.reject({ message: 'The price cannot be below the current market price.', field: 'price' });
       }
 
       if (side === 'buy') {
@@ -503,8 +505,8 @@ function getGame(req, res) {
     }
   };
 
-  Game.findOne({ id }).exec().then((gameExists) => {
-    if (gameExists) {
+  Game.findOne({ id }).exec().then((thisGame) => {
+    if (thisGame && !thisGame.completed) {
       update(id).then(() => {
         return Game.findOne({ id }).populate(populatePath).lean().exec();
       }).then((game) => {
@@ -519,6 +521,13 @@ function getGame(req, res) {
           });
         }
 
+        if (new Date() >= new Date(game.end)) {
+          const _ = require('lodash');
+          console.log('calculated elos:', calculateFullELO(_.concat(game.players, { currRank: 2, ELO: 500, eloDelta: 0 })));
+          // set completed to true
+          // save game, players?
+        }
+
         if (!(Object.keys(player).length === 0 && player.constructor === Object)) {
           User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
             player.tradingBots = user.tradingBots;
@@ -528,6 +537,20 @@ function getGame(req, res) {
           res.status(200).json({ game: gameToReturn, player });
         }
       });
+    } else if (thisGame && thisGame.completed) {
+      Game.findOne({ id }).populate(populatePath).lean().exec()
+      .then(game => {
+        let player = {};
+
+        if (req.session.user) {
+          game.players.forEach((each) => {
+            if (each.username === req.session.user) {
+              player = each;
+            }
+          });
+        }
+        res.status(200).json({ game, player });
+      });   
     } else {
       res.status(200).json({ game: {}, player: {} });
     }
@@ -555,7 +578,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message });
+        res.status(400).json({ err: err1.message, field: err1.field });
       });
     } else if (type === 'market' && side === 'sell') {
       // Regular sell
@@ -564,7 +587,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message });
+        res.status(400).json({ err: err1.message, field: err1.field });
       });
     } else if (type === 'short' && side === 'buy') {
       // Short buying
@@ -575,7 +598,7 @@ function placeOrder(req, res) {
       futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message });
+        res.status(400).json({ err: err1.message, field: err1.field });
       });
     } else {
       // Wrong argument
@@ -595,12 +618,12 @@ function cancelOrder(req, res) {
   Player.findOne({ _id: playerId }).populate(populatePath).exec().then((player) => {
     let sym;
     let coinId;
-    let size;
+    let side;
     player.transactionCurrent.forEach((trade) => {
       if (trade._id.toString() === tradeId) {
         sym = trade.coin.symbol;
         coinId = trade.coin._id;
-        size = trade.size;
+        side = trade.side;
       }
     });
 
@@ -617,8 +640,7 @@ function cancelOrder(req, res) {
     });
 
     let asset;
-    if (!symAsset) {
-
+    if (!symAsset && side === 'sell') {
       asset = new Asset({
         _id: new Types.ObjectId(),
         coin: coinId,
@@ -630,6 +652,7 @@ function cancelOrder(req, res) {
         player.save();
       });
     }
+
     return player.save();
   }).then(() => {
     return Trade.findOne({ _id: tradeId }).populate('coin');
@@ -639,12 +662,17 @@ function cancelOrder(req, res) {
         asset.set({ amount: asset.amount + (trade.size * trade.price) });
         return asset.save();
       });
-    } else {
-      return Asset.findOne({ _id: symAsset }).exec().then((asset) => {
-        asset.set({ amount: asset.amount + trade.size });
-        return asset.save();
-      });
     }
+
+    if (!symAsset) {
+
+    }
+
+
+    return Asset.findOne({ _id: symAsset }).exec().then((asset) => {
+      asset.set({ amount: asset.amount + trade.size });
+      return asset.save();
+    });
   }).then(() => {
     res.status(200).json({ success: true });
   });
@@ -660,6 +688,7 @@ function setBot(req, res) {
   const { playerId, botId } = req.body;
   Player.findOne({ _id: playerId }).exec().then((player) => {
     player.set({ activeBotId: botId });
+    player.set({ activeBotLog: '' });
     return player.save();
   }).then(() => {
     res.status(200).json({ success: true });
@@ -709,7 +738,7 @@ function inviteUsers(req, res){
 function calulate2ELO(winnerELO, loserELO, draw){
 
   var Kvalue = 300;
- 
+
 
   var winnerTransformed = Math.pow(10,(winnerELO/400));
   var loserTransformed = Math.pow(10,(loserELO/400));
@@ -750,27 +779,27 @@ function calculateFullELO(players){
     return 'no players inputted';
   }
   // check
-  
+
   var winnerELO = 0;
   var loserELO = 0;
   var drawerELO = 0;
   var ELOArray = [];
 
   for (var i in players){
- 
+
     var playerELO = players[i];
     var index = players.indexOf(playerELO);
     var topIndex = index-1;
     var bottomIndex = index+1;
 
-  
+
     if (topIndex >= 0 && topIndex < players.length - 1){
-     
-      // if players have drawn 
+
+      // if players have drawn
       if (players[topIndex] == playerELO){
         var drawArray = calulate2ELO(players[topIndex], playerELO, 1);
         drawerELO = drawArray[1];
-        
+
       }
       else{
 
@@ -781,16 +810,16 @@ function calculateFullELO(players){
 
     }
 
-   
-    
+
+
 
     if (bottomIndex > 0 && bottomIndex <= players.length - 1 ){
-      
-        // if players have drawn 
+
+        // if players have drawn
       if (players[bottomIndex] == playerELO){
         var drawArray = calulate2ELO(players[bottomIndex], playerELO, 1);
         drawerELO = drawArray[1];
-        
+
       }
       else{
       var playerLostELO = players[bottomIndex];
@@ -799,7 +828,7 @@ function calculateFullELO(players){
     }
 
     }
-  
+
 
     if (drawerELO){
 
@@ -827,8 +856,8 @@ function calculateFullELO(players){
 
   }
   console.log(ELOArray);
-  //TODO 
-  // modify players ELOs given the ELOArray 
+  //TODO
+  // modify players ELOs given the ELOArray
   return players;
 
 }

@@ -96,7 +96,7 @@ class CreateGame extends Component {
 	
 	handleReview() {
 		const { gameObj } = this.state;
-		const { id, name, created, start, end, startingBalance, commissionValue, isPrivate, password, passwordConfirm } = gameObj;
+		const { id, name, created, start, end, startingBalance, commissionValue, description, isPrivate, password, passwordConfirm } = gameObj;
 
 		this.setState({
 			errMsg: '',
@@ -144,6 +144,14 @@ class CreateGame extends Component {
             });
 		}
 
+		if (description === '') {
+            return this.setState({
+                loading: false,
+                errMsg: 'Description must have a value.',
+                errField: 'description'
+            });
+		}
+
 		if (isPrivate && password !== passwordConfirm) {
             return this.setState({
                 loading: false,
@@ -184,6 +192,9 @@ class CreateGame extends Component {
 			errField: '',
 			loading: true
 		})
+
+		// const gameObjSend = _.cloneDeep(gameObj);
+		// _.set(gameObjSend, 'end', new Date());
 
 		GameBackend.createGame(gameObj)
 		.then(res => {
