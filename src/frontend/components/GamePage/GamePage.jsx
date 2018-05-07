@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Header, Tab, Button, Grid } from 'semantic-ui-react';
+import { Header, Tab, Button, Grid, Loader, Dimmer } from 'semantic-ui-react';
 import { GameBackend, UserBackend } from 'endpoints';
 import { Navbar, Searchbar, GameOverview, GamePortfolio, GameCompare, GameRankings, GameSettings, TradeCard, JoinModal, GameTradingBots } from 'components';
 import { GamePageStyle as styles, SharedStyle as sharedStyles } from 'styles'; 
@@ -44,19 +44,19 @@ class GamePage extends Component {
                         });
                     }, ({ err }) => {
                         console.log('error! ', err);
-                        alert(`Error: ${err}`);
+                        history.push({ pathname: '/error', error: true });
                     });
                 }, ({ err }) => {
                     console.log('error! ', err);
-                    alert(`Error: ${err}`);
+                    history.push({ pathname: '/error', error: true });
                 });
             }, ({ err }) => {
                 console.log('error! ', err);
-                alert(`Error: ${err}`);
+                history.push({ pathname: '/error', error: true });
             });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert(`Error: ${err}`);
+			history.push({ pathname: '/error', error: true });
         });
 	}
 
@@ -65,7 +65,7 @@ class GamePage extends Component {
         const { id, name, players, playerPortfolioPublic, isPrivate, completed } = game;
         const { username } = thisPlayer;
 
-        if (!hasMounted) return null;
+        if (!hasMounted) return <Dimmer active><Loader size='massive'>Updating Game...</Loader></Dimmer>;
 
         const inGame = !_.isEmpty(thisPlayer);
         const isHost = game.host === username;

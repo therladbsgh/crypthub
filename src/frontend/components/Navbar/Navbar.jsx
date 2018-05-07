@@ -20,7 +20,7 @@ class Navbar extends Component {
             history.push('/');
 		}, ({ err }) => {
             console.log('error! ', err);
-            alert(`Logout error: ${err}`);
+            history.push({ pathname: '/error', error: true });
         });
     }
 

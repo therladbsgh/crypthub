@@ -1,37 +1,57 @@
-const fs = require('fs');
-const util = require('util');
 const axios = require('axios');
 
-function runBot(botPath, logPath, gameId, playerId, prices) {
-    const logFile = fs.createWriteStream(logPath, { flags: 'a' });
-    return new Promise((resolve, reject) => {
-        axios.post('http://ec2-52-205-237-224.compute-1.amazonaws.com:8080/compile', {
-            language: 4,
-            code: "const api = require('./api.js');function trade(prices) {console.log('testing', prices[0]);api.test();} module.exports = {api,trade};",
-            stdin: JSON.stringify([{ symbol: 'BTC', price: 100}, { symbol: 'ETH', price: 200}]),
-            additional: gameId + '*' + playerId
-        })
-        .then(res => {
-            const { status, data } = res;
-            const { output, errors } = data;
-            if (status == '200') {
-                if (!!output) {
-                    logFile.write(output + '\n');
-                } else if (!!errors) {
-                    logFile.write(errors + '\n');
-                }
-                return resolve('success');
-            }
-            logFile.write('An unknown error has occurred. This probably is not due to your trading bot - try again later.\n');
-            reject(res);
-        })
-        .catch(err => {
-            logFile.write('An unknown error has occurred. This probably is not due to your trading bot - try again later.\n');
-            reject(err)
-        });
+const Bot = require('../models/bot.model');
+const Player = require('../models/player.model');
+
+const URL = 'http://ec2-52-205-237-224.compute-1.amazonaws.com:8080/compile';
+
+function runBot(botId, gameId, playerId, prices) {
+  console.log("SENDING");
+  Bot.findOne({ _id: botId }).exec().then((botModel) => {
+    const code = botModel.data;
+
+    Player.findOne({ _id: playerId }).exec().then((player) => {
+      let log = player.activeBotLog;
+
+      const params = {
+        language: 4,
+        code,
+        stdin: JSON.stringify(prices),
+        additional: `${gameId}*${playerId}`
+      };
+
+      return axios.post(URL, params).then((res) => {
+        const { status, data } = res;
+        const { output, errors } = data;
+
+        if (status === 200) {
+          if (output.length > 0) {
+            log += `${output.trim()}\n`;
+          }
+
+          if (errors.length > 0) {
+            log += `ERROR: ${errors.trim()}\n`;
+          }
+        } else {
+          log += 'An unknown error has occurred. This probably is not ' +
+                 'due to your trading bot - try again later.\n';
+        }
+
+        player.set({ activeBotLog: log });
+        player.save();
+      }).catch((e) => {
+        console.log(e.message);
+        log += 'An unknown error has occurred. This probably is not ' +
+               'due to your trading bot - try again later.\n';
+        player.set({ activeBotLog: log });
+        player.save();
+      });
     });
+  }).catch((err) => {
+    console.log(err.message);
+  });
 }
 
 module.exports = {
-    runBot
+  runBot
 };

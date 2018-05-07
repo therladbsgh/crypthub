@@ -20,9 +20,9 @@ export default class UserTradingBots extends Component {
             tradingBotObj: {
                 botId: '',
                 botName: '',
-                data: ''
+                data: '',
+                log: ''
             },
-            debugLog: '',
             loading: false,
             submitted: false,
             success: '',
@@ -50,7 +50,8 @@ export default class UserTradingBots extends Component {
                 tradingBotObj: {
                     botId: newBot._id,
                     botName: newBot.name,
-                    data: newBot.data
+                    data: newBot.data,
+                    log: newBot.log
                 }
             });
         }
@@ -83,17 +84,18 @@ export default class UserTradingBots extends Component {
 
 		this.setState({
             tradingBotObj: {
-                ...this.state.tradingBotObj,
                 botId: value,
                 botName: bot.name,
-                data: bot.data
+                data: bot.data,
+                log: bot.log
             }
         });
     }
 
     handleSave(event) {
+        const { updateTradingBots } = this.props;
         const { tradingBots, tradingBotObj } = this.state;
-        const { botId, botName, data } = tradingBotObj;
+        const { botId, botName, data, log } = tradingBotObj;
 
         event.preventDefault();
         this.setState({
@@ -114,12 +116,14 @@ export default class UserTradingBots extends Component {
         UserBackend.saveTradingBot(tradingBotObj)
         .then(res => {
             console.log('success! ', res);
+            const newTradingBots = _.concat(_.filter(tradingBots, bot => bot._id != botId), { _id: botId, name: botName, data, log });
             this.setState({
-                tradingBots: _.concat(_.filter(tradingBots, bot => bot._id != botId), { _id: botId, name: botName, data }),
+                tradingBots: newTradingBots,
                 loading: false,
                 submitted: true,
                 success: `${botName} has been saved.`
             });
+            updateTradingBots(newTradingBots);
         }, ({ err }) => {
             console.log('error! ', err);
             this.setState({
@@ -131,6 +135,7 @@ export default class UserTradingBots extends Component {
     }
 
     handleCreateNew(event) {
+        const { updateTradingBots } = this.props;
         const { tradingBots } = this.state;
 
         event.preventDefault();
@@ -144,11 +149,13 @@ export default class UserTradingBots extends Component {
         UserBackend.newTradingBot()
         .then(res => {
             console.log('success! ', res);
+            const newTradingBots = _.concat(tradingBots, res);
             this.setState({
-                tradingBots: _.concat(tradingBots, res),
-                tradingBotObj: { botId: res._id, botName: res.name, data: res.data },
+                tradingBots: newTradingBots,
+                tradingBotObj: { botId: res._id, botName: res.name, data: res.data, log: res.log },
                 loading: false,
             });
+            updateTradingBots(newTradingBots);
         }, ({ err }) => {
             console.log('error! ', err);
             this.setState({
@@ -159,16 +166,19 @@ export default class UserTradingBots extends Component {
     }
 
     handleDelete(botId) {
+        const { updateTradingBots } = this.props;
         const { tradingBots, tradingBotObj } = this.state;
 
+        const newTradingBots = _.filter(tradingBots, bot => bot._id != botId);
         this.setState({
-            tradingBots: _.filter(tradingBots, bot => bot._id != botId),
+            tradingBots: newTradingBots,
             tradingBotObj: {
                 botId: '',
                 botName: '',
                 data: ''
             }
         });
+        updateTradingBots(newTradingBots);
     }
 
     runBot() {
@@ -184,8 +194,8 @@ export default class UserTradingBots extends Component {
     }
 
     render() {
-        const { tradingBots, tradingBotObj, debugLog, loading, submitted, running, success, err, errAdd } = this.state;
-        const { botId, botName, data } = tradingBotObj;
+        const { tradingBots, tradingBotObj, loading, submitted, running, success, err, errAdd } = this.state;
+        const { botId, botName, data, log } = tradingBotObj;
 
         return (
 			<div className={styles.top}>
@@ -229,7 +239,7 @@ export default class UserTradingBots extends Component {
                         </Form.Field>
                         <Form.Field width={6}>
                             <label>Debug Log</label>
-							<TextArea className={styles.debugLog} autoHeight name='debugLog' value={debugLog} />
+							<TextArea className={styles.debugLog} autoHeight name='log' value={log} />
                         </Form.Field>
                     </Form.Group>
                     <Message success header='Success!' content={success} />

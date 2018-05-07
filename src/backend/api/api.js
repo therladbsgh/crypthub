@@ -1,4 +1,11 @@
 const _ = require('lodash');
+const request = require('request');
+
+function test() {
+	request.get('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD', function(error, response, body) {
+        console.log(body);
+    });
+}
 
 const context = {
     gameId: '',
@@ -8,7 +15,7 @@ const context = {
 
 function setContext(gameId, playerId) {
     if (context.set) {
-        err('setContext: Illegal call of setContext.');
+        throw { message: 'setContext: Illegal call of setContext.' };
     }
 
     context.gameId = gameId;
@@ -16,87 +23,105 @@ function setContext(gameId, playerId) {
     context.set = true;
 }
 
-function err(message) {
-    throw { message };
+function err(reject, message) {
+    reject({ message });
 }
 
 function placeOrder(type, side, size, price, coin, GTC) {
-    if (!_.includes(['market', 'limit', 'stop'], type)) {
-        err(`placeOrder: First argument (type) must be one of 'market', 'limit', or 'stop'. Found: ${type}`);
-    }
+    return new Promise((resolve, reject) => {
+        if (!_.includes(['market', 'limit', 'stop'], type)) {
+            err(reject, `placeOrder: First argument (type) must be one of 'market', 'limit', or 'stop'. Found: ${type}`);
+        }
 
-    if (!_.includes(['buy', 'sell'], side)) {
-        err(`placeOrder: Second argument (side) must be one of 'buy' or 'sell'. Found: ${side}`);
-    }
+        if (!_.includes(['buy', 'sell'], side)) {
+            err(reject, `placeOrder: Second argument (side) must be one of 'buy' or 'sell'. Found: ${side}`);
+        }
 
-    if (!_.isNumber(size)) {
-        err(`placeOrder: Third argument (size) must be a number. Found: ${size}`);        
-    }
+        if (!_.isNumber(size)) {
+            err(reject, `placeOrder: Third argument (size) must be a number. Found: ${size}`);
+        }
 
-    if (size <= 0) {
-        err(`placeOrder: Third argument (size) must be greater than 0. Found: ${size}`);  
-    }
+        if (size <= 0) {
+            err(reject, `placeOrder: Third argument (size) must be greater than 0. Found: ${size}`);
+        }
 
-    const numPlacesSize = Number(size.toString().split('e-')[1]);
-    if (numPlacesSize && numPlacesSize > 8) {
-        err(`placeOrder: Third argument (size) must have no more than 8 decimal places. Found: ${size}`);          
-    }
+        const numPlacesSize = Number(size.toString().split('e-')[1]);
+        if (numPlacesSize && numPlacesSize > 8) {
+            err(reject, `placeOrder: Third argument (size) must have no more than 8 decimal places. Found: ${size}`);
+        }
 
-    if (!_.isNumber(price)) {
-        err(`placeOrder: Fourth argument (price) must be a number. Found: ${price}`);
-    }
+        if (type != 'market') {
+            if (!_.isNumber(price)) {
+                err(reject, `placeOrder: Fourth argument (price) must be a number. Found: ${price}`);
+            }
 
-    if (price <= 0) {
-        err(`placeOrder: Fourth argument (price) must be greater than 0. Found: ${price}`);  
-    }
+            if (price <= 0) {
+                err(reject, `placeOrder: Fourth argument (price) must be greater than 0. Found: ${price}`);  
+            }
 
-    const numPlacesPriceE = Number(price.toString().split('e-')[1]);
-    const decimal = price.toString().split('.')[1];
-    if (numPlacesPriceE ? numPlacesPriceE > 2 : decimal && decimal.length > 2) {
-        err(`placeOrder: Fourth argument (price) must have no more than 2 decimal places. Found: ${price}`);          
-    }
+            const numPlacesPriceE = Number(price.toString().split('e-')[1]);
+            const decimal = price.toString().split('.')[1];
+            if (numPlacesPriceE ? numPlacesPriceE > 2 : decimal && decimal.length > 2) {
+                err(reject, `placeOrder: Fourth argument (price) must have no more than 2 decimal places. Found: ${price}`);          
+            }
+        }
 
-    if (!_.includes(['BTC', 'ETH'], coin)) {
-        err(`placeOrder: Fifth argument (coin) must be one of 'BTC' or 'ETH'. Found: ${coin}`);        
-    }
+        if (!_.includes(['BTC', 'ETH'], coin)) {
+            err(reject, `placeOrder: Fifth argument (coin) must be one of 'BTC' or 'ETH'. Found: ${coin}`);
+        }
 
-    if (!_.isBoolean(GTC)) {
-        err(`placeOrder: Sixth argument (GTC) must be a boolean. Found: ${GTC}`);        
-    }
+        if (type != 'market') {
+            if (!_.isBoolean(GTC)) {
+                err(reject, `placeOrder: Sixth argument (GTC) must be a boolean. Found: ${GTC}`);        
+            }
+        }
 
-    return 'id';
+        resolve('id');
+    });
 }
 
 function cancelOrder(orderId) {
-    if (!_.isString(orderId)) {
-        err(`cancelOrder: First argument (orderId) must be a string. Found: ${orderId}`);        
-    }
+    return new Promise((resolve, reject) => {
+        if (!_.isString(orderId)) {
+            err(reject, `cancelOrder: First argument (orderId) must be a string. Found: ${orderId}`);
+        }
 
-    return true;
+        resolve();
+    });
 }
 
 function cancelAll() {
-    return true;
+    return new Promise((resolve, reject) => {
+        resolve();
+    });
 }
 
 function getOrder(orderId) {
-    if (!_.isString(orderId)) {
-        err(`getOrder: First argument (orderId) must be a string. Found: ${orderId}`);        
-    }
+    return new Promise((resolve, reject) => {
+        if (!_.isString(orderId)) {
+            err(`getOrder: First argument (orderId) must be a string. Found: ${orderId}`);
+        }
 
-    return { orderId: 'orderid' };
+        resolve({ orderId: 'orderid' });
+    });
 }
 
 function getOrders() {
-    return [{ orderId: 'orderid1' }, { orderId: 'orderid2' }];
+    return new Promise((resolve, reject) => {
+        resolve([{ orderId: 'orderid1' }, { orderId: 'orderid2' }]);
+    });
 }
 
 function getCompletedOrders() {
-    return [{ orderId: 'orderid1' }, { orderId: 'orderid2' }];
+    return new Promise((resolve, reject) => {
+        resolve([{ orderId: 'orderid1' }, { orderId: 'orderid2' }]);
+    });
 }
 
 function getPortfolio() {
-    return [{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508 }];
+    return new Promise((resolve, reject) => {
+        resolve([{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508, currPrice: 9500 }]);
+    });
 }
 
 // getHistory() function?

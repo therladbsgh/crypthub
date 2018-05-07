@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Header, Tab } from 'semantic-ui-react';
+import { Header, Tab, Loader, Dimmer } from 'semantic-ui-react';
 import { UserBackend, GameBackend } from 'endpoints';
 import { Navbar } from 'components';
 import { YourGames, FindGames, CreateGame, UserTradingBots } from 'components';
@@ -30,12 +30,12 @@ class UserPage extends Component {
                     this.setState({ user: resUser.user, allGames: resGames.games, hasMounted: true });
                 }, ({ err }) => {
                     console.log('error! ', err);
-                    alert(`Error: ${err}`);
+                    history.push({ pathname: '/error', error: true });
                 });
 			}
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert(`Error: ${err}`);
+			history.push({ pathname: '/error', error: true });
         });
 	}
     
@@ -43,7 +43,7 @@ class UserPage extends Component {
         const { user, allGames, hasMounted } = this.state;
         const { username, ELO, games, tradingBots } = user;
 
-        if (!hasMounted) return null;
+        if (!hasMounted) return <Dimmer active><Loader size='massive'>Loading User Page...</Loader></Dimmer>;
 
         const YourGamesPane = (
             <Tab.Pane id={styles.tab} key='tab1'>

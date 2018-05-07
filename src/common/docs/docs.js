@@ -21,7 +21,7 @@ export const methods = [
 			{
 				name: 'price',
 				type: 'number',
-				description: "The price per coin value you wish to trade at. Must be greater than 0 and have no more than 2 decimal places."
+				description: "The price per coin value you wish to trade at. Must be greater than 0 and have no more than 2 decimal places. If the order is a market order, then this parameter is ignored."
 			},
 			{
 				name: 'coin',
@@ -31,12 +31,12 @@ export const methods = [
 			{
 				name: 'GTC',
 				type: 'boolean',
-				description: "Indicates whether or not this order is Good 'Till Cancelled. If false, then the order will expire in 24 hours."
+				description: "Indicates whether or not this order is Good 'Till Cancelled. If false, then the order will expire in 24 hours. If the order is a market order, then this parameter is ignored."
 			}
 		],
 		return: {
 			type: 'string',
-			description: 'If successful, the id of the successfully placed order. Otherwise, an error is thrown.'
+			description: 'The id of the successfully placed order.'
 		}
 	},
 	{
@@ -50,8 +50,8 @@ export const methods = [
 			}
 		],
 		return: {
-			type: 'boolean',
-			description: 'If successful, true. Otherwise, an error is thrown.'
+			type: 'null',
+			description: 'Nothing.'
 		}
 	},
 	{
@@ -59,8 +59,8 @@ export const methods = [
 		description: 'Cancel all current orders.',
 		params: [],
 		return: {
-			type: 'boolean',
-			description: 'If successful, true. Otherwise, an error is thrown.'
+			type: 'null',
+			description: 'Nothing.'
 		}
 	},
 	{
@@ -75,7 +75,7 @@ export const methods = [
 		],
 		return: {
 			type: 'order',
-			description: 'If successful, the order requested. Otherwise, an error is thrown.'
+			description: 'The order requested.'
 		}
 	},
 	{
@@ -84,7 +84,7 @@ export const methods = [
 		params: [],
 		return: {
 			type: '[order]',
-			description: 'If successful, an array of all current orders (i.e. those that aren\'t yet filled or expired). Otherwise, an error is thrown.'
+			description: 'An array of all current orders (i.e. those that aren\'t yet filled or expired).'
 		}
 	},
 	{
@@ -93,7 +93,7 @@ export const methods = [
 		params: [],
 		return: {
 			type: '[order]',
-			description: 'If successful, an array of all completed orders (i.e. those that are filled or expired). Otherwise, an error is thrown.'
+			description: 'An array of all completed orders (i.e. those that are filled or expired).'
 		}
 	},
 	{
@@ -102,7 +102,7 @@ export const methods = [
 		params: [],
 		return: {
 			type: '[asset]',
-			description: 'If successful, an array of all your assets. Otherwise, an error is thrown.'
+			description: 'An array of all your assets.'
 		}
 	}
 ];

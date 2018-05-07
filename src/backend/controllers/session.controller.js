@@ -244,7 +244,7 @@ function logout(req, res) {
  */
 function authenticate(req, res, next) {
   if (!req.session.user) {
-    res.status(403).json({ err: 'Not logged in' });
+    res.status(403).json({ err: 'Your session has expired. Please log in again.', field: 'session-expired' });
   } else {
     next();
   }

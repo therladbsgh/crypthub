@@ -6,7 +6,7 @@ import { APIDocumentation as docs } from 'docs';
 import { Navbar } from 'components'; 
 import { APIDocumentationStyle as styles, SharedStyle as sharedStyles } from 'styles';
 
-export default class APIDocumentation extends Component {
+class APIDocumentation extends Component {
 	constructor(props) {
 		super(props);
 
@@ -24,7 +24,7 @@ export default class APIDocumentation extends Component {
             this.setState({ username: res.username, hasMounted: true });
 		}, ({ err }) => {
 			console.log('error! ', err);
-			alert(`Error: ${err}`);
+			history.push({ pathname: '/error', error: true });
         });
 	}
 
@@ -37,6 +37,7 @@ export default class APIDocumentation extends Component {
 			<div className={sharedStyles.container}>
 				<Navbar username={username} />
 				<Container id={styles.container}>
+					<div className={styles.note}>*Note that all of the following methods return a promise. This promise will either resolve to produce the result as described, or will reject to produce an object that contains a 'message' parameter corresponding to the error that occurred.</div>
 					{_.map(methods, (m, index) =>
 						<div key={index}>
 							<Header as='h1'>{m.name}</Header>
@@ -80,3 +81,5 @@ export default class APIDocumentation extends Component {
 		);
   	}
 }
+
+export default withRouter(APIDocumentation);
