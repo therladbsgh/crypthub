@@ -783,12 +783,12 @@ function calculateFullELO(playersz){
   }
   
   if (players.length == 1){
-    return;
+    return playersz;
   }
 
 
   if (players.length == 0){
-    return 'no players inputted';
+    return playersz;
   }
   // check
 
