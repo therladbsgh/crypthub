@@ -554,8 +554,8 @@ function deleteUser(req, res){
 if (req.session.user){
   User.get(req.session.user).then((user) => {
 
-    if (!user){``
-      console.log('here1');
+    if (!user){
+     
       return res.status(500).send({err: 'Can not find user', field: 'user'});
     }
    
@@ -565,7 +565,7 @@ if (req.session.user){
       Bot.remove({bot}).exec().then(() =>{
         console.log('bot removed');
       }).catch(() =>{
-        console.log('here2');
+        
         res.status(500).json({err: 'MongoDB removal error, field: trading-bot'});
       })
     });
@@ -576,11 +576,10 @@ if (req.session.user){
 
     User.remove({username: req.session.user}, function(err){
       if(err){
-        console.log(err);
-        console.log('here5');
+        
         res.status(500).send({err: 'MongoDB removal error', field: 'MongoDB'});
       }
-      console.log('made it');
+    
       logout(req,res);
     });
 
@@ -590,7 +589,7 @@ if (req.session.user){
 
 
 else {
-  console.log('here4')
+  
   return res.status(500).send({err: 'User session does not exist. Please log in and try again', field: 'session'});
 }
 }

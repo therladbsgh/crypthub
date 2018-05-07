@@ -907,6 +907,13 @@ function calculateFullELO(playersz){
 
 }
 
+function joinGame(req,res){
+
+
+
+  
+}
+
 
 
 
@@ -920,5 +927,6 @@ module.exports = {
   getAll,
   setBot,
   inviteUsers,
+  joinGame,
   calculateFullELO
 };
