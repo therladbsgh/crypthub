@@ -526,7 +526,7 @@ function getGame(req, res) {
           User.find({ username: { $in: _.map(game.players, 'username') } }).exec()
           .then(( users ) => {
             const playersWithELO = _.sortBy(_.map(game.players, p => _.set(p, 'ELO', _.find(users, { username: p.username }).ELO)), p => p.currRank);
-            console.log('calculated elos:', calculateFullELO(_.concat(playersWithELO, [])));
+            console.log('calculated elos:', calculateFullELO(playersWithELO));
           // set completed to true
           // save game, players?
           });

@@ -7,12 +7,11 @@ import { JoinModalStyle as styles } from 'styles';
 export default class JoinModal extends Component {
     constructor(props) {
         super(props);
-        const { gameId, username } = this.props;
+        const { gameId } = this.props;
 
 		this.state = {
             joinObj: {
                 gameId,
-                username,
                 password: ''
             },
             open: false,
