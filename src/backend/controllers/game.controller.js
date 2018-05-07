@@ -163,7 +163,7 @@ function simpleBuy(username, symbol, size) {
     if (!sym) {
       return Coin.findOne({ symbol }).exec().then((coin) => {
         if (usd.amount < size * coin.currPrice) {
-          return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+          return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
         }
 
         sym = {
@@ -188,7 +188,7 @@ function simpleBuy(username, symbol, size) {
     }
 
     if (usd.amount < size * sym.coin.currPrice) {
-      return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+      return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
     }
 
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
@@ -220,7 +220,7 @@ function simpleSell(username, symbol, size) {
     });
 
     if (!sym || sym.amount < size) {
-      return Promise.reject(new Error('Not enough coin to sell'));
+      return Promise.reject({ message: `You don\'t have enough ${symbol} to place this order.`, field: 'size' });
     }
 
     return Asset.findOne({ _id: sym._id }).exec().then((asset) => {
@@ -438,21 +438,21 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
       coinId = coin._id;
 
       if (side === 'sell' && (!sym || sym.amount < size)) {
-        return Promise.reject(new Error('Not enough coin to sell'));
+        return Promise.reject({ message: `You don\'t have enough ${symbol} to place this order.`, field: 'size' });
       }
 
       if (side === 'buy' && (usd.amount < size * price)) {
-        return Promise.reject(new Error('Trying to buy more than amount of USD available'));
+        return Promise.reject({ message: 'You don\'t have enough buying power to place this order.', field: null });
       }
 
       if (((type === 'limit' && side === 'buy') || (type === 'stop' && side === 'sell')) &&
           coin.currPrice < price) {
-        return Promise.reject(new Error('Cannot specify price above current market price'));
+        return Promise.reject({ message: 'The price cannot be above the current market price.', field: 'price' });
       }
 
       if (((type === 'limit' && side === 'sell') || (type === 'stop' && side === 'buy')) &&
           coin.currPrice > price) {
-        return Promise.reject(new Error('Cannot specify price below current market price'));
+        return Promise.reject({ message: 'The price cannot be below the current market price.', field: 'price' });
       }
 
       if (side === 'buy') {
@@ -555,7 +555,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message });
+        res.status(400).json({ err: err1.message, field: err1.field });
       });
     } else if (type === 'market' && side === 'sell') {
       // Regular sell
@@ -564,7 +564,7 @@ function placeOrder(req, res) {
       }).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message });
+        res.status(400).json({ err: err1.message, field: err1.field });
       });
     } else if (type === 'short' && side === 'buy') {
       // Short buying
@@ -575,7 +575,7 @@ function placeOrder(req, res) {
       futureTrade(type, side, playerId, price, symbol, size, GTC).then(() => {
         res.status(200).json({ success: true });
       }).catch((err1) => {
-        res.status(400).json({ err: err1.message });
+        res.status(400).json({ err: err1.message, field: err1.field });
       });
     } else {
       // Wrong argument
