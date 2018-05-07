@@ -449,13 +449,13 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
       }
 
       if (((type === 'limit' && side === 'buy') || (type === 'stop' && side === 'sell')) &&
-          coin.currPrice < price) {
-        return Promise.reject({ message: 'The price cannot be above the current market price.', field: 'price' });
+          coin.currPrice <= price) {
+        return Promise.reject({ message: 'The price cannot be equal to or above the current market price.', field: 'price' });
       }
 
       if (((type === 'limit' && side === 'sell') || (type === 'stop' && side === 'buy')) &&
-          coin.currPrice > price) {
-        return Promise.reject({ message: 'The price cannot be below the current market price.', field: 'price' });
+          coin.currPrice >= price) {
+        return Promise.reject({ message: 'The price cannot be equal to or below the current market price.', field: 'price' });
       }
 
       if (side === 'buy') {
@@ -495,7 +495,7 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
   });
 }
 
-function getFullGameObj(id) {
+async function getFullGameObj(id) {
   const populatePath = {
     path: 'players',
     populate: {
@@ -504,7 +504,14 @@ function getFullGameObj(id) {
     }
   };
 
-  return Game.findOne({ id }).populate(populatePath).lean().exec();
+  const game = await Game.findOne({ id }).populate(populatePath).lean().exec();
+  const players = game.players;
+  for (let i = 0; i < players.length; i++) {
+    const user = await User.findOne({ username: players[i].username }).populate('tradingBots').lean().exec();
+    players[i].tradingBots = user.tradingBots;
+  }
+
+  return game;
 }
 
 async function placeOrder(req, res) {
