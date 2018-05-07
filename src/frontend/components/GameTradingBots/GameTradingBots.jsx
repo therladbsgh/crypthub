@@ -83,6 +83,7 @@ export default class GameTradingBots extends Component {
             console.log('success! ', res);
             this.setState({
                 activeBotId: '',
+                activeBotLog: '',
                 loading: false
             });
 		}, ({ err }) => {
