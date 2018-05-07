@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { Types } = require('mongoose');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
@@ -522,10 +523,13 @@ function getGame(req, res) {
         }
 
         if (new Date() >= new Date(game.end)) {
-          const _ = require('lodash');
-          console.log('calculated elos:', calculateFullELO(_.concat(game.players, { currRank: 2, ELO: 500, eloDelta: 0 })));
+          User.find({ username: { $in: _.map(game.players, 'username') } }).exec()
+          .then(( users ) => {
+            const playersWithELO = _.sortBy(_.map(game.players, p => _.set(p, 'ELO', _.find(users, { username: p.username }).ELO)), p => p.currRank);
+            console.log('calculated elos:', calculateFullELO(_.concat(playersWithELO, { currRank: 2, ELO: 500, eloDelta: 0 })));
           // set completed to true
           // save game, players?
+          });
         }
 
         if (!(Object.keys(player).length === 0 && player.constructor === Object)) {
