@@ -495,7 +495,7 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
   });
 }
 
-function getGame(req, res) {
+async function getGame(req, res) {
   const { id } = req.params;
   const username = req.session.user;
   const populatePath = {
@@ -509,9 +509,8 @@ function getGame(req, res) {
   Game.findOne({ id }).exec().then((thisGame) => {
     if (thisGame && !thisGame.completed) {
       update(id).then(() => {
-        return Game.findOne({ id }).populate(populatePath).lean().exec();
+        return Game.findOne({ id }).populate(populatePath).exec();
       }).then((game) => {
-        const gameToReturn = game;
         let player = {};
 
         if (req.session.user) {
@@ -526,16 +525,28 @@ function getGame(req, res) {
           User.find({ username: { $in: _.map(game.players, 'username') } }).exec()
           .then(( users ) => {
             const playersWithELO = _.sortBy(_.map(game.players, p => _.set(p, 'ELO', _.find(users, { username: p.username }).ELO)), p => p.currRank);
-            console.log('calculated elos:', calculateFullELO(playersWithELO));
-          // set completed to true
-          // save game, players?
+            // _.forEach(calculateFullELO(playersWithELO), p => {
+            //   Player.findOne({ _id: p._id }).exec().then(pl => {
+            //     pl.eloDelta = p.eloDelta;
+            //     pl.save();
+            //   });
+            // });
+            console.log('got here');
+            _.forEach(calculateFullELO(playersWithELO), p =>  {await (p.save())});
+            console.log('got here 2');
+
+            game.completed = true;
+            await (game.save());
+            return res.status(200).json({ game: game.toObject(), player });
           });
         }
 
+        const gameToReturn = game.toObject();
         if (!(Object.keys(player).length === 0 && player.constructor === Object)) {
           User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
-            player.tradingBots = user.tradingBots;
-            res.status(200).json({ game: gameToReturn, player });
+            const playerToReturn = player.toObject();
+            playerToReturn.tradingBots = user.tradingBots;
+            res.status(200).json({ game: gameToReturn, player: playerToReturn });
           });
         } else {
           res.status(200).json({ game: gameToReturn, player });
