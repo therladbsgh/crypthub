@@ -507,7 +507,7 @@ function getFullGameObj(id) {
   return Game.findOne({ id }).populate(populatePath).lean().exec();
 }
 
-function placeOrder(req, res) {
+async function placeOrder(req, res) {
   console.log(req.body);
   const {
     type, side, size, symbol, GTC, gameId, playerId, price
@@ -810,7 +810,10 @@ async function getGame(req, res) {
 
       const promiseLog = [];
       for (let i = 0; i < fullElo.length; i++) {
+        const user = users.find(u => u.username === fullElo[i].username);
+        user.ELO += fullElo[i].toObject().eloDelta;
         promiseLog.push(fullElo[i].save());
+        promiseLog.push(user.save());
       }
       await Promise.all(promiseLog);
 
