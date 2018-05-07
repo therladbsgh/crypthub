@@ -595,12 +595,12 @@ function cancelOrder(req, res) {
   Player.findOne({ _id: playerId }).populate(populatePath).exec().then((player) => {
     let sym;
     let coinId;
-    let size;
+    let side;
     player.transactionCurrent.forEach((trade) => {
       if (trade._id.toString() === tradeId) {
         sym = trade.coin.symbol;
         coinId = trade.coin._id;
-        size = trade.size;
+        side = trade.side;
       }
     });
 
@@ -617,8 +617,7 @@ function cancelOrder(req, res) {
     });
 
     let asset;
-    if (!symAsset) {
-
+    if (!symAsset && side === 'sell') {
       asset = new Asset({
         _id: new Types.ObjectId(),
         coin: coinId,
@@ -630,6 +629,7 @@ function cancelOrder(req, res) {
         player.save();
       });
     }
+
     return player.save();
   }).then(() => {
     return Trade.findOne({ _id: tradeId }).populate('coin');
@@ -639,12 +639,17 @@ function cancelOrder(req, res) {
         asset.set({ amount: asset.amount + (trade.size * trade.price) });
         return asset.save();
       });
-    } else {
-      return Asset.findOne({ _id: symAsset }).exec().then((asset) => {
-        asset.set({ amount: asset.amount + trade.size });
-        return asset.save();
-      });
     }
+
+    if (!symAsset) {
+
+    }
+
+
+    return Asset.findOne({ _id: symAsset }).exec().then((asset) => {
+      asset.set({ amount: asset.amount + trade.size });
+      return asset.save();
+    });
   }).then(() => {
     res.status(200).json({ success: true });
   });
