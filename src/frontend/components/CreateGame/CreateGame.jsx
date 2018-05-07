@@ -193,6 +193,9 @@ class CreateGame extends Component {
 			loading: true
 		})
 
+		// const gameObjSend = _.cloneDeep(gameObj);
+		// _.set(gameObjSend, 'end', new Date());
+
 		GameBackend.createGame(gameObj)
 		.then(res => {
 			console.log('success! ', res);

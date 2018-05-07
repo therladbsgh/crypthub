@@ -503,8 +503,8 @@ function getGame(req, res) {
     }
   };
 
-  Game.findOne({ id }).exec().then((gameExists) => {
-    if (gameExists) {
+  Game.findOne({ id }).exec().then((thisGame) => {
+    if (thisGame && !thisGame.completed) {
       update(id).then(() => {
         return Game.findOne({ id }).populate(populatePath).lean().exec();
       }).then((game) => {
@@ -519,6 +519,13 @@ function getGame(req, res) {
           });
         }
 
+        if (new Date() >= new Date(game.end)) {
+          const _ = require('lodash');
+          console.log('calculated elos:', calculateFullELO(_.concat(game.players, { currRank: 2, ELO: 500, eloDelta: 0 })));
+          // set completed to true
+          // save game, players?
+        }
+
         if (!(Object.keys(player).length === 0 && player.constructor === Object)) {
           User.findOne({ username }).populate('tradingBots').lean().exec().then((user) => {
             player.tradingBots = user.tradingBots;
@@ -528,6 +535,20 @@ function getGame(req, res) {
           res.status(200).json({ game: gameToReturn, player });
         }
       });
+    } else if (thisGame && thisGame.completed) {
+      Game.findOne({ id }).populate(populatePath).lean().exec()
+      .then(game => {
+        let player = {};
+
+        if (req.session.user) {
+          game.players.forEach((each) => {
+            if (each.username === req.session.user) {
+              player = each;
+            }
+          });
+        }
+        res.status(200).json({ game, player });
+      });   
     } else {
       res.status(200).json({ game: {}, player: {} });
     }
