@@ -13,6 +13,42 @@ function getPlayer(req, res) {
   });
 }
 
+function getCurrent(req, res) {
+  const playerId = req.params.id;
+  const populatePath = {
+    path: 'portfolio transactionHistory transactionCurrent',
+    populate: { path: 'coin symbol' }
+  };
+  Player.findOne({ _id: playerId }).populate(populatePath).lean().exec().then((player) => {
+    const transactionCurrent = [];
+    player.transactionCurrent.forEach((trade) => {
+      transactionCurrent.push(trade);
+    });
+    console.log(transactionCurrent);
+    res.status(200).json(transactionCurrent);
+  }).catch((err) => {
+    res.status(500).json({ err: 'Internal server error', traceback: err.message });
+  });
+}
+
+function getCompleted(req, res) {
+  const playerId = req.params.id;
+  const populatePath = {
+    path: 'portfolio transactionHistory transactionCurrent',
+    populate: { path: 'coin symbol' }
+  };
+  Player.findOne({ _id: playerId }).populate(populatePath).lean().exec().then((player) => {
+    const transactionHistory = [];
+    player.transactionHistory.forEach((trade) => {
+      transactionHistory.push(trade);
+    });
+    console.log(transactionHistory);
+    res.status(200).json(transactionHistory);
+  }).catch((err) => {
+    res.status(500).json({ err: 'Internal server error', traceback: err.message });
+  });
+}
+
 function getPortfolio(req, res) {
   const playerId = req.params.id;
   const populatePath = {
@@ -38,5 +74,7 @@ function getPortfolio(req, res) {
 
 module.exports = {
   getPlayer,
-  getPortfolio
+  getCurrent,
+  getCompleted,
+  getPortfolio,
 };

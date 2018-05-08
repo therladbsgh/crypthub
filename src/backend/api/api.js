@@ -136,12 +136,6 @@ function cancelOrder(orderId) {
   });
 }
 
-function cancelAll() {
-  return new Promise((resolve, reject) => {
-    resolve();
-  });
-}
-
 function getOrder(orderId) {
   return new Promise((resolve, reject) => {
     if (!_.isString(orderId)) {
@@ -154,13 +148,31 @@ function getOrder(orderId) {
 
 function getCurrentOrders() {
     return new Promise((resolve, reject) => {
-        resolve([{ orderId: 'orderid1' }, { orderId: 'orderid2' }]);
+      request.get(`${backend}/player/getcurrent/${context.playerId}`, (error, response, body) => {
+        if (error) {
+          err(reject, error);
+        } else if (body.err) {
+          err(reject, body.err);
+        } else {
+          const jsonBody = JSON.parse(body);
+          resolve(jsonBody.data);
+        }
+      });
     });
 }
 
 function getCompletedOrders() {
   return new Promise((resolve, reject) => {
-    resolve([{ orderId: 'orderid1' }, { orderId: 'orderid2' }]);
+    request.get(`${backend}/player/getcompleted/${context.playerId}`, (error, response, body) => {
+      if (error) {
+        err(reject, error);
+      } else if (body.err) {
+        err(reject, body.err);
+      } else {
+        const jsonBody = JSON.parse(body);
+        resolve(jsonBody.data);
+      }
+    });
   });
 }
 
@@ -185,7 +197,6 @@ module.exports = {
     setContext,
     placeOrder,
     cancelOrder,
-    cancelAll,
     getOrder,
     getCurrentOrders,
     getCompletedOrders,
