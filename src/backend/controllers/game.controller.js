@@ -966,7 +966,7 @@ async function leaveGame(req, res) {
     const gameToReturn = await Game.findOne({ id: gameId }).populate(newPopulatePath).exec();
 
     const user = await User.findOne({ username: req.session.user }).exec();
-    user.games = user.games.filter(g => g._id !== game.id);
+    user.games = user.games.filter(g => g.toString() !== game._id.toString());
     await user.save(0);
     res.status(200).json({ data: gameToReturn });
   } catch (e) {
