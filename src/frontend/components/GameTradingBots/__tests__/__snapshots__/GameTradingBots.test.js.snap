@@ -132,11 +132,11 @@ exports[`renders correctly 1`] = `
         <br />
         <br />
         <button
-          className="ui positive button"
-          disabled={undefined}
+          className="ui positive disabled button"
+          disabled={true}
           onClick={[Function]}
           role="button"
-          tabIndex={undefined}
+          tabIndex={-1}
         >
           <i
             aria-hidden="true"
@@ -182,7 +182,7 @@ exports[`renders correctly 1`] = `
     >
       <textarea
         className={undefined}
-        name="debugLog"
+        name="activeBotLog"
         onChange={[Function]}
         onInput={[Function]}
         rows={3}
@@ -191,7 +191,7 @@ exports[`renders correctly 1`] = `
             "resize": "",
           }
         }
-        value="debug log here"
+        value={undefined}
       />
     </div>
   </form>

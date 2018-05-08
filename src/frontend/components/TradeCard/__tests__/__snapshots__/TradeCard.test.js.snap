@@ -33,7 +33,7 @@ exports[`renders correctly 1`] = `
           onBlur={[Function]}
           onFocus={[Function]}
           onMouseDown={[Function]}
-          source={undefined}
+          source={Array []}
         >
           <div
             className="ui fluid icon input"

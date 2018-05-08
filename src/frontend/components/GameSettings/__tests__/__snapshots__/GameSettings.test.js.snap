@@ -10,11 +10,7 @@ exports[`renders correctly 1`] = `
   <button
     className="ui medium primary button"
     disabled={undefined}
-    onBlur={[Function]}
     onClick={[Function]}
-    onFocus={[Function]}
-    onMouseEnter={[Function]}
-    onMouseLeave={[Function]}
     role="button"
     tabIndex={undefined}
   >
@@ -63,7 +59,7 @@ exports[`renders correctly 1`] = `
       >
         Created 
         <strong>
-          28 days
+          37 days
            ago
         </strong>
          by 
@@ -75,10 +71,10 @@ exports[`renders correctly 1`] = `
           04/02/2018
         </strong>
          and end 
-        in
+        on
          
         <strong>
-          7 days
+          05/07/2018
         </strong>
       </div>
     </div>

@@ -37,7 +37,7 @@ exports[`renders correctly 1`] = `
         <th
           className=""
         >
-          Trades
+          Total Trades
         </th>
         <th
           className=""

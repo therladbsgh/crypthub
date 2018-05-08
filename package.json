@@ -7,6 +7,7 @@
     "backend": "node src/backend/backend.js",
     "frontend": "webpack-dev-server --mode development --config webpack/dev.config.js --hot --open",
     "dev": "npm run backend & npm run frontend",
+    "test": "jest",
     "test-backend": "mocha src/backend/test/index.js || exit 0",
     "reset-db": "node src/backend/util/resetModels.js",
     "reset-db-users": "node src/backend/util/resetUsers.js",
@@ -46,9 +47,7 @@
   "license": "AGPL-3.0+",
   "jest": {
     "testRegex": "\\.test\\.js$",
-    "roots": [
-      "src"
-    ],
+    "roots": ["src/frontend/"],
     "moduleNameMapper": {
       "components": "<rootDir>/src/frontend/components",
       "styles": "<rootDir>/src/frontend/stylesheets/__mocks__/styleMock.js",
