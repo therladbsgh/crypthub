@@ -24,7 +24,8 @@ export default class GameRankings extends Component {
     render() {
         const { activePage } = this.state;
 
-        const players = _.sortBy(this.props.players, p => p.currRank);
+        var players = _.sortBy(this.props.players, p => -p.netWorth);
+        players = _.map((players, index), p => p.currRank = index + 1);
 
         const upper = activePage * numPerPage;
         const playersShown = _.slice(players, (activePage - 1) * numPerPage, upper > players.length ? players.length : upper);
