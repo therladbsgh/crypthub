@@ -960,15 +960,19 @@ async function leaveGame(req, res) {
 
     const tmpGame = await Game.findOne({ id: gameId }).exec();
     tmpGame.players = tmpGame.players.filter(p => p._id !== player._id);
-    await tmpGame.save();
+    // if (tmpGame.players.length == 0) {
+    //   await Game.remove({ id: gameId });
+    // } else {
+    //   await tmpGame.save();
+    // }
 
-    const newPopulatePath = { path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } };
-    const gameToReturn = await Game.findOne({ id: gameId }).populate(newPopulatePath).exec();
+    // WE NEDE TO DELETE GAME IF THERE ARE 0 PLAYERS
+    await tmpGame.save();
 
     const user = await User.findOne({ username: req.session.user }).exec();
     user.games = user.games.filter(g => g.toString() !== game._id.toString());
     await user.save(0);
-    res.status(200).json({ data: gameToReturn });
+    res.status(200).json({ data: true });
   } catch (e) {
     res.status(500).json({ err: 'Internal server error', traceback: e.message, field: null });
   }
