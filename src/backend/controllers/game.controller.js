@@ -964,6 +964,10 @@ async function leaveGame(req, res) {
 
     const newPopulatePath = { path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } };
     const gameToReturn = await Game.findOne({ id: gameId }).populate(newPopulatePath).exec();
+
+    const user = await User.findOne({ username: req.session.user }).exec();
+    user.games = user.games.filter(g => g._id !== game.id);
+    await user.save(0);
     res.status(200).json({ data: gameToReturn });
   } catch (e) {
     res.status(500).json({ err: 'Internal server error', traceback: e.message, field: null });
