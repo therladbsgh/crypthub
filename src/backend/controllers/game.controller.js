@@ -966,8 +966,10 @@ async function leaveGame(req, res) {
     }
 
     const user = await User.findOne({ username: req.session.user }).exec();
+    console.log(user.games);
     user.games = user.games.filter(g => g.toString() !== game._id.toString());
-    await user.save(0);
+    console.log(user.games);
+    await user.save();
     res.status(200).json({ data: true });
   } catch (e) {
     res.status(500).json({ err: 'Internal server error', traceback: e.message, field: null });
