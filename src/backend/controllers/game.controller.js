@@ -393,17 +393,29 @@ async function runAllBots(game, prices) {
   console.log(prices);
   const histLength = prices[coins[0]].length;
 
-  for (let i = 0; i < histLength; i++) {
-    const currCoins = [];
-    coins.forEach((coin) => {
-      currCoins.push({ symbol: coin, price: prices[coin][i] });
-    });
+  // for (let i = 0; i < histLength; i++) {
+  //   const currCoins = [];
+  //   coins.forEach((coin) => {
+  //     currCoins.push({ symbol: coin, price: prices[coin][i] });
+  //   });
 
-    for (let j = 0; j < game.players.length; j++) {
-      const player = game.players[j];
-      if (player.activeBotId) {
-        await api.runBot(player.activeBotId, game.id, player._id, currCoins);
-      }
+  //   for (let j = 0; j < game.players.length; j++) {
+  //     const player = game.players[j];
+  //     if (player.activeBotId) {
+  //       await api.runBot(player.activeBotId, game.id, player._id, currCoins);
+  //     }
+  //   }
+  // }
+
+  const currCoins = [];
+  coins.forEach((coin) => {
+    currCoins.push({ symbol: coin, price: prices[coin][0] });
+  });
+
+  for (let j = 0; j < game.players.length; j++) {
+    const player = game.players[j];
+    if (player.activeBotId) {
+      await api.runBot(player.activeBotId, game.id, player._id, currCoins);
     }
   }
 }

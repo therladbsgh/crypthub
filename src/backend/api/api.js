@@ -1,7 +1,9 @@
 const _ = require('lodash');
 const request = require('request');
+// const rqueue = require('http-request-queue');
 
 const backend = 'http://ec2-34-229-105-203.compute-1.amazonaws.com:5000';
+// const queue = rqueue(10);
 
 const context = {
   gameId: '',
