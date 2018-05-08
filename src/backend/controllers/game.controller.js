@@ -958,16 +958,12 @@ async function leaveGame(req, res) {
     });
     await Promise.all(promiseLog);
 
-    const tmpGame = await Game.findOne({ id: gameId }).exec();
-    tmpGame.players = tmpGame.players.filter(p => p._id !== player._id);
-    // if (tmpGame.players.length == 0) {
-    //   await Game.remove({ id: gameId });
-    // } else {
-    //   await tmpGame.save();
-    // }
-
-    // WE NEDE TO DELETE GAME IF THERE ARE 0 PLAYERS
-    await tmpGame.save();
+    let tmpGame = await Game.findOne({ id: gameId }).exec();
+    tmpGame.players = tmpGame.players.filter(p => p.toString() !== player._id.toString());
+    tmpGame = await tmpGame.save();
+    if (tmpGame.players.length === 0) {
+      await Game.remove({ id: gameId });
+    }
 
     const user = await User.findOne({ username: req.session.user }).exec();
     user.games = user.games.filter(g => g.toString() !== game._id.toString());
