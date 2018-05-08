@@ -23,38 +23,35 @@ function trade(prices) {
         console.log('Our portfolio is: ', portfolio);
 
         // Find the amount of cash you have
-        var cash = _.find(portfolio, { symbol: 'USD' }).amount;
+        const cash = _.find(portfolio, { symbol: 'USD' }).amount;
 
         // Randomly choose to either buy or sell
         if (_.random(0, 1, true) > 0.5) {
-            // For each coin in the prices array, buy a random amount that you can afford
-            _.forEach(prices, coin => {
-                const symbol = coin.symbol;
-                const price = coin.price;
-                const lowerBound = minSize;
+            // For the first coin in the prices array, buy a random amount that you can afford
+            const coin = prices[0];
+            const symbol = coin.symbol;
+            const price = coin.price;
+            const lowerBound = minSize;
 
-                if (cash >= lowerBound * price) {
-                    const upperBound = cash / price;
-                    const size = _.round(_.random(lowerBound, upperBound), 8);
-                    api.placeOrder('market', 'buy', size, price, symbol, true)
-                    .then(() => {
-                        console.log(`Market order to buy ${size} ${symbol} at ${price} has been executed.`);
-                        cash = _.round(cash - size * price, 2);
-                    });
-                }
-            });
+            if (cash >= lowerBound * price) {
+                const upperBound = cash / price;
+                const size = _.round(_.random(lowerBound, upperBound), 8);
+                api.placeOrder('market', 'buy', size, price, symbol, true)
+                .then(() => {
+                    console.log(`Market order to buy ${size} ${symbol} at ${price} has been executed.`);
+                });
+            }
         } else {
             // For each of your non-cash assets, sell a random amount
-            _.forEach(_.filter(portfolio, asset => asset.symbol != 'USD'), asset => {
-                const symbol = asset.symbol;
-                const amount = asset.amount;
-                const price = asset.currPrice;
+            const asset = _.filter(portfolio, asset => asset.symbol != 'USD')[0];
+            const symbol = asset.symbol;
+            const amount = asset.amount;
+            const price = asset.currPrice;
 
-                const size = _.round(_.random(minSize, amount), 8);
-                api.placeOrder('market', 'sell', size, price, symbol, true)
-                .then(() => {
-                    console.log(`Market order to sell ${size} ${symbol} at ${price} has been executed.`);
-                });
+            const size = _.round(_.random(minSize, amount), 8);
+            api.placeOrder('market', 'sell', size, price, symbol, true)
+            .then(() => {
+                console.log(`Market order to sell ${size} ${symbol} at ${price} has been executed.`);
             });
         }
     });
