@@ -23,37 +23,37 @@ function trade(prices) {
         console.log('Our portfolio is: ', portfolio);
 
         // Find the amount of cash you have
-        const cash = _.find(portfolio, { symbol: 'USD' }).amount;
+        var cash = _.find(portfolio, { symbol: 'USD' }).amount;
 
         // Randomly choose to either buy or sell
-        if (_.random(0, 1, true) > 0.5) {
+        if (portfolio.length <= 1) {
             // For the first coin in the prices array, buy a random amount that you can afford
-            const coin = prices[0];
-            const symbol = coin.symbol;
-            const price = coin.price;
-            const lowerBound = minSize;
+            var coin = prices[0];
+            var price = coin.price;
+            var lowerBound = minSize;
 
             if (cash >= lowerBound * price) {
-                const upperBound = cash / price;
-                const size = _.round(_.random(lowerBound, upperBound), 8);
-                api.placeOrder('market', 'buy', size, price, symbol, true)
-                .then(() => {
-                    console.log(`Market order to buy ${size} ${symbol} at ${price} has been executed.`);
+                var upperBound = cash / price;
+                var size = _.round(_.random(lowerBound, upperBound), 8);
+                api.placeOrder('market', 'buy', size, price, coin.symbol, true)
+                .then(() => {   
+                    console.log(`Market order to buy ${size} ${coin.symbol} at ${price} has been executed.`);
                 });
             }
         } else {
             // For each of your non-cash assets, sell a random amount
-            const asset = _.filter(portfolio, asset => asset.symbol != 'USD')[0];
-            const symbol = asset.symbol;
-            const amount = asset.amount;
-            const price = asset.currPrice;
+            var asset = _.filter(portfolio, a => a.symbol != 'USD')[0];
+            var amount = asset.amount;
 
-            const size = _.round(_.random(minSize, amount), 8);
-            api.placeOrder('market', 'sell', size, price, symbol, true)
+            size = _.round(_.random(minSize, amount), 8);
+            api.placeOrder('market', 'sell', size, asset.currPrice, asset.symbol, true)
             .then(() => {
-                console.log(`Market order to sell ${size} ${symbol} at ${price} has been executed.`);
+                console.log(`Market order to sell ${size} ${asset.symbol} at ${asset.currPrice} has been executed.`);
             });
         }
+    })
+    .catch(err => {
+        console.log("ERROR:", err);
     });
 }
 
