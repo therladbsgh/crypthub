@@ -40,7 +40,7 @@ class GamePage extends Component {
                             game: resGame.game,
                             thisPlayer: resGame.player,
                             usernameUser: resUser.username,
-                            coins: resCoins.data,
+                            coins: _.map(resCoins.data, c => _.set(c, 'currPrice', _.round(c.currPrice, 2))),
                             users: resUsers.users,
                             hasMounted: true
                         });
