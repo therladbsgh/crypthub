@@ -402,7 +402,7 @@ async function runAllBots(game, prices) {
     for (let j = 0; j < game.players.length; j++) {
       const player = game.players[j];
       if (player.activeBotId) {
-        await api.runBot(player.activeBotId, game._id, player._id, currCoins);
+        await api.runBot(player.activeBotId, game.id, player._id, currCoins);
       }
     }
   }
