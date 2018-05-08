@@ -12,7 +12,6 @@ function runBot(botId, gameId, playerId, prices) {
 
     return Player.findOne({ _id: playerId }).exec().then((player) => {
       let log = player.activeBotLog;
-      console.log(log);
 
       const params = {
         language: 4,

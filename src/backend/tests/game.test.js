@@ -10,7 +10,7 @@ describe('Game creation and validation', () => {
   beforeEach((done) => {
     agent.post('/passport/login')
       .send({
-        login: 'test',
+        login: 'testerMan',
         password: 'test'
       })
       .end(() => {

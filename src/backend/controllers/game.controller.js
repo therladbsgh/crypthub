@@ -407,7 +407,7 @@ async function runAllBots(game, prices) {
       const player = game.players[j];
       if (player.activeBotId) {
         console.log("BegIN BOT");
-        await timeout(1000);
+        // await timeout(1000);
         await api.runBot(player.activeBotId, game.id, player._id, currCoins);
         console.log("END BOT");
       }
