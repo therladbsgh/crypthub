@@ -6,9 +6,9 @@ import { ProfileCardStyle as styles, SharedStyle as sharedStyles } from 'styles'
 export default class ProfileCard extends Component {
     render() {
 		const { player, completed, startingBalance } = this.props;
-		const { username, netWorth, netReturn, currRank, portfolio, buyingPower, shortReserve, transactionCurrent, tradingBots, activeBotId } = player;
+		const { username, netWorth, todayReturn, netReturn, currRank, portfolio, buyingPower, shortReserve, transactionCurrent, tradingBots, activeBotId } = player;
 		
-		const todayReturn = ((startingBalance - netWorth) / startingBalance) * 100;
+		// const todayReturn = ((startingBalance - netWorth) / startingBalance) * 100;
 
         return (
 			<Card id={sharedStyles.card}>
