@@ -24,7 +24,7 @@ function getCurrent(req, res) {
     player.transactionCurrent.forEach((trade) => {
       transactionCurrent.push(trade);
     });
-    console.log(transactionCurrent);
+    console.log('TXN CURRENT:', transactionCurrent);
     res.status(200).json(transactionCurrent);
   }).catch((err) => {
     res.status(500).json({ err: 'Internal server error', traceback: err.message });
