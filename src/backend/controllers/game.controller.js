@@ -274,7 +274,7 @@ function getPriceHistoryContext(id) {
   const populatePath = { path: 'players', populate: { path: 'portfolio transactionCurrent', populate: { path: 'coin' } } };
   const now = Date.now();
   return Game.findOne({ id }).populate(populatePath).exec().then((game) => {
-    const minutes = 2 // Math.floor((now - game.lastUpdated.getTime()) / 60000);
+    const minutes = Math.floor((now - game.lastUpdated.getTime()) / 60000);
     console.log(minutes);
     if (minutes < 1) {
       return Promise.resolve({ game: game.toObject(), prices: {} });

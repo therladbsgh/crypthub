@@ -10,8 +10,9 @@ function runBot(botId, gameId, playerId, prices) {
   return Bot.findOne({ _id: botId }).exec().then((botModel) => {
     const code = botModel.data;
 
-    Player.findOne({ _id: playerId }).exec().then((player) => {
+    return Player.findOne({ _id: playerId }).exec().then((player) => {
       let log = player.activeBotLog;
+      console.log(log);
 
       const params = {
         language: 4,
@@ -38,13 +39,13 @@ function runBot(botId, gameId, playerId, prices) {
         }
 
         player.set({ activeBotLog: log });
-        player.save();
+        return player.save();
       }).catch((e) => {
         console.log(e.message);
         log += 'An unknown error has occurred. This probably is not ' +
                'due to your trading bot - try again later.\n';
         player.set({ activeBotLog: log });
-        player.save();
+        return player.save();
       });
     });
   }).catch((err) => {
