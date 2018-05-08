@@ -425,12 +425,15 @@ function update(id) {
           
           //calculate net worth
           var netWorth = 0;
+          var cash = 0;
           for (var i in player.portfolio){
             // calulate worth for each coin
             var currPrice = player.portfolio[i].coin.currPrice;
             var amount = player.portfolio[i].amount
             netWorth += currPrice * amount;
-
+            if (player.portfolio[i].coin.symbol == 'USD'){
+              cash = player.portfolio[i].amount;
+            }
         }
 
 
@@ -445,6 +448,8 @@ function update(id) {
 
           result.netReturn = netWorth - startingBalance;
           result.netWorth = netWorth;
+          result.buyingPower = cash;
+
           result.save(function(err){
             if(err){
               console.log(err);
@@ -470,19 +475,23 @@ function update(id) {
         });
         Promise.all(promiseLog).then((players) => {
           console.log('here');
-          var sorted = _.sortBy(players, ['netWorth'], ['desc']);
+
+         
+          var sorted = _.orderBy(players, ['netWorth'], ['asc']);
           console.log(sorted);
+        
           players.forEach(function(player){
             Player.findOne({_id: player._id}, function(err,result){
               if (err){
                 console.log(err);
               }
-              for (var i in sorted){
-                if (sorted[i] == player.netWorth){
-                  player.currRank = i;
-                }
-              }
-              player.save(function(err){
+              // for (var i in sorted){
+              //   if (sorted[i].netWorth == player.netWorth){
+              //     player.currRank = i;
+              //   }
+              // }
+              result.currRank = _.indexOf(sorted, _.find(sorted, { _id: player._id })) + 1;
+              result.save(function(err){
                 if(err){
                   console.log(err);
                 }
