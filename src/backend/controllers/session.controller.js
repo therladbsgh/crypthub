@@ -335,7 +335,7 @@ function resendToken(req, res) {
             transporter.sendMail(mailoptions, function (err) {
 
                 if (err) { return res.status(500).send({ msg: 'unable to send email', field: 'invalid-email' }); }
-                
+
                 res.status(200).send({msg: 'A verification email has been sent to ' + user.email + '.'});
             });
         });
@@ -442,7 +442,7 @@ function getAllUsers(req, res) {
       res.status(500).send({ err: 'Can not find users', field: 'users' });
       return;
     }
-    
+
     res.status(200).send({ users });
   });
 }
@@ -555,17 +555,17 @@ if (req.session.user){
   User.get(req.session.user).then((user) => {
 
     if (!user){
-     
+
       return res.status(500).send({err: 'Can not find user', field: 'user'});
     }
-   
-    tradingBots = user.tradingBots; 
+
+    tradingBots = user.tradingBots;
 
     tradingBots.forEach((bot) =>{
       Bot.remove({bot}).exec().then(() =>{
         console.log('bot removed');
       }).catch(() =>{
-        
+
         res.status(500).json({err: 'MongoDB removal error, field: trading-bot'});
       })
     });
@@ -576,10 +576,10 @@ if (req.session.user){
 
     User.remove({username: req.session.user}, function(err){
       if(err){
-        
+
         res.status(500).send({err: 'MongoDB removal error', field: 'MongoDB'});
       }
-    
+
       logout(req,res);
     });
 
@@ -589,7 +589,7 @@ if (req.session.user){
 
 
 else {
-  
+
   return res.status(500).send({err: 'User session does not exist. Please log in and try again', field: 'session'});
 }
 }

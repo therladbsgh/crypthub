@@ -77,10 +77,10 @@ Model.findOne({ symbol: 'USD' }).exec().then((result) => {
   }
 });
 
-// setTimeout(() => {
-//   Model.getAll().then((coins) => {
-//     console.log(coins);
-//   });
-// }, 3000);
+setTimeout(() => {
+  Model.getAll().then((coins) => {
+    console.log(coins);
+  });
+}, 3000);
 
 module.exports = Model;

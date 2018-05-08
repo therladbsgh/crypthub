@@ -947,7 +947,7 @@ async function leaveGame(req, res) {
       promiseLog.push(Asset.remove({ _id: asset._id }));
     });
     await Promise.all(promiseLog);
-    await Player.remove({ username });
+    await Player.remove({ _id: player._id });
 
     promiseLog = [];
     game.players.forEach((p) => {
@@ -966,9 +966,7 @@ async function leaveGame(req, res) {
     }
 
     const user = await User.findOne({ username: req.session.user }).exec();
-    console.log(user.games);
     user.games = user.games.filter(g => g.toString() !== game._id.toString());
-    console.log(user.games);
     await user.save();
     res.status(200).json({ data: true });
   } catch (e) {
