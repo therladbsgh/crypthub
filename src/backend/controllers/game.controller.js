@@ -267,7 +267,7 @@ function updatePrices() {
 }
 
 function getPriceHistoryContext(id) {
-  const populatePath = { path: 'players', populate: { path: 'transactionCurrent', populate: { path: 'coin' } } };
+  const populatePath = { path: 'players', populate: { path: 'portfolio transactionCurrent', populate: { path: 'coin' } } };
   const now = Date.now();
   return Game.findOne({ id }).populate(populatePath).exec().then((game) => {
     const minutes = Math.floor((now - game.lastUpdated.getTime()) / 60000);
@@ -424,13 +424,103 @@ function update(id) {
   return updatePrices().then(() => {
     return getPriceHistoryContext(id);
   }).then((data) => {
+    
     if (Object.keys(data.prices).length > 0) {
       return dealWithCurrentTransactions(id, data.game, data.prices).then(() => {
         runAllBots(data.game, data.prices);
-        return Promise.resolve();
+
+        var startingBalance = data.game.startingBalance;
+
+        const promiseLog = [];
+        console.log('her1');
+        data.game.players.forEach(function(player){
+          //console.log(player);
+          
+          //calculate net worth
+          var netWorth = 0;
+          var cash = 0;
+          for (var i in player.portfolio){
+            // calulate worth for each coin
+            var currPrice = player.portfolio[i].coin.currPrice;
+            var amount = player.portfolio[i].amount
+            netWorth += currPrice * amount;
+            if (player.portfolio[i].coin.symbol == 'USD'){
+              cash = player.portfolio[i].amount;
+            }
+        }
+
+
+        // calculate currRank, use lodash to 
+
+
+        
+
+
+        const p = Player.findOne({_id: player._id}, function(err,result){
+          //console.log(result);
+
+          result.netReturn = netWorth - startingBalance;
+          result.netWorth = netWorth;
+          result.buyingPower = cash;
+
+          result.save(function(err){
+            if(err){
+              console.log(err);
+            }
+            else{
+              console.log('success');
+            }
+          });
+        });
+        promiseLog.push(p);
+        
+         
+          
+          
+          // Todays return 
+          // Net return 
+          // current rank 
+          // current cash
+          // buying power
+          //console.log(player.netWorth);
+        
+
+        });
+        Promise.all(promiseLog).then((players) => {
+          console.log('here');
+
+         
+          var sorted = _.orderBy(players, p => -p.netWorth);
+          console.log('SORTED PLAYERS:', sorted);
+        
+          players.forEach(function(player){
+            Player.findOne({_id: player._id}, function(err,result){
+              if (err){
+                console.log(err);
+              }
+              // for (var i in sorted){
+              //   if (sorted[i].netWorth == player.netWorth){
+              //     player.currRank = i;
+              //   }
+              // }
+              result.currRank = _.indexOf(sorted, _.find(sorted, { _id: player._id })) + 1;
+              result.todayReturn = ((startingBalance - result.netWorth) / startingBalance) * 100;
+              result.save(function(err){
+                if(err){
+                  console.log(err);
+                }
+                else{
+                  console.log('success2');
+                }
+              });
+            });
+          });
+        })
+       
       });
+
     }
-    return Promise.resolve();
+
   });
 }
 
