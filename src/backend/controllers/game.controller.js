@@ -246,25 +246,51 @@ function simpleSell(username, symbol, size, commission) {
 
 function updatePrices() {
   return Coin.get().then((coins) => {
-    const syms = coins.join(',');
-    const queryUrl = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${syms}&tsyms=USD`;
-    return axios.get(queryUrl).then((res) => {
-      const data = res.data.RAW;
-      const promiseLog = [];
-
-      coins.forEach((coin) => {
-        const coinData = data[coin].USD;
-        const coinUpdatePromise = Coin.findOne({ symbol: coin }).exec().then((coinModel) => {
+    const promiseLog = [];
+    coins.forEach((coin) => {
+      const queryUrl = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${coin}&tsyms=USD`;
+      const p = axios.get(queryUrl).then((res) => {
+        const coinData = res.data.RAW[coin].USD;
+        Coin.findOne({ symbol: coin }).exec().then((coinModel) => {
           coinModel.set({ currPrice: parseFloat(coinData.PRICE) });
           coinModel.set({ todayReturn: parseFloat(coinData.CHANGEPCT24HOUR) });
           return coinModel.save();
         });
-        promiseLog.push(coinUpdatePromise);
       });
-      return Promise.all(promiseLog);
+      promiseLog.push(p);
     });
+    return Promise.all(promiseLog);
+  }).catch(() => {
+    return Promise.resolve();
   });
 }
+
+// function updatePrices() {
+//   return Coin.get().then((coins) => {
+//     const syms = coins.join(',');
+//     const queryUrl = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${syms}&tsyms=USD`;
+//     axios.get(queryUrl).then((res) => {
+//       const data = res.data.RAW;
+//       const promiseLog = [];
+
+//       console.log(data);
+//       coins.forEach((coin) => {
+//         console.log(`--------${coin}---------`);
+//         console.log(data[coin]);
+//         const coinData = data[coin].USD;
+//         const coinUpdatePromise = Coin.findOne({ symbol: coin }).exec().then((coinModel) => {
+//           coinModel.set({ currPrice: parseFloat(coinData.PRICE) });
+//           coinModel.set({ todayReturn: parseFloat(coinData.CHANGEPCT24HOUR) });
+//           return coinModel.save();
+//         });
+//         promiseLog.push(coinUpdatePromise);
+//       });
+//       return Promise.all(promiseLog);
+//     });
+//   }).catch(() => {
+//     return Promise.resolve();
+//   });
+// }
 
 function getPriceHistoryContext(id) {
   const populatePath = { path: 'players', populate: { path: 'portfolio transactionCurrent', populate: { path: 'coin' } } };
@@ -424,7 +450,7 @@ function update(id) {
   return updatePrices().then(() => {
     return getPriceHistoryContext(id);
   }).then((data) => {
-    
+
     if (Object.keys(data.prices).length > 0) {
       return dealWithCurrentTransactions(id, data.game, data.prices).then(() => {
         runAllBots(data.game, data.prices);
@@ -435,7 +461,7 @@ function update(id) {
         console.log('her1');
         data.game.players.forEach(function(player){
           //console.log(player);
-          
+
           //calculate net worth
           var netWorth = 0;
           var cash = 0;
@@ -450,10 +476,10 @@ function update(id) {
         }
 
 
-        // calculate currRank, use lodash to 
+        // calculate currRank, use lodash to
 
 
-        
+
 
 
         const p = Player.findOne({_id: player._id}, function(err,result){
@@ -473,26 +499,26 @@ function update(id) {
           });
         });
         promiseLog.push(p);
-        
-         
-          
-          
-          // Todays return 
-          // Net return 
-          // current rank 
+
+
+
+
+          // Todays return
+          // Net return
+          // current rank
           // current cash
           // buying power
           //console.log(player.netWorth);
-        
+
 
         });
         Promise.all(promiseLog).then((players) => {
           console.log('here');
 
-         
+
           var sorted = _.orderBy(players, p => -p.netWorth);
           console.log('SORTED PLAYERS:', sorted);
-        
+
           players.forEach(function(player){
             Player.findOne({_id: player._id}, function(err,result){
               if (err){
@@ -516,7 +542,7 @@ function update(id) {
             });
           });
         })
-       
+
       });
 
     }
