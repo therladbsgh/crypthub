@@ -3,12 +3,6 @@ const request = require('request');
 
 const backend = 'http://ec2-34-229-105-203.compute-1.amazonaws.com:5000';
 
-function test() {
-	request.get('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD', function(error, response, body) {
-        console.log(body);
-    });
-}
-
 const context = {
   gameId: '',
   playerId: '',
@@ -133,7 +127,7 @@ function getOrder(orderId) {
     });
 }
 
-function getOrders() {
+function getCurrentOrders() {
     return new Promise((resolve, reject) => {
         resolve([{ orderId: 'orderid1' }, { orderId: 'orderid2' }]);
     });
