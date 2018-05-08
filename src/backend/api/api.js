@@ -146,18 +146,18 @@ function getOrder(orderId) {
 }
 
 function getCurrentOrders() {
-    return new Promise((resolve, reject) => {
-      request.get(`${backend}/player/getcurrent/${context.playerId}`, (error, response, body) => {
-        if (error) {
-          err(reject, error);
-        } else if (body.err) {
-          err(reject, body.err);
-        } else {
-          const jsonBody = JSON.parse(body);
-          resolve(jsonBody.data);
-        }
-      });
+  return new Promise((resolve, reject) => {
+    request.get(`${backend}/player/getcurrent/${context.playerId}`, (error, response, body) => {
+      if (error) {
+        err(reject, error);
+      } else if (body.err) {
+        err(reject, body.err);
+      } else {
+        const jsonBody = JSON.parse(body);
+        resolve(jsonBody);
+      }
     });
+  });
 }
 
 function getCompletedOrders() {
@@ -169,7 +169,7 @@ function getCompletedOrders() {
         err(reject, body.err);
       } else {
         const jsonBody = JSON.parse(body);
-        resolve(jsonBody.data);
+        resolve(jsonBody);
       }
     });
   });
@@ -184,7 +184,7 @@ function getPortfolio() {
         err(reject, body.err);
       } else {
         const jsonBody = JSON.parse(body);
-        resolve(jsonBody.data);
+        resolve(jsonBody);
       }
     });
   });
@@ -193,11 +193,11 @@ function getPortfolio() {
 // getHistory() function?
 
 module.exports = {
-    setContext,
-    placeOrder,
-    cancelOrder,
-    getOrder,
-    getCurrentOrders,
-    getCompletedOrders,
-    getPortfolio
+  setContext,
+  placeOrder,
+  cancelOrder,
+  getOrder,
+  getCurrentOrders,
+  getCompletedOrders,
+  getPortfolio
 };

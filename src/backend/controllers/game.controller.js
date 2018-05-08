@@ -564,6 +564,12 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
         return asset.save();
       });
     }).then(() => {
+      let expiration;
+      if (!GTC) {
+        expiration = new Date();
+        expiration.setDate(expiration.getDate() + 1);
+      }
+
       const trade = new Trade({
         _id: new Types.ObjectId(),
         type,
@@ -573,6 +579,7 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
         coin: coinId,
         date: Date.now(),
         GTC,
+        expiration,
         filled: false
       });
       return trade.save();
@@ -1035,7 +1042,7 @@ async function leaveGame(req, res) {
       promiseLog.push(Asset.remove({ _id: asset._id }));
     });
     await Promise.all(promiseLog);
-    await Player.remove({ username });
+    await Player.remove({ _id: player._id });
 
     promiseLog = [];
     game.players.forEach((p) => {
@@ -1055,7 +1062,7 @@ async function leaveGame(req, res) {
 
     const user = await User.findOne({ username: req.session.user }).exec();
     user.games = user.games.filter(g => g.toString() !== game._id.toString());
-    await user.save(0);
+    await user.save();
     res.status(200).json({ data: true });
   } catch (e) {
     res.status(500).json({ err: 'Internal server error', traceback: e.message, field: null });

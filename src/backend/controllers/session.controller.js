@@ -1,17 +1,15 @@
-const bCrypt = require('bcrypt-nodejs');
-const User = require('../models/user.model');
+const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
+const bCrypt = require('bcrypt-nodejs');
 const nodemailer = require('nodemailer');
+const { Types } = require('mongoose');
+
+const Bot = require('../models/bot.model');
+const User = require('../models/user.model');
 const Token = require('../models/token.model');
 
-//const url = 'localhost:8080';
-const Bot = require('../models/bot.model');
-
-
 const url = process.env.MODE === 'production' ? 'crypthub.s3-website-us-east-1.amazonaws.com' : 'localhost:8080';
-
-
-
 
 /**
  * Generates hash using bCrypt
@@ -42,145 +40,76 @@ function isValidPassword(user, password) {
  *
  * @return 500 on server error, 401 if user exists, 200 if success
  */
-function signup(req, res) {
+async function signup(req, res) {
   const { username, password, email } = req.body;
-
-
-  // User.findOne({email}, (err,user)=>{
-  //     if (err) {
-  //     res.status(500).json({ err: 'MongoDB Server Error: Cannot query' });
-  //     return;
-  //   }
-  //     console.log(user);
-  //     if (user) {
-  //       console.log('User already exists with this email', email);
-  //       res.status(401).send({err: 'User with this email already exists', field: 'email'});
-  //       return;
-  //     }
-
-  // User.findOne({ username }, (err, user) => {
-  //   if (err) {
-  //     res.status(500).json({ err: 'MongoDB Server Error: Cannot query' });
-  //     return;
-  //   }
-
-  //   if (user) {
-  //     console.log('User already exists with username: ', username);
-  //     res.status(401).send({ err: 'Username already exists', field: 'username' });
-  //     return;
-  //   }
-
-
-
-
-
-
-  //   const newUser = new User();
-
-  //   newUser.username = username;
-  //   newUser.password = createHash(password);
-  //   newUser.email = email;
-
-  //   newUser.save((err2) => {
-  //     if (err2) {
-  //       res.status(500).send({ err: 'MongoDB Server Error: Cannot save' });
-  //       return;
-  //     }
-
-
-  //     var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
-
-
-  //     token.save(function (err){
-  //       if (err){
-  //         res.status(500).send({err: 'MongoDB Server Error: Cannot save token'});
-  //       }
-
-  //       var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
-  //         });
-  //       var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token',
-  //       text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=' + newUser.email + '\n'};
-  //       transporter.sendMail(mailoptions, function(err){
-
-  //         if (err){
-  //           res.status(500).send({err: 'Cannot send email'});
-
-  //         }
-
-  //       })
-
-  //     });
-
-  //     res.status(200).json({ result: newUser });
-  //   });
-  // });
-
-
-
-
-  //   });
-
-
-    User.findOne({ username }, (err, user) => {
-    if (err) {
-      res.status(500).json({ err: 'MongoDB Server Error: Cannot query' });
-      return;
-    }
-
+  try {
+    const user = await User.findOne({ username }).exec();
     if (user) {
       console.log('User already exists with username: ', username);
       res.status(401).send({ err: 'Username already exists', field: 'username' });
       return;
     }
 
+    const token = new Token({
+      username: username,
+      token: crypto.randomBytes(16).toString('hex')
+    });
+    await token.save();
 
+    const botId1 = new Types.ObjectId();
+    const botId2 = new Types.ObjectId();
+    const templatePath1 = '../../bots/support/basicBot.js';
+    const templatePath2 = '../../bots/support/randomBot.js';
+    const code1 = fs.readFileSync(path.join(__dirname, templatePath1), 'utf8');
+    const code2 = fs.readFileSync(path.join(__dirname, templatePath2), 'utf8');
 
+    const bot1 = new Bot({
+      _id: botId1,
+      name: 'basicBot.js',
+      data: code1,
+      log: ''
+    });
 
+    const bot2 = new Bot({
+      _id: botId2,
+      name: 'randomBot.js',
+      data: code2,
+      log: ''
+    });
 
+    await bot1.save();
+    await bot2.save();
 
-    const newUser = new User();
+    const newUser = new User({
+      username,
+      password: createHash(password),
+      email,
+      tradingBots: [botId1, botId2]
+    });
+    await newUser.save();
 
-    newUser.username = username;
-    newUser.password = createHash(password);
-    newUser.email = email;
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: 'crypthubtech@gmail.com', pass: 'CSCI1320' }
+    });
 
-    newUser.save((err2) => {
-      if (err2) {
-        res.status(500).send({ err: 'MongoDB Server Error: Cannot save' });
+    const mailoptions = {
+      from: 'crypthubtech@gmail.com',
+      to: newUser.email,
+      subject: 'Account Verification Token',
+      text: 'Hello,\n\nPlease verify your Crypthub account by clicking the link: \n' +
+            `http://${url}/verifyEmail?token=/${token.token}&email=${newUser.email}\n`
+    };
+    transporter.sendMail(mailoptions, (err) => {
+      if (err) {
+        res.status(500).send({ err: 'Cannot send email' });
         return;
       }
-
-
-      var token = new Token({username: newUser.username, token: crypto.randomBytes(16).toString('hex')});
-
-
-      token.save(function (err){
-        if (err){
-          res.status(500).send({err: 'MongoDB Server Error: Cannot save token'});
-        }
-
-        var transporter = nodemailer.createTransport({service: 'gmail', auth: {user: 'crypthubtech@gmail.com', pass: 'CSCI1320'}
-          });
-        var mailoptions = {from: 'crypthubtech@gmail.com', to: newUser.email, subject: 'Account Verification Token',
-        text: 'Hello,\n\n' + 'Please verify your CryptHub account by clicking the link: \nhttp:\/\/' + url + '\/verifyEmail?token=\/' + token.token + '&email=' + newUser.email + '\n'};
-        transporter.sendMail(mailoptions, function(err){
-
-          if (err){
-            res.status(500).send({err: 'Cannot send email'});
-
-          }
-
-        })
-
-      });
-
       res.status(200).json({ result: newUser });
     });
-  });
-
-
-
-
+  } catch (e) {
+    res.status(500).json({ err: 'Internal Server Error', traceback: e.message });
+  }
 }
 
 /**
@@ -335,7 +264,7 @@ function resendToken(req, res) {
             transporter.sendMail(mailoptions, function (err) {
 
                 if (err) { return res.status(500).send({ msg: 'unable to send email', field: 'invalid-email' }); }
-                
+
                 res.status(200).send({msg: 'A verification email has been sent to ' + user.email + '.'});
             });
         });
@@ -442,7 +371,7 @@ function getAllUsers(req, res) {
       res.status(500).send({ err: 'Can not find users', field: 'users' });
       return;
     }
-    
+
     res.status(200).send({ users });
   });
 }
@@ -555,17 +484,17 @@ if (req.session.user){
   User.get(req.session.user).then((user) => {
 
     if (!user){
-     
+
       return res.status(500).send({err: 'Can not find user', field: 'user'});
     }
-   
-    tradingBots = user.tradingBots; 
+
+    tradingBots = user.tradingBots;
 
     tradingBots.forEach((bot) =>{
       Bot.remove({bot}).exec().then(() =>{
         console.log('bot removed');
       }).catch(() =>{
-        
+
         res.status(500).json({err: 'MongoDB removal error, field: trading-bot'});
       })
     });
@@ -576,10 +505,10 @@ if (req.session.user){
 
     User.remove({username: req.session.user}, function(err){
       if(err){
-        
+
         res.status(500).send({err: 'MongoDB removal error', field: 'MongoDB'});
       }
-    
+
       logout(req,res);
     });
 
@@ -589,7 +518,7 @@ if (req.session.user){
 
 
 else {
-  
+
   return res.status(500).send({err: 'User session does not exist. Please log in and try again', field: 'session'});
 }
 }
