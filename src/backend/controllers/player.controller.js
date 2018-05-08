@@ -30,7 +30,7 @@ function getPortfolio(req, res) {
       portfolio.push(newAsset);
     });
     console.log(portfolio);
-    res.status(200).json({ data: portfolio });
+    res.status(200).json(portfolio);
   }).catch((err) => {
     res.status(500).json({ err: 'Internal server error', traceback: err.message });
   });

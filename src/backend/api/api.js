@@ -98,7 +98,8 @@ function placeOrder(type, side, size, price, coin, GTC) {
       } else if (body.err) {
         err(reject, body.err);
       } else {
-        resolve(body.game._id);
+        const jsonBody = JSON.parse(body);
+        resolve(jsonBody.game._id);
       }
     });
   });
@@ -165,20 +166,16 @@ function getCompletedOrders() {
 
 function getPortfolio() {
   return new Promise((resolve, reject) => {
-    console.log(`${backend}/player/get/${context.playerId}`);
-    request.get(`${backend}/player/get/${context.playerId}`, (error, response, body) => {
-      console.log(body);
+    request.get(`${backend}/player/getportfolio/${context.playerId}`, (error, response, body) => {
       if (error) {
         err(reject, error);
       } else if (body.err) {
         err(reject, body.err);
       } else {
-        console.log(body);
-        resolve(body.player.portfolio);
+        const jsonBody = JSON.parse(body);
+        resolve(jsonBody.data);
       }
     });
-
-    resolve([{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508, currPrice: 9500 }]);
   });
 }
 
@@ -190,7 +187,7 @@ module.exports = {
     cancelOrder,
     cancelAll,
     getOrder,
-    getOrders,
+    getCurrentOrders,
     getCompletedOrders,
     getPortfolio
 };
