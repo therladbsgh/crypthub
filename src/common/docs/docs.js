@@ -55,15 +55,6 @@ export const methods = [
 		}
 	},
 	{
-		name: 'cancelAll',
-		description: 'Cancel all current orders.',
-		params: [],
-		return: {
-			type: 'null',
-			description: 'Nothing.'
-		}
-	},
-	{
 		name: 'getOrder',
 		description: 'Get a single order.',
 		params: [

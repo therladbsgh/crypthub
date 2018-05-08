@@ -48,4 +48,6 @@ router.route('/inviteUsers').post(GameController.inviteUsers);
 
 router.route('/joinGame').post(GameController.joinGame);
 
+router.route('/leaveGame').post(GameController.leaveGame);
+
 module.exports = router;

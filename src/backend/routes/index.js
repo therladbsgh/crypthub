@@ -4,6 +4,7 @@ const sessionRoutes = require('./session.routes');
 const gameRoutes = require('./game.routes');
 const coinRoutes = require('./coin.routes');
 const botRoutes = require('./bot.routes');
+const playerRoutes = require('./player.routes');
 
 
 const router = Router();
@@ -17,5 +18,6 @@ router.use('/users', userRoutes);
 router.use('/game', gameRoutes);
 router.use('/coin', coinRoutes);
 router.use('/bot', botRoutes);
+router.use('/player', playerRoutes);
 
 module.exports = router;

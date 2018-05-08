@@ -11,6 +11,10 @@ export default class Portfolio extends Component {
 			portfolio: _.sortBy(this.props.portfolio, a => a.coin.symbol == 'USD' ? Number.MAX_SAFE_INTEGER : -a.amount * a.coin.currPrice)
 		};
     }
+
+    componentWillReceiveProps(newProps) {
+        this.setState({ portfolio: _.sortBy(newProps.portfolio, a => a.coin.symbol == 'USD' ? Number.MAX_SAFE_INTEGER : -a.amount * a.coin.currPrice) });
+    }
     
     render() {
         const { header, completed } = this.props;

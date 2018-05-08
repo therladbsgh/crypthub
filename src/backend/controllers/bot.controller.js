@@ -103,6 +103,7 @@ function remove(req, res) {
     const promiseLog = [];
     players.forEach((player) => {
       player.set({ activeBotId: null });
+      player.set({ activeBotLog: '' });
       promiseLog.push(player.save());
     });
     return Promise.all(promiseLog);

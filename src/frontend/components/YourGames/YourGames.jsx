@@ -51,7 +51,7 @@ export default class YourGames extends Component {
 							<Table.HeaderCell>Name</Table.HeaderCell>		
                             <Table.HeaderCell>Today's Return</Table.HeaderCell>					
                             <Table.HeaderCell>Net Return</Table.HeaderCell>												
-                            <Table.HeaderCell><Icon name='trophy' /></Table.HeaderCell>
+                            <Table.HeaderCell><Icon name='trophy' /> (ELO Change)</Table.HeaderCell>
                             <Table.HeaderCell>End</Table.HeaderCell>
                             <Table.HeaderCell>Number of Players</Table.HeaderCell>
                         </Table.Row>
@@ -61,11 +61,11 @@ export default class YourGames extends Component {
                         {_.map(gamesShown, (g, index) => {
                                 const p = _.find(g.players, { username });
                                 return (
-                                <Table.Row key={index}>
+                                <Table.Row key={index} positive={g.completed && p.eloDelta >= 0} error={g.completed && p.eloDelta < 0}>
                                     <Table.Cell><Link to={`/game/${g.id}`}>{g.name}</Link></Table.Cell>
                                     <Table.Cell className={g.completed ? '' : p.todayReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{g.completed ? '-' : `${p.todayReturn >= 0 ? '+' : ''}${formatCurrency(p.todayReturn, { format: '%v%s', symbol: '%' })}`}</Table.Cell>
                                     <Table.Cell className={p.netReturn >= 0 ? sharedStyles.pos : sharedStyles.neg}>{formatCurrency(Math.abs(p.netReturn), { format: '%s%v', symbol: `${p.netReturn >= 0 ? '+' : '-'}$` })}</Table.Cell>
-                                    <Table.Cell>{p.currRank}</Table.Cell>
+                                    <Table.Cell>{p.currRank}{g.completed && ` (${p.eloDelta >= 0 && '+'}${p.eloDelta})`}</Table.Cell>
                                     <Table.Cell>{date.format(new Date(g.end), 'MM/DD/YYYY')}</Table.Cell>
                                     <Table.Cell>{g.players.length}</Table.Cell>
                                 </Table.Row>);

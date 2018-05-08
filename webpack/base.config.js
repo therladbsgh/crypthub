@@ -6,7 +6,7 @@ const htmlPlugin = new HtmlWebpackPlugin({
 	filename: "index.html"
 });
 
-const PUBLIC_PATH = process.env.MODE == 'production' ? '' : 'http://localhost:8080';
+const PUBLIC_PATH = process.env.MODE == 'production' ? '/' : 'http://localhost:8080';
 
 module.exports = {
 		entry: "./src/frontend/index.jsx",

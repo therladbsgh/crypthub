@@ -54,7 +54,7 @@ export default class Transactions extends Component {
     }
 
     render() {
-        const { gameId, playerId, current } = this.props;
+        const { gameId, playerId, current, updateGame } = this.props;
         const { transactions, activePage } = this.state;
 
         const now = new Date();
@@ -85,7 +85,7 @@ export default class Transactions extends Component {
                 <Table.Body>
                     {_.map(transactionsShown, (t, index) => 
                         <Table.Row key={index} positive={t.filled} error={!current && !t.filled && t.expiration <= now}>
-                            {current && <Table.Cell id={styles.cancel}><CancelModal gameId={gameId} playerId={playerId} tradeId={t._id} /></Table.Cell>}
+                            {current && <Table.Cell id={styles.cancel}><CancelModal gameId={gameId} playerId={playerId} tradeId={t._id} updateGame={updateGame} /></Table.Cell>}
                             <Table.Cell>{_.capitalize(`${t.type} ${t.side}`)}</Table.Cell>
                             <Table.Cell>{date.format(new Date(t.date), 'MM/DD/YYYY HH:mm:ss')}</Table.Cell>
                             <Table.Cell>{t.coin.symbol}</Table.Cell>
