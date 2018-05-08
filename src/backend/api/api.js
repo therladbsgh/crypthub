@@ -98,8 +98,7 @@ function placeOrder(type, side, size, price, coin, GTC) {
       } else if (body.err) {
         err(reject, body.err);
       } else {
-        const jsonBody = JSON.parse(body);
-        resolve(jsonBody.game._id);
+        resolve(body.game._id);
       }
     });
   });
