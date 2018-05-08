@@ -11,7 +11,7 @@ export default class GameOverview extends Component {
 			<div>
 				{inGame && 
                 [<Header key='1' as='h2'>Your Profile</Header>,
-                <ProfileCard key='2' player={thisPlayer} completed={completed} />]}
+                <ProfileCard key='2' player={thisPlayer} completed={completed} startingBalance={game.startingBalance} />]}
 				<Header as='h2'>About This Game</Header>
                 <GameCard game={game} />
 			</div>
