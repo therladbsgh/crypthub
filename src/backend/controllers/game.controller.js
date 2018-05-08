@@ -416,6 +416,7 @@ function update(id) {
     if (Object.keys(data.prices).length > 0) {
       return dealWithCurrentTransactions(id, data.game, data.prices).then(() => {
         runAllBots(data.game, data.prices);
+
         var startingBalance = data.game.startingBalance;
 
         const promiseLog = [];
@@ -477,8 +478,8 @@ function update(id) {
           console.log('here');
 
          
-          var sorted = _.orderBy(players, ['netWorth'], ['asc']);
-          console.log(sorted);
+          var sorted = _.orderBy(players, p => -p.netWorth);
+          console.log('SORTED PLAYERS:', sorted);
         
           players.forEach(function(player){
             Player.findOne({_id: player._id}, function(err,result){
@@ -491,6 +492,7 @@ function update(id) {
               //   }
               // }
               result.currRank = _.indexOf(sorted, _.find(sorted, { _id: player._id })) + 1;
+              result.todayReturn = ((startingBalance - result.netWorth) / startingBalance) * 100;
               result.save(function(err){
                 if(err){
                   console.log(err);

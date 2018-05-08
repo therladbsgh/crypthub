@@ -40,7 +40,7 @@ export default class ProfileCard extends Component {
 							</Grid.Column>
 							<Grid.Column>
 								<label>Buying Power</label>
-								<p>{formatCurrency(buyingPower, { format: '%s%v', symbol: '$' })}</p>
+								<p>{formatCurrency(_.find(portfolio, a => a.coin.symbol === 'USD').amount, { format: '%s%v', symbol: '$' })}</p>
 							</Grid.Column>
 							<Grid.Column>
 								<label>Short Reserve</label>
