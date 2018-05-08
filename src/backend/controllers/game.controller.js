@@ -476,6 +476,12 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
         return asset.save();
       });
     }).then(() => {
+      let expiration;
+      if (!GTC) {
+        expiration = new Date();
+        expiration.setDate(expiration.getDate() + 1);
+      }
+
       const trade = new Trade({
         _id: new Types.ObjectId(),
         type,
@@ -485,6 +491,7 @@ function futureTrade(type, side, username, price, symbol, size, GTC) {
         coin: coinId,
         date: Date.now(),
         GTC,
+        expiration,
         filled: false
       });
       return trade.save();

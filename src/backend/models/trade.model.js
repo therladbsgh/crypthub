@@ -35,6 +35,9 @@ const TradeSchema = new Schema({
     type: Boolean,
     required: true
   },
+  expiration: {
+    type: Date
+  },
   filled: {
     type: Boolean,
     required: true
