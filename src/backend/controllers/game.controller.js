@@ -15,6 +15,10 @@ const Trade = require('../models/trade.model');
 const url = process.env.MODE === 'production' ? 'crypthub.s3-website-us-east-1.amazonaws.com' : 'localhost:8080';
 
 
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /**
  * Validates information before creating game
  *
@@ -270,7 +274,7 @@ function getPriceHistoryContext(id) {
   const populatePath = { path: 'players', populate: { path: 'portfolio transactionCurrent', populate: { path: 'coin' } } };
   const now = Date.now();
   return Game.findOne({ id }).populate(populatePath).exec().then((game) => {
-    const minutes = Math.floor((now - game.lastUpdated.getTime()) / 60000);
+    const minutes = 2 // Math.floor((now - game.lastUpdated.getTime()) / 60000);
     console.log(minutes);
     if (minutes < 1) {
       return Promise.resolve({ game: game.toObject(), prices: {} });
@@ -403,6 +407,7 @@ async function runAllBots(game, prices) {
       const player = game.players[j];
       if (player.activeBotId) {
         console.log("BegIN BOT");
+        await timeout(1000);
         await api.runBot(player.activeBotId, game.id, player._id, currCoins);
         console.log("END BOT");
       }
@@ -434,7 +439,6 @@ function update(id) {
         var startingBalance = data.game.startingBalance;
 
         const promiseLog = [];
-        console.log('her1');
         data.game.players.forEach(function(player){
           //console.log(player);
 
@@ -493,7 +497,6 @@ function update(id) {
 
 
           var sorted = _.orderBy(players, p => -p.netWorth);
-          console.log('SORTED PLAYERS:', sorted);
 
           players.forEach(function(player){
             Player.findOne({_id: player._id}, function(err,result){

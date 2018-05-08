@@ -77,6 +77,19 @@ Model.findOne({ symbol: 'USD' }).exec().then((result) => {
   }
 });
 
+Model.findOne({ symbol: 'ETHOS' }).exec().then((result) => {
+  if (!result) {
+    const usd = new Model({
+      _id: new mongoose.Types.ObjectId(),
+      name: 'Ethos',
+      symbol: 'ETHOS',
+      currPrice: 1000,
+      todayReturn: 5.22
+    });
+    usd.save();
+  }
+});
+
 setTimeout(() => {
   Model.getAll().then((coins) => {
     console.log(coins);
