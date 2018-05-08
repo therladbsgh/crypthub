@@ -7,7 +7,7 @@ const URL = 'http://ec2-52-205-237-224.compute-1.amazonaws.com:8080/compile';
 
 function runBot(botId, gameId, playerId, prices) {
   console.log("SENDING");
-  Bot.findOne({ _id: botId }).exec().then((botModel) => {
+  return Bot.findOne({ _id: botId }).exec().then((botModel) => {
     const code = botModel.data;
 
     Player.findOne({ _id: playerId }).exec().then((player) => {

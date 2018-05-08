@@ -5,6 +5,7 @@ const gameRoutes = require('./game.routes');
 const coinRoutes = require('./coin.routes');
 const botRoutes = require('./bot.routes');
 const playerRoutes = require('./player.routes');
+const apiRoutes = require('./api.routes');
 
 
 const router = Router();
@@ -19,5 +20,6 @@ router.use('/game', gameRoutes);
 router.use('/coin', coinRoutes);
 router.use('/bot', botRoutes);
 router.use('/player', playerRoutes);
+router.use('/api', apiRoutes);
 
 module.exports = router;

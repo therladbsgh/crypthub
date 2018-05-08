@@ -4,6 +4,7 @@ const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const connectMongo = require('connect-mongo');
+const queue = require('express-queue');
 
 const db = require('./db');
 const router = require('./routes/index.js');
@@ -12,6 +13,7 @@ const router = require('./routes/index.js');
 const app = express();
 app.use(fileUpload());
 app.use(bodyParser.json());
+app.use(queue({ activeLimit: 1, queuedLimit: -1 }));
 
 const frontend = process.env.MODE === 'production' ? 'http://crypthub.s3-website-us-east-1.amazonaws.com' : 'http://localhost:8080';
 

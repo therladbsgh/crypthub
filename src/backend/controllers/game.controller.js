@@ -393,38 +393,40 @@ async function runAllBots(game, prices) {
   console.log(prices);
   const histLength = prices[coins[0]].length;
 
-  // for (let i = 0; i < histLength; i++) {
-  //   const currCoins = [];
-  //   coins.forEach((coin) => {
-  //     currCoins.push({ symbol: coin, price: prices[coin][i] });
-  //   });
+  for (let i = 0; i < histLength; i++) {
+    const currCoins = [];
+    coins.forEach((coin) => {
+      currCoins.push({ symbol: coin, price: prices[coin][i] });
+    });
 
-  //   for (let j = 0; j < game.players.length; j++) {
-  //     const player = game.players[j];
-  //     if (player.activeBotId) {
-  //       await api.runBot(player.activeBotId, game.id, player._id, currCoins);
-  //     }
-  //   }
-  // }
-
-  const currCoins = [];
-  coins.forEach((coin) => {
-    currCoins.push({ symbol: coin, price: prices[coin][0] });
-  });
-
-  for (let j = 0; j < game.players.length; j++) {
-    const player = game.players[j];
-    if (player.activeBotId) {
-      await api.runBot(player.activeBotId, game.id, player._id, currCoins);
+    for (let j = 0; j < game.players.length; j++) {
+      const player = game.players[j];
+      if (player.activeBotId) {
+        console.log("BegIN BOT");
+        await api.runBot(player.activeBotId, game.id, player._id, currCoins);
+        console.log("END BOT");
+      }
     }
   }
+
+  // const currCoins = [];
+  // coins.forEach((coin) => {
+  //   currCoins.push({ symbol: coin, price: prices[coin][0] });
+  // });
+
+  // for (let j = 0; j < game.players.length; j++) {
+  //   const player = game.players[j];
+  //   if (player.activeBotId) {
+  //     await api.runBot(player.activeBotId, game.id, player._id, currCoins);
+  //   }
+  // }
 }
 
 function update(id) {
   return updatePrices().then(() => {
     return getPriceHistoryContext(id);
   }).then((data) => {
-    
+
     if (Object.keys(data.prices).length > 0) {
       return dealWithCurrentTransactions(id, data.game, data.prices).then(() => {
         runAllBots(data.game, data.prices);
@@ -435,7 +437,7 @@ function update(id) {
         console.log('her1');
         data.game.players.forEach(function(player){
           //console.log(player);
-          
+
           //calculate net worth
           var netWorth = 0;
           var cash = 0;
@@ -450,10 +452,10 @@ function update(id) {
         }
 
 
-        // calculate currRank, use lodash to 
+        // calculate currRank, use lodash to
 
 
-        
+
 
 
         const p = Player.findOne({_id: player._id}, function(err,result){
@@ -473,26 +475,26 @@ function update(id) {
           });
         });
         promiseLog.push(p);
-        
-         
-          
-          
-          // Todays return 
-          // Net return 
-          // current rank 
+
+
+
+
+          // Todays return
+          // Net return
+          // current rank
           // current cash
           // buying power
           //console.log(player.netWorth);
-        
+
 
         });
         Promise.all(promiseLog).then((players) => {
           console.log('here');
 
-         
+
           var sorted = _.orderBy(players, p => -p.netWorth);
           console.log('SORTED PLAYERS:', sorted);
-        
+
           players.forEach(function(player){
             Player.findOne({_id: player._id}, function(err,result){
               if (err){
@@ -516,7 +518,7 @@ function update(id) {
             });
           });
         })
-       
+
       });
 
     }
