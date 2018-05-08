@@ -24,8 +24,7 @@ export default class GameRankings extends Component {
     render() {
         const { activePage } = this.state;
 
-        var players = _.sortBy(this.props.players, p => -p.netWorth);
-        players = _.map((players, index), p => p.currRank = index + 1);
+        const players = _.sortBy(this.props.players, p => -p.netWorth);
 
         const upper = activePage * numPerPage;
         const playersShown = _.slice(players, (activePage - 1) * numPerPage, upper > players.length ? players.length : upper);
@@ -48,7 +47,7 @@ export default class GameRankings extends Component {
                     <Table.Body>
                         {_.map(playersShown, (p, index) => 
                             <Table.Row key={index}>
-                                <Table.Cell>{p.currRank}</Table.Cell>
+                                <Table.Cell>{index + 1}</Table.Cell>
                                 <Table.Cell>{p.username}</Table.Cell>
                                 <Table.Cell>{formatCurrency(p.netWorth, { format: '%s%v', symbol: '$' })}</Table.Cell>
                                 <Table.Cell>{p.transactionCurrent.length + p.transactionHistory.length}</Table.Cell>
