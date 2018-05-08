@@ -101,8 +101,11 @@ function placeOrder(type, side, size, price, coin, GTC) {
     request.post(options, (error, response, body) => {
       if (error) {
         err(reject, error);
+      } else if (body.err) {
+        err(reject, body.err);
+      } else {
+        resolve(body.game._id);
       }
-      resolve(body);
     });
   });
 }
@@ -113,42 +116,76 @@ function cancelOrder(orderId) {
       err(reject, `cancelOrder: First argument (orderId) must be a string. Found: ${orderId}`);
     }
 
-    resolve();
+    const postData = {
+      tradeId: orderId,
+      gameId: context.gameId,
+      playerId: context.playerId
+    };
+
+    const options = {
+      method: 'post',
+      body: postData,
+      json: true,
+      url: `${backend}/game/cancelorder`
+    };
+
+    request.post(options, (error, response, body) => {
+      if (error) {
+        err(reject, error);
+      } else if (body.err) {
+        err(reject, body.err);
+      } else {
+        resolve(body.game._id);
+      }
+    });
   });
 }
 
 function cancelAll() {
-    return new Promise((resolve, reject) => {
-        resolve();
-    });
+  return new Promise((resolve, reject) => {
+    resolve();
+  });
 }
 
 function getOrder(orderId) {
-    return new Promise((resolve, reject) => {
-        if (!_.isString(orderId)) {
-            err(`getOrder: First argument (orderId) must be a string. Found: ${orderId}`);
-        }
+  return new Promise((resolve, reject) => {
+    if (!_.isString(orderId)) {
+      err(`getOrder: First argument (orderId) must be a string. Found: ${orderId}`);
+    }
 
-        resolve({ orderId: 'orderid' });
-    });
+    resolve({ orderId: 'orderid' });
+  });
 }
 
 function getOrders() {
-    return new Promise((resolve, reject) => {
-        resolve([{ orderId: 'orderid1' }, { orderId: 'orderid2' }]);
-    });
+  return new Promise((resolve, reject) => {
+    resolve([{ orderId: 'orderid1' }, { orderId: 'orderid2' }]);
+  });
 }
 
 function getCompletedOrders() {
-    return new Promise((resolve, reject) => {
-        resolve([{ orderId: 'orderid1' }, { orderId: 'orderid2' }]);
-    });
+  return new Promise((resolve, reject) => {
+    resolve([{ orderId: 'orderid1' }, { orderId: 'orderid2' }]);
+  });
 }
 
 function getPortfolio() {
-    return new Promise((resolve, reject) => {
-        resolve([{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508, currPrice: 9500 }]);
+  return new Promise((resolve, reject) => {
+    console.log(`${backend}/player/get/${context.playerId}`);
+    request.get(`${backend}/player/get/${context.playerId}`, (error, response, body) => {
+      console.log(body);
+      if (error) {
+        err(reject, error);
+      } else if (body.err) {
+        err(reject, body.err);
+      } else {
+        console.log(body);
+        resolve(body.player.portfolio);
+      }
     });
+
+    resolve([{ symbol: 'USD', amount: 100 }, { symbol: 'BTC', amount: 2.003508, currPrice: 9500 }]);
+  });
 }
 
 // getHistory() function?

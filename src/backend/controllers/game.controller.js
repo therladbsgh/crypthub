@@ -913,6 +913,9 @@ async function joinGame(req, res) {
 
     const populatePath = { path: 'players', populate: { path: 'portfolio', populate: { path: 'coin' } } };
     const gameToReturn = await Game.findOne({ id: gameId }).populate(populatePath).exec();
+    const user = await User.findOne({ username: req.session.user }).exec();
+    user.games.push(game._id);
+    await user.save();
     res.status(200).json({ data: gameToReturn });
   } catch (e) {
     res.status(500).json({ err: 'Internal server error', traceback: e.message, field: null });
