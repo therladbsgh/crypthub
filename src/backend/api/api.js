@@ -64,8 +64,8 @@ function placeOrder(type, side, size, price, coin, GTC) {
       }
     }
 
-    if (!_.includes(['BTC', 'ETH'], coin)) {
-      err(reject, `placeOrder: Fifth argument (coin) must be one of 'BTC' or 'ETH'. Found: ${coin}`);
+    if (!_.includes(['BTC', 'ETH', 'ETHOS'], coin)) {
+      err(reject, `placeOrder: Fifth argument (coin) must be one of 'BTC', 'ETH', or 'ETHOS'. Found: ${coin}`);
     }
 
     if (type != 'market') {
