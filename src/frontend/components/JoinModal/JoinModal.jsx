@@ -55,6 +55,8 @@ export default class JoinModal extends Component {
 	}
 
 	handleSubmit(event) {
+        const { gameId, history } = this.props;
+
         this.setState({
             loading: true,
             errMsg: '',
@@ -65,6 +67,7 @@ export default class JoinModal extends Component {
 		.then(res => {
 			console.log('success! ', res);
             this.close();
+            window.location.reload();
 		}, ({ err, field }) => {
 			console.log('error! ', err);
 			this.setState({ loading: false, errMsg: err, errField: field });

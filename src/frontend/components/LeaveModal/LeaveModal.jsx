@@ -1,10 +1,11 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Modal, Button, Message } from 'semantic-ui-react';
 import { GameBackend } from 'endpoints';
 import { LeaveModalStyle as styles } from 'styles';
 
-export default class LeaveModal extends Component {
+class LeaveModal extends Component {
     constructor(props) {
         super(props);
 
@@ -32,7 +33,7 @@ export default class LeaveModal extends Component {
     }
 
 	handleSubmit(event) {
-        const { gameId, username } = this.props;
+        const { gameId, username, history } = this.props;
 
         this.setState({
             loading: true,
@@ -43,6 +44,7 @@ export default class LeaveModal extends Component {
 		.then(res => {
 			console.log('success! ', res);
             this.close();
+            history.push('/games');
 		}, ({ err }) => {
 			console.log('error! ', err);
 			this.setState({ loading: false, err });
@@ -66,3 +68,5 @@ export default class LeaveModal extends Component {
         );
     }
 }
+
+export default withRouter(LeaveModal);
