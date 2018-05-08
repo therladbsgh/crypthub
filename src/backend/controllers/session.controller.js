@@ -1,10 +1,13 @@
-const bCrypt = require('bcrypt-nodejs');
-const User = require('../models/user.model');
+const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
+const bCrypt = require('bcrypt-nodejs');
 const nodemailer = require('nodemailer');
-const Token = require('../models/token.model');
+const { Types } = require('mongoose');
 
 const Bot = require('../models/bot.model');
+const User = require('../models/user.model');
+const Token = require('../models/token.model');
 
 const url = process.env.MODE === 'production' ? 'crypthub.s3-website-us-east-1.amazonaws.com' : 'localhost:8080';
 
@@ -47,18 +50,43 @@ async function signup(req, res) {
       return;
     }
 
-    const newUser = new User({
-      username,
-      password: createHash(password),
-      email
-    });
-    await newUser.save();
-
     const token = new Token({
-      username: newUser.username,
+      username: username,
       token: crypto.randomBytes(16).toString('hex')
     });
     await token.save();
+
+    const botId1 = new Types.ObjectId();
+    const botId2 = new Types.ObjectId();
+    const templatePath1 = '../../bots/support/basicBot.js';
+    const templatePath2 = '../../bots/support/randomBot.js';
+    const code1 = fs.readFileSync(path.join(__dirname, templatePath1), 'utf8');
+    const code2 = fs.readFileSync(path.join(__dirname, templatePath2), 'utf8');
+
+    const bot1 = new Bot({
+      _id: botId1,
+      name: 'basicBot.js',
+      data: code1,
+      log: ''
+    });
+
+    const bot2 = new Bot({
+      _id: botId2,
+      name: 'randomBot.js',
+      data: code2,
+      log: ''
+    });
+
+    await bot1.save();
+    await bot2.save();
+
+    const newUser = new User({
+      username,
+      password: createHash(password),
+      email,
+      tradingBots: [botId1, botId2]
+    });
+    await newUser.save();
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -80,7 +108,7 @@ async function signup(req, res) {
       res.status(200).json({ result: newUser });
     });
   } catch (e) {
-    res.status(500).json({ err: 'Internal Server Error', traceback: e });
+    res.status(500).json({ err: 'Internal Server Error', traceback: e.message });
   }
 }
 
